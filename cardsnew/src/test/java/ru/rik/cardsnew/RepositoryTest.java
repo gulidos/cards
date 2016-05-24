@@ -2,10 +2,6 @@ package ru.rik.cardsnew;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,25 +23,25 @@ public class RepositoryTest {
 	
 	@Test
 	@Transactional
-	@Ignore
+//	@Ignore
 	public void count() {
-		System.out.println(" before an inserting: " + cardsRepository.count());	
+		System.out.println(" before inserting: " + cardsRepository.count());	
 		assertEquals(0, cardsRepository.count());
 	}
 	
 	@Test
 	@Transactional
-	@Ignore
+//	@Ignore
 	public void addCard() {
-		Card card = new Card("mts111", "1.1.1.1", "b000001", "123123123", "9258762694");
-		Card saved = cardsRepository.save(card);
+//		Card card = new Card("mts111", "1.1.1.1", "b000001", "123123123", "9258762694");
+//		Card saved = cardsRepository.save(card);
 	}
 	
 	@Test
 	@Transactional
-	@Ignore
+//	@Ignore
 	public void countAfter() {
-		System.out.println(" after an inserting: " + cardsRepository.count());
+		System.out.println(" after inserting: " + cardsRepository.count());
 		assertEquals(1, cardsRepository.count());
 	}
 }

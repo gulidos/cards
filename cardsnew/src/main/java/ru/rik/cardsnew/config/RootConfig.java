@@ -36,15 +36,4 @@ public class RootConfig {
 	public Settings settings(DataSource dataSource) throws SettingsException, SQLException {
 		return new Settings(dataSource);
 	}
-//
-//	@Bean
-//	public LoadMe loadMe(DataSource dataSource) {
-//		LoadMe loadMe = null;
-//		try {
-//			loadMe = new LoadMe(dataSource);
-//		} catch (Exception e) {
-//			logger.error(e.toString(), e);
-//		}
-//		return loadMe;
-//	}
 }

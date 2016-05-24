@@ -43,9 +43,9 @@ public class CardForm {
 		this.id = card.getId();
 		this.name = card.getName();
 		this.number = card.getNumber();
-		this.ip = card.getIp();
-		this.place = card.getPlace();
-		this.im = card.getImei();
+//		this.ip = card.getIp();
+//		this.place = card.getPlace();
+		this.im = card.getSernumber();
 	}
 
 	public String getName() {

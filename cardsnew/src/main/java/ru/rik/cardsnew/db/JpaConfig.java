@@ -1,6 +1,5 @@
 package ru.rik.cardsnew.db;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -10,15 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -27,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
 public class JpaConfig {
-	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards";
+	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards;mv_store=false";
 	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
   @Bean
   public DataSource dataSource() {
@@ -69,7 +64,7 @@ public class JpaConfig {
   @EnableTransactionManagement
   public static class TransactionConfig {
 
-    //@Inject
+
 	@Autowired
     private EntityManagerFactory emf;
     @Autowired

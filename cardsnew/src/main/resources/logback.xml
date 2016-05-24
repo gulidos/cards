@@ -18,22 +18,6 @@
 		</rollingPolicy>
 	</appender>
 
-	<!-- <appender name="counters-log"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/var/log/cards/cards.log</file>
-		<encoder>
-			<pattern>
-				<charset>UTF-8</charset>
-				%d{HH:mm:ss.SSS} %-5level [%thread] %logger{35}:%method:%line %msg%n
-			</pattern>
-		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>/var/log/blmgmn/blmgmn-counters.log.%d{yyyy-MM-dd}.gz
-			</fileNamePattern>
-			<maxHistory>180</maxHistory>
-		</rollingPolicy>
-	</appender>
-	 -->
   	<logger
 		name="org.springframework"
 		level="INFO">
