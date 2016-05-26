@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,17 +17,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @Entity
-public class Bank {
+public class Group {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
-    @Column //(nullable = false)
-	String location;
+	
+//    @Column(nullable = false, unique=true)
+	String name;
     
-    @Column //(nullable = false,  unique=true)
-    String ip;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "group")
     Set<Card> cards = new HashSet<>();
+    
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "group")
+    Set<Channel> channels = new HashSet<>();
 
 }

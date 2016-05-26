@@ -1,5 +1,7 @@
 package ru.rik.cardsnew;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,7 +19,6 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.Trunk;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=JpaConfig.class)
@@ -51,11 +52,10 @@ public class Test1 {
 	public void test1() {
 		 EntityManager em = emf.createEntityManager();
 		 em.getTransaction().begin();
-		 Oper o1 = new Oper();
-		 o1.setName("MTS");
 		 
-		 Trunk t1 = new Trunk();
-		 t1.setName("mts3");
+		 Oper o1 = new Oper();
+		 o1.setName("MTS");		 
+		 
 		 
 		 Bank b1 = new Bank();
 		 b1.setIp("10.10.10.1");
@@ -67,11 +67,42 @@ public class Test1 {
 		 c1.setPlace(Place.b0000009);
 		 c1.setSernumber("55555555555");
 		 c1.setOper(o1);
-		 c1.setTrunk(t1);
+	
 		 c1.setBank(b1);
 		 
-		 em.persist(c1);
+		 Card c2 = new Card();
+		 c2.setName("mts444");
+		 c2.setPlace(Place.b0000007);
+		 c2.setSernumber("22222");
+		 c2.setOper(o1);
+	
+		 c2.setBank(b1);
+		 
+		 assertNotNull(o1);
+		 o1.getCards().add(c1);
+		 o1.getCards().add(c2);
+		 
+		 em.persist(o1);
+//		 em.persist(c1);
+//		 em.persist(c2);
 		 em.getTransaction().commit();
+	     em.close();
+//	     	    
+//	     em = emf.createEntityManager();
+//		 em.getTransaction().begin();
+//		 Card c3 = em.find(Card.class, c2.getId());
+//	     em.remove(c3);
+//	     System.out.println("================================================");
+//	     em.getTransaction().commit();
+//	     em.close();
+//	     
+	    
+	     em = emf.createEntityManager();
+		 em.getTransaction().begin();
+		 Bank b = em.find(Bank.class, b1.getId());
+	     System.out.println("================================================");
+	     System.out.println("Bank : " + b.toString());
+	     em.getTransaction().commit();
 	     em.close();
 		 
 	}
@@ -85,6 +116,13 @@ public class Test1 {
 	        for (Card card: cards) {
 	        	System.out.println(card.toString());
 	        }
+	        
+	        @SuppressWarnings("unchecked")
+	        List<Oper> opers =  (List<Oper>) em.createQuery("select s from Oper s").getResultList();
+	        for (Oper oper: opers) {
+	        	System.out.println(oper.toString());
+	        }
+	        
 	        em.getTransaction().commit();
 	        em.close();
 	}

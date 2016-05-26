@@ -14,7 +14,7 @@ import ru.rik.cardsnew.web.CardForm;
 @Repository
 public class CardsRepositoryImpl implements CardsRepository {
 	@PersistenceContext
-	private EntityManager entityManager;
+	private EntityManager em;
 
 	@Override
 	public long count() {
@@ -24,7 +24,7 @@ public class CardsRepositoryImpl implements CardsRepository {
 	@Transactional
 	@Override
 	public Card save(Card card) {
-		entityManager.persist(card);
+		em.persist(card);
 		return card;
 	}
 	
@@ -41,24 +41,24 @@ public class CardsRepositoryImpl implements CardsRepository {
 	public void delete(Card card) {
 		Card c = findOne(card.getId());
 		if (c != null)
-		entityManager.remove(c);
+			em.remove(c);
 	}
 
 	@Override
 	public Card findOne(long id) {
-		return entityManager.find(Card.class, id);
+		return em.find(Card.class, id);
 	}
 
 	@Override
 	public Card findByUsername(String name) {
-		return (Card) entityManager.createQuery("select s from Card s where s.name=?").setParameter(1, name)
+		return (Card) em.createQuery("select s from Card s where s.name=?").setParameter(1, name)
 				.getSingleResult();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Card> findAll() {
-		return (List<Card>) entityManager.createQuery("select s from Card s").getResultList();
+		return (List<Card>) em.createQuery("select s from Card s").getResultList();
 
 	}
 
