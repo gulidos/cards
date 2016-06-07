@@ -30,7 +30,7 @@ public class Oper {
 //	@Column(nullable = false, unique=true)
 	String name;
 	
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "oper")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "oper")
     Set<Card> cards = new HashSet<>();
 	
 }

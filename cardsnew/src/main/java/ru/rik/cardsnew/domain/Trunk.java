@@ -13,21 +13,22 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 
 @Data
 @Entity
-@Table(name="TRUNK")
+@Table(name = "TRUNK")
 public class Trunk {
-    @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 	
+	@Column (nullable = false,  unique=true)
 	private String name;
+	
 	private String descr;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "trunk")
-    Set<Channel> channel = new HashSet<>();
+	Set<Channel> channel = new HashSet<>();
 
 }

@@ -1,6 +1,5 @@
 package ru.rik.cardsnew.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,8 +16,8 @@ import lombok.ToString;
 import ru.rik.cardsnew.web.CardForm;
 
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"oper", "bank", "group"})
-@ToString(exclude = {"oper", "bank", "group"})
+@EqualsAndHashCode(exclude = {"oper", "group", "bank"})
+@ToString(exclude = {"oper", "group", "bank"})
 @Entity
 @Table(name="CARD")
 public class Card {
@@ -30,7 +29,7 @@ public class Card {
     
     @Getter @Setter
     @Column(unique=true)
-	private String name;
+	private String name; 
     
     @Getter @Setter
 	private Place place;
@@ -39,15 +38,16 @@ public class Card {
 	private String sernumber;
     
     @Getter @Setter
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne//(optional = false)
+//    @JoinColumn(name = "oper_id")
 	private Oper oper;
     
     @Getter @Setter
-    @ManyToOne(cascade = CascadeType.PERSIST)
-	private Group group;
+    @ManyToOne//(optional = false)
+	private Grp group;
     
     @Getter @Setter
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
 	private Bank bank;
     
     @Getter @Setter

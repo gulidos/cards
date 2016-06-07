@@ -5,13 +5,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.web.CardForm;
 
-@Repository
+//@Repository
 public class CardsRepositoryImpl implements CardsRepository {
 	@PersistenceContext
 	private EntityManager em;

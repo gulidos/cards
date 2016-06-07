@@ -12,23 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-
 @Entity
 public class Bank {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
-    @Column //(nullable = false)
+	
+    @Column (unique=true)
 	String location;
     
-    @Column //(nullable = false,  unique=true)
+    @Column (nullable = false,  unique=true)
     String ip;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
     Set<Card> cards = new HashSet<>();
 
 }

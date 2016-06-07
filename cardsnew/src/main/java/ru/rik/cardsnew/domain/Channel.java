@@ -26,6 +26,7 @@ public class Channel {
     private long id;
 	
 	@Setter @Getter
+	@Column(unique=true)
 	private String name;
 	
 	@Setter @Getter
@@ -37,7 +38,7 @@ public class Channel {
 	
 	@Setter	@Getter
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private Group group;
+	private Grp group;
 
 	@Getter	@Setter
 	@ManyToOne(cascade = CascadeType.PERSIST)

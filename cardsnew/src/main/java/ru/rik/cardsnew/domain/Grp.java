@@ -4,27 +4,37 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Builder;
 
-@Data
 @NoArgsConstructor
-
+@AllArgsConstructor
+@Builder
 @Entity
-public class Group {
+@ToString(exclude="cards")
+//@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
+public class Grp {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Getter @Setter
     private long id;
 	
-//    @Column(nullable = false, unique=true)
+	@Getter @Setter
+	@Column (nullable = false,  unique=true)
 	String name;
-    
+	
+	@Getter @Setter
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "group")
     Set<Card> cards = new HashSet<>();
     

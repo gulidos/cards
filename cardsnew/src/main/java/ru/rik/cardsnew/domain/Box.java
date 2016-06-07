@@ -18,14 +18,17 @@ import lombok.Data;
 @Entity
 @Table(name="BOX")
 public class Box {
-    @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
+  
 	private String disposition;
+	
 	private String ip;
+	
 	private int capacity;
 	private String descr;
 	
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "box")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "box")
     Set<Channel> channels = new HashSet<>();
 
 
