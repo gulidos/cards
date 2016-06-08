@@ -39,7 +39,6 @@ public class Card {
     
     @Getter @Setter
 	@ManyToOne//(optional = false)
-//    @JoinColumn(name = "oper_id")
 	private Oper oper;
     
     @Getter @Setter
