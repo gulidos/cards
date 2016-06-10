@@ -6,63 +6,64 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import ru.rik.cardsnew.web.CardForm;
+import lombok.experimental.Builder;
 
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"oper", "group", "bank"})
-@ToString(exclude = {"oper", "group", "bank"})
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(exclude = {"oper", "group", "bank","channel"})
+@ToString(exclude = {"oper", "group", "bank","channel"})
 @Entity
 @Table(name="CARD")
 public class Card {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Getter @Setter
     private long id;
     
-    @Getter @Setter
+    @Version
+    protected long version;
+    
     @Column(unique=true)
+    @NotNull(message = "{error.card.name.null}")
+	@NotEmpty(message = "{error.card.name.empty}")
+	@Size(min = 3, max = 20, message = "{error.card.name.size}")
 	private String name; 
     
-    @Getter @Setter
 	private Place place;
     
-    @Getter @Setter
+	@NotNull(message = "{error.card.im.null}")
+	@NotEmpty(message = "{error.card.im.empty}")
+	@Size(min = 3, max = 20, message = "{error.card.im.size}")
+    @Column(unique=true)
 	private String sernumber;
     
-    @Getter @Setter
-	@ManyToOne//(optional = false)
+    @ManyToOne//(optional = false)
 	private Oper oper;
     
-    @Getter @Setter
     @ManyToOne//(optional = false)
 	private Grp group;
     
-    @Getter @Setter
     @ManyToOne
 	private Bank bank;
     
-    @Getter @Setter
 	private String number;
 	
-
-	public Card(CardForm cf) {
-		super();
-		setCard(cf);
-	}
-	
-	public void setCard(CardForm cf) {
-		this.name = cf.getName();
-//		this.place = cf.getPlace();
-		this.sernumber = cf.getIm();
-		this.number = cf.getNumber();
-	}
+	@OneToOne
+	private Channel channel;
 	
 }

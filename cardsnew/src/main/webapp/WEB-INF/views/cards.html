@@ -13,24 +13,21 @@
 <body>
 	<div class="container-fluid">
 		<div id="header" th:include="page :: header"></div>
-		<h3>cards</h3>
 		<br>
 		<div id="content">
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-2">number</th>
-					<th class="col-sm-2">ip</th>
 					<th class="col-sm-2">place</th>
-					<th class="col-sm-2">im</th>
+					<th class="col-sm-2">sernumber</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
 				<tr th:each="card : ${cards}">
 					<td th:text="${card.name}"></td>
 					<td th:text="${card.number}"></td>
-					<td th:text="${card.ip}"></td>
 					<td th:text="${card.place}"></td>
-					<td th:text="${card.imei}"></td>
+					<td th:text="${card.sernumber}"></td>
 					<td style="text-align: center;"><a href="#"	data-th-href="@{/cards/edit(id=${card.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
@@ -43,39 +40,14 @@
 				</tr>
 			</table>
 		</div>
-		<form class="form" action="#" data-th-action="@{/cards/add}" data-th-object="${cardForm}" method="post">
-			<div class="table responsive">
-				<table class="no-border-on-me table ">
-					<thead>
-						<tr>
-					<th class="col-sm-1">name</th>
-					<th class="col-sm-2">number</th>
-					<th class="col-sm-2">ip</th>
-					<th class="col-sm-2">place</th>
-					<th class="col-sm-2">im</th>
-					<th class="col-sm-2">Action</th>
-				</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><input class="form-control" type="text" placeholder="name" data-th-field="*{name}"></input></td>
-							<td><input class="form-control" type="text"	placeholder="number" data-th-field="*{number}" ></input></td>
-							<td><input class="form-control" type="text" placeholder="ip" data-th-field="*{ip}"></input></td>
-							<td><input class="form-control" type="text" placeholder="place" data-th-field="*{place}"></input></td>
-							<td><input class="form-control" type="text" placeholder="im" data-th-field="*{im}"></input></td>
-							<td><button type="submit" class="btn btn-primary">Add Card</button></td>
-						</tr>
-						<tr>
-							<td class="col-sm-1 text-danger" data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}">name error</td>
-							<td class="col-sm-2 text-danger" data-th-if="${#fields.hasErrors('number')}" data-th-errors="*{number}">number error</td>
-							<td class="col-sm-2 text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</td>
-							<td class="col-sm-2 text-danger" data-th-if="${#fields.hasErrors('place')}" data-th-errors="*{place}">place error</td>
-							<td class="col-sm-2 text-danger" data-th-if="${#fields.hasErrors('im')}" data-th-errors="*{im}">im error</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="row">
+			<div class="col-sm-8">
+				<a th:href="@{/cards/add}">
+					<button type="button" class="btn btn-primary">Add</button>
+				</a>
 			</div>
-		</form>
+		</div>
+
 		<div id="footer" th:include="page :: copy"></div>
 		<script type="text/css" src="../../resources/js/jquery-1.12.1.min.js"
 			th:href="@{/resources/js/jquery-1.12.1.min.js}"></script>

@@ -1,15 +1,14 @@
 package ru.rik.cardsnew.domain;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,15 +29,19 @@ public class Grp {
 	@Getter @Setter
     private long id;
 	
+	@Version
+	@Getter @Setter
+	protected long version;
+	 
 	@Getter @Setter
 	@Column (nullable = false,  unique=true)
 	String name;
 	
 	@Getter @Setter
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "group")
-    Set<Card> cards = new HashSet<>();
+    @OneToMany(mappedBy = "group")
+    Set<Card> cards;
     
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "group")
-    Set<Channel> channels = new HashSet<>();
+    @OneToMany(mappedBy = "group")
+    Set<Channel> channels;
 
 }

@@ -1,81 +1,81 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org">
 
 <head data-th-fragment="header">
-	<title>Title</title>
-	<link type="text/css" rel="stylesheet"
+<title>Title</title>
+<link type="text/css" rel="stylesheet"
 	href="../../resources/css/bootstrap.min.css"
 	th:href="@{/resources/css/bootstrap.min.css}" />
 </head>
 <body>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="main">
-			
-				<div class="col-sm-3"></div>
-				<div class="col-sm-6">
-					<h3> Edit </h3>
-					<form class="form-horizontal" action="#" data-th-action="@{/cards/edit}" data-th-object="${card}" method="post">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">name</label>
-							<div class="col-sm-8">
-								<input type="text" hidden="hidden" data-th-value="*{id}" data-th-field="*{id}" ></input>
-								<input type="text" class="form-control" data-th-value="*{name}" data-th-field="*{name}" ></input>								
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">number</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" data-th-value="*{number}" data-th-field="*{number}" ></input>							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">ip</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" data-th-value="*{ip}" data-th-field="*{ip}" ></input>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">place</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" data-th-value="*{place}" data-th-field="*{place}" ></input>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">im</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" data-th-value="*{im}" data-th-field="*{im}" ></input>
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<div class="col-sm-offset-4 col-sm-8" >
-								<button type="submit" class="btn btn-primary" name="action" value="save">Save</button>
-								<button type="submit" class="btn btn-default active" name="action" value="cancel">Cancel</button>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-5 col-sm-7" >
-								<p class="text-danger" data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}">name error</p>
-								<p class="text-danger" data-th-if="${#fields.hasErrors('number')}" data-th-errors="*{number}">number error</p>
-								<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p>
-								<p class="text-danger" data-th-if="${#fields.hasErrors('place')}" data-th-errors="*{place}">place error</p>
-								<p class="text-danger" data-th-if="${#fields.hasErrors('im')}" data-th-errors="*{im}">im error</p> 
-							</div>
-						</div>
-					</form>
+	<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading">ItemC</div>
+		<form class="form-horizontal" action="#" th:action="@{/cards/edit}" th:object="${card}" method="post">
+			<div class="form-group">
+				<label class="col-sm-4 col-xs-8 control-label">name</label>
+				<div class="col-sm-2">
+					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
+					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
 				</div>
-				<div class="col-sm-3"></div>
-				
-			</div>		<!-- END MAIN TAG -->
-		</div>		<!-- END ROW TAG -->
-	</div>	<!-- END CONTAINER TAG -->
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 col-xs-8 control-label">number</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control" th:value="*{number}" th:field="*{number}"></input>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">place</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{place}" th:field="*{place}" >
+					<option th:each="place: ${places}" th:value="${place}" th:text="${place}" ></option>
+				</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 col-xs-8 control-label">sernumber</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control" th:value="*{sernumber}" th:field="*{sernumber}"></input>
+				</div>
+			</div>			
+			
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	value="save">Save</button>
+					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-offset-5 col-sm-7">
+					<p class="text-danger" data-th-if="${#fields.hasErrors('name')}"
+						data-th-errors="*{name}">name error</p>
+					<p class="text-danger" data-th-if="${#fields.hasErrors('number')}"
+						data-th-errors="*{number}">number error</p>
+					<!-- 	<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p> -->
+					<p class="text-danger" data-th-if="${#fields.hasErrors('place')}"
+						data-th-errors="*{place}">place error</p>
+					<!-- 				<p class="text-danger" data-th-if="${#fields.hasErrors('sernumber')}" data-th-errors="*{sernumber}">im error</p> -->
+				</div>
+			</div>
+		</form>
+		</div>
+		</div>
+		<div class="col-sm-3"></div>
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script type="text/javascript" src="../../resources/js/jquery-1.11.0.min.js" data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script type="text/javascript" src="../../resources/js/bootstrap-3.3.3.min.js"	data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
+
+
+
+
+	<script type="text/javascript"
+		src="../../resources/js/jquery-1.11.0.min.js"
+		data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap-3.3.3.min.js"
+		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
 </body>
 </html>
 
-			

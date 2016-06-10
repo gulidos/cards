@@ -1,23 +1,28 @@
 package ru.rik.cardsnew.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Builder;
 
 @NoArgsConstructor
-@EqualsAndHashCode (exclude = {"box", "trunk", "group"})
-@ToString (exclude = {"box", "trunk", "group"})
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode (exclude = {"box", "trunk", "group", "card"})
+@ToString (exclude = {"box", "trunk", "group", "card"})
 @Entity
 @Table(name="CHANNEL")
 public class Channel {
@@ -25,6 +30,10 @@ public class Channel {
     @Getter @Setter
     private long id;
 	
+    @Version
+ 	@Getter @Setter
+	protected long version;
+
 	@Setter @Getter
 	@Column(unique=true)
 	private String name;
@@ -33,14 +42,18 @@ public class Channel {
 	private Line line;
 	
 	@Setter @Getter
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	private Box box;
 	
 	@Setter	@Getter
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	private Grp group;
 
 	@Getter	@Setter
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	private Trunk trunk;
+	
+	@Getter	@Setter
+	@OneToOne
+	private Card card;
 }

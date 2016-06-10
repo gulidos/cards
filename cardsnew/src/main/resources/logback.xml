@@ -17,14 +17,17 @@
 			<maxHistory>180</maxHistory>
 		</rollingPolicy>
 	</appender>
-<!-- 	
+	
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
- <logger name="org.hibernate.SQL" additivity="false" level="DEBUG" />
-   <logger name="org.hibernate.type" additivity="false" level="TRACE" /> -->	
+    
+ 	<!-- <logger name="org.hibernate.SQL" level="DEBUG" /> -->
+   	
+   	<logger name="org.hibernate.type" level="TRACE" /> 	
+   	 <logger name="org.hibernate.SQL" level="DEBUG" />
 
   	<logger
 		name="org"

@@ -67,7 +67,8 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
     public void checkVersion(T entity, boolean forceUpdate) {
         em.lock(entity, forceUpdate ? OPTIMISTIC_FORCE_INCREMENT : OPTIMISTIC);
     }
-
+    
+	
     @Override
     public T makePersistent(T instance) {
         // merge() handles transient AND detached instances

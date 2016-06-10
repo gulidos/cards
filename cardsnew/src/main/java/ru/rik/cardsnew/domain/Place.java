@@ -1,6 +1,5 @@
 package ru.rik.cardsnew.domain;
 
-
 public enum Place {
 	b0000000,
 	b0000001,
@@ -14,4 +13,9 @@ public enum Place {
 	b0000009,
 	b000000a;
 	
+//	public List<Place> getAll() {
+//		for (Place p : Place.values()) {
+//			
+//		}
+//	}
 }

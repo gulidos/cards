@@ -13,13 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.JpaConfig;
+import ru.rik.cardsnew.db.OperRepoImpl;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
@@ -33,7 +41,10 @@ public class StatefullTest {
 	CardRepoImpl cardRepo;
 	@Autowired
 	GroupRepoImpl grpRepo;
-	
+	@Autowired
+	OperRepoImpl operRepo;
+	@Autowired
+	BankRepoImpl bankRepo;
 	
 	static Map<String, Card> cards = new HashMap<>();
 	static Card lastCard;
@@ -54,16 +65,20 @@ public class StatefullTest {
 		for (Card c : cardRepo.findAll()) {
 			cards.put(c.getName(), c);
 			lastCard = c;
+			System.out.println(c.getOper());
 			opers.add(c.getOper());
 			lastOper = c.getOper();
 			banks.add(c.getBank());
 			lastBank = c.getBank();
 			lastGrp = c.getGroup();
-//        	System.out.println(c.toString() + c.getBank().getIp() + c.getOper().getName() + c.getGroup().getName());
+        	System.out.println(c.toString() + 
+        			c.getBank().getIp() + 
+        			c.getOper().getName() + 
+        			c.getGroup().getName());
 		}
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	@Rollback(false)
 	public void t12remove() {
@@ -85,7 +100,7 @@ public class StatefullTest {
 		System.out.println("Banks: " + banks.toString());
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	@Rollback(false)
 	public void t3add() {
@@ -101,4 +116,44 @@ public class StatefullTest {
 		cards.put(c.getName(), c);
 		cardRepo.makePersistent(c);
 	}
+	
+	@Autowired
+	ChannelRepoImpl chRepo;
+	@Autowired
+	private PlatformTransactionManager tm;
+	
+	
+	@Test
+//	@Transactional
+//	@Rollback(false)
+	public void t4changeCard() {
+		System.out.println("=========================t4changeCard==============");
+		TransactionDefinition definition = new DefaultTransactionDefinition();
+		TransactionStatus status = tm.getTransaction(definition);
+		try {
+			Channel ch = chRepo.findById(1L);
+			Card oldC = ch.getCard();
+			System.out.println("Old card: " + oldC);
+
+			oldC.setChannel(null);
+			Card newC = cardRepo.findById(2L);
+			
+			newC.setChannel(ch);
+			ch.setCard(newC);
+			
+			try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			tm.commit(status);
+			
+		} catch (Exception e) {
+			tm.rollback(status);
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

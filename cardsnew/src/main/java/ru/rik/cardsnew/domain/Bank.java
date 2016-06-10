@@ -3,30 +3,44 @@ package ru.rik.cardsnew.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Bank {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Getter @Setter
     private long id;
 	
+	 @Version
+	 @Getter @Setter
+	 protected long version;
+	 
     @Column (unique=true)
+    @Getter @Setter
 	String location;
     
-    @Column (nullable = false,  unique=true)
+    @Column (unique=true)
+    @Getter @Setter
     String ip;
     
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
+    @Getter @Setter
+//   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
+ @OneToMany(mappedBy = "bank")
     Set<Card> cards = new HashSet<>();
 
 }
