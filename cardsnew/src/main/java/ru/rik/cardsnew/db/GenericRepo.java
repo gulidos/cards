@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.persistence.LockModeType;
 
+import ru.rik.cardsnew.domain.MyEntity;
 
-public interface GenericRepo<T, ID extends Serializable>
+
+public interface GenericRepo<T extends MyEntity, ID extends Serializable>
     extends Serializable {
 
     void joinTransaction();

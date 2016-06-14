@@ -13,17 +13,19 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Builder;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name="BOX")
-public class Box {
+public class Box extends MyEntity{
   @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
   	
@@ -48,6 +50,11 @@ public class Box {
   	@Getter @Setter
     @OneToMany( mappedBy = "box")
     Set<Channel> channels = new HashSet<>();
+
+	@Override
+	public String getName() {
+		return getIp();
+	}
 
 
 }

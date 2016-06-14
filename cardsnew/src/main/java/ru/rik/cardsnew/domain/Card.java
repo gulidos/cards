@@ -25,11 +25,11 @@ import lombok.experimental.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = { "group", "bank","channel"})
+@EqualsAndHashCode(exclude = { "group", "bank","channel"},callSuper = false)
 @ToString(exclude = {"group", "bank","channel"})
 @Entity
 @Table(name="CARD")
-public class Card {
+public class Card extends MyEntity {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)

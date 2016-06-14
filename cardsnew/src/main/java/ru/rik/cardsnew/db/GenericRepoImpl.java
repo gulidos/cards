@@ -12,7 +12,9 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 
-public abstract class GenericRepoImpl<T, ID extends Serializable> implements GenericRepo<T, ID> {
+import ru.rik.cardsnew.domain.MyEntity;
+
+public abstract class GenericRepoImpl<T extends MyEntity, ID extends Serializable> implements GenericRepo<T , ID> {
 	private static final long serialVersionUID = 1L;
 	
 	@PersistenceContext

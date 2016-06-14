@@ -14,24 +14,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Place;
+import ru.rik.cardsnew.domain.repo.Cards;
 
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
 public class CardsController {
-	private CardRepoImpl cardRepo;
+	private Cards cards;
 
 	@Autowired
-	public CardsController(CardRepoImpl cardsRepository) {
-		this.cardRepo = cardsRepository;
+	public CardsController(Cards cards) {
+		this.cards = cards;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
-		model.addAttribute("cards", cardRepo.findAll());
+		model.addAttribute("cards", cards.getMap().values());
 		
 		if(! model.containsAttribute("card")) {
 			Card card = new Card();
@@ -48,24 +48,24 @@ public class CardsController {
 		return "card-edit";
 	}
 	
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String saveCard(@Valid @ModelAttribute Card card, 
-			BindingResult errors,
-			Model model, 
-			RedirectAttributes redirectAttrs) {
-		
-		if (errors.hasErrors()) {
-			System.out.println("there are validation errors");
-			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.card", errors);
-			redirectAttrs.addFlashAttribute("card", card);
-			return "redirect:/cards";
-		} else {
-			cardRepo.makePersistent(card);
-			String message = "Strategy " + card.getId() + " was successfully added";
-			model.addAttribute("message", message);
-			return "redirect:/cards";
-		}
-	}
+//	@RequestMapping(value = "/add", method = RequestMethod.POST)
+//	public String saveCard(@Valid @ModelAttribute Card card, 
+//			BindingResult errors,
+//			Model model, 
+//			RedirectAttributes redirectAttrs) {
+//		
+//		if (errors.hasErrors()) {
+//			System.out.println("there are validation errors");
+//			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.card", errors);
+//			redirectAttrs.addFlashAttribute("card", card);
+//			return "redirect:/cards";
+//		} else {
+//			cards.makePersistent(card);
+//			String message = "Strategy " + card.getId() + " was successfully added";
+//			model.addAttribute("message", message);
+//			return "redirect:/cards";
+//		}
+//	}
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
@@ -73,7 +73,7 @@ public class CardsController {
 		
 		if(! model.containsAttribute("card")) {
 			System.out.println("Reading a card for a first time");
-			Card card = cardRepo.findById(id);
+			Card card = cards.findById(id);
 			model.addAttribute("card", card);
 			model.addAttribute("places", Place.values());
 		}
@@ -100,7 +100,7 @@ public class CardsController {
 			return "redirect:/cards/edit?id=" + card.getId();
 		} else if (action.equals("save")) {
 			System.out.println("Card "+ card.toString() + " was successfully edited");
-			Card cardP = cardRepo.makePersistent(card);
+			Card cardP = cards.update(card);
 			String message = "Card " + cardP.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		} 
@@ -108,37 +108,37 @@ public class CardsController {
 		return "redirect:/cards";		
 	}
 	
-	@Transactional
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public String showSpitterProfile(Model model,
-			@RequestParam(value = "id", required = true) long id,
-			@RequestParam(value="phase", required=true) String phase) {
-		
-		Card card = cardRepo.findById(id);
-		System.out.println("card/delete-GET | id = " + id + " | phase = " + phase + " | " + card.toString());
-		
-		String view = null;
-		if (phase.equals("stage")) {
-			view = "card-delete";
-//			Card card= new Card();
-//			model.addAttribute("cardForm", cardForm);
-			String message = "card " + card.getId() + " queued for display.";
-			model.addAttribute("message", message);
-		}
-		
-		if (phase.equals("confirm")) {
-			view ="redirect:/cards";
-			cardRepo.makeTransient(card);
-			String message = "Strategy " + card.getId() + " was successfully deleted";
-			model.addAttribute("message", message);
-		}
-		
-		if (phase.equals("cancel")) {
-			view ="redirect:/cards";
-			String message = "Strategy delete was cancelled.";
-			model.addAttribute("message", message);
-		}
-		
-		return view;
-	}
+//	@Transactional
+//	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+//	public String showSpitterProfile(Model model,
+//			@RequestParam(value = "id", required = true) long id,
+//			@RequestParam(value="phase", required=true) String phase) {
+//		
+//		Card card = cards.findById(id);
+//		System.out.println("card/delete-GET | id = " + id + " | phase = " + phase + " | " + card.toString());
+//		
+//		String view = null;
+//		if (phase.equals("stage")) {
+//			view = "card-delete";
+////			Card card= new Card();
+////			model.addAttribute("cardForm", cardForm);
+//			String message = "card " + card.getId() + " queued for display.";
+//			model.addAttribute("message", message);
+//		}
+//		
+//		if (phase.equals("confirm")) {
+//			view ="redirect:/cards";
+//			cards.makeTransient(card);
+//			String message = "Strategy " + card.getId() + " was successfully deleted";
+//			model.addAttribute("message", message);
+//		}
+//		
+//		if (phase.equals("cancel")) {
+//			view ="redirect:/cards";
+//			String message = "Strategy delete was cancelled.";
+//			model.addAttribute("message", message);
+//		}
+//		
+//		return view;
+//	}
 }

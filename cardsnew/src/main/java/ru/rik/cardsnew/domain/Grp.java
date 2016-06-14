@@ -23,7 +23,7 @@ import lombok.experimental.Builder;
 @Entity
 @ToString(exclude="cards")
 //@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
-public class Grp {
+public class Grp extends MyEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter

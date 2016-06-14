@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Bank {
+public class Bank extends MyEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter
@@ -42,5 +42,10 @@ public class Bank {
 //   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
  @OneToMany(mappedBy = "bank")
     Set<Card> cards = new HashSet<>();
+
+	@Override
+	public String getName() {
+		return getIp();
+	}
 
 }

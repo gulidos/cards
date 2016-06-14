@@ -7,12 +7,18 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
 import ru.inlinetelecom.commons.settings.exceptions.SettingsException;
+import ru.rik.cardsnew.db.BankRepoImpl;
+import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.repo.Banks;
 import ru.rik.cardsnew.domain.repo.Cards;
 import ru.rik.cardsnew.domain.repo.Channels;
@@ -39,25 +45,24 @@ public class RootConfig {
 		return new Settings(dataSource);
 	}
 	
-	@Bean 
-	public Cards cards() {return new Cards();}
+	@Bean @Autowired 
+	public Cards cards(CardRepoImpl repo) {return new Cards(repo);}
 	
-	@Bean 
-	public Banks banks() {return new Banks();}
+	@Bean @Autowired 
+	public Banks banks(BankRepoImpl repo) {return new Banks(repo );}
 	
-	@Bean
-	public Channels channels() {return new Channels();}
+	@Bean @Autowired 
+	public Channels channels(ChannelRepoImpl repo) {return new Channels(repo);}
 	
-	@Bean 
-	public Grps grps() {return new Grps();}
+	@Bean @Autowired
+	public Grps grps(GroupRepoImpl repo) {return new Grps(repo);}
 	
-	@Bean 
-	public Trunks trunks() {return new Trunks();}
+	@Bean @Autowired
+	public Trunks trunks(TrunkRepoImpl repo) {return new Trunks(repo);}
 	
 	@Bean (initMethod="init")
 	public DataLoader dataLoader() {
 		DataLoader dataLoader = new DataLoader();
-//		dataLoader.init();
 		return dataLoader;
 	}
 	

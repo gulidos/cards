@@ -21,11 +21,11 @@ import lombok.experimental.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode (exclude = {"box", "trunk", "group", "card"})
+@EqualsAndHashCode (exclude = {"box", "trunk", "group", "card"}, callSuper = false)
 @ToString (exclude = {"box", "trunk", "group"})
 @Entity
 @Table(name="CHANNEL")
-public class Channel {
+public class Channel extends MyEntity {
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter
     private long id;

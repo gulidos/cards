@@ -18,6 +18,7 @@ public class InitTest {
 
 	@Autowired 	Cards cards;
 	@Autowired 	Channels channels;
+	
 	@Test
 	public void test() {
 		for (Card c : cards.getMap().values()) {
@@ -27,5 +28,10 @@ public class InitTest {
 			System.out.println(c.toString());
 		}
 	}
-
+	
+	@Test
+	public void testChangeCard() {
+		
+	}
+	
 }
