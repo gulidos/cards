@@ -19,5 +19,10 @@ public abstract class GenericMemImpl<T> implements GenericMem<T> {
 	public T add(String key, T e) {
 		return emap.putIfAbsent(key, e);
 	}
+	
+	@Override
+	public ConcurrentMap<String, T> getMap( ) {
+		return emap;
+	}
 
 }

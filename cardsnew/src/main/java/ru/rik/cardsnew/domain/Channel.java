@@ -22,7 +22,7 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode (exclude = {"box", "trunk", "group", "card"})
-@ToString (exclude = {"box", "trunk", "group", "card"})
+@ToString (exclude = {"box", "trunk", "group"})
 @Entity
 @Table(name="CHANNEL")
 public class Channel {
@@ -42,7 +42,7 @@ public class Channel {
 	private Line line;
 	
 	@Setter @Getter
-	@ManyToOne @Column(nullable=false)
+	@ManyToOne(optional=false)
 	private Box box;
 	
 	@Setter	@Getter
