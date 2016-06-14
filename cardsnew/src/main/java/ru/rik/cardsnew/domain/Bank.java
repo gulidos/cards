@@ -30,13 +30,13 @@ public class Bank {
 	 @Getter @Setter
 	 protected long version;
 	 
-    @Column (unique=true)
+    @Column (unique=true, nullable=false)
     @Getter @Setter
 	String location;
     
     @Column (unique=true)
     @Getter @Setter
-    String ip;
+    private String ip;
     
     @Getter @Setter
 //   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")

@@ -35,14 +35,14 @@ public class Channel {
 	protected long version;
 
 	@Setter @Getter
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String name;
 	
 	@Setter @Getter
 	private Line line;
 	
 	@Setter @Getter
-	@ManyToOne
+	@ManyToOne @Column(nullable=false)
 	private Box box;
 	
 	@Setter	@Getter

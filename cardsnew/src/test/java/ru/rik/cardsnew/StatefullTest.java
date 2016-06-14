@@ -24,12 +24,10 @@ import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.JpaConfig;
-import ru.rik.cardsnew.db.OperRepoImpl;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,15 +39,13 @@ public class StatefullTest {
 	CardRepoImpl cardRepo;
 	@Autowired
 	GroupRepoImpl grpRepo;
-	@Autowired
-	OperRepoImpl operRepo;
+
 	@Autowired
 	BankRepoImpl bankRepo;
 	
 	static Map<String, Card> cards = new HashMap<>();
 	static Card lastCard;
-	static Set <Oper> opers = new LinkedHashSet<>();
-	static Oper lastOper;
+	
 	static Set <Bank> banks = new LinkedHashSet<>();
 	static Bank lastBank;
 	static Set <Grp> grps;
@@ -66,14 +62,13 @@ public class StatefullTest {
 			cards.put(c.getName(), c);
 			lastCard = c;
 			System.out.println(c.getOper());
-			opers.add(c.getOper());
-			lastOper = c.getOper();
+		
 			banks.add(c.getBank());
 			lastBank = c.getBank();
 			lastGrp = c.getGroup();
         	System.out.println(c.toString() + 
         			c.getBank().getIp() + 
-        			c.getOper().getName() + 
+        			c.getOper() + 
         			c.getGroup().getName());
 		}
 	}
@@ -95,7 +90,7 @@ public class StatefullTest {
 		System.out.println("=========================t2verify==============");
 		for (Card c : cards.values()) {
         	System.out.println(c.toString() + c.getBank().getLocation()
-        			+ c.getOper().getName() + c.getGroup().getName());
+        			+ c.getOper() + c.getGroup().getName());
 		}
 		System.out.println("Banks: " + banks.toString());
 	}
@@ -111,7 +106,7 @@ public class StatefullTest {
 		c.setPlace(Place.b0000008);
 		c.setSernumber("65245624562456");
 		c.setBank(lastBank);
-		c.setOper(lastOper);
+
 		c.setGroup(lastGrp);
 		cards.put(c.getName(), c);
 		cardRepo.makePersistent(c);
@@ -140,13 +135,6 @@ public class StatefullTest {
 			
 			newC.setChannel(ch);
 			ch.setCard(newC);
-			
-			try {
-				Thread.sleep(20000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			tm.commit(status);
 			

@@ -17,6 +17,8 @@ import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
 import ru.inlinetelecom.commons.settings.exceptions.SettingsException;
 import ru.rik.cardsnew.config.RootConfig.WebPackage;
+import ru.rik.cardsnew.domain.repo.Banks;
+import ru.rik.cardsnew.domain.repo.Cards;
 
 @Configuration
 @Import(ru.rik.cardsnew.db.JpaConfig.class)
@@ -36,4 +38,11 @@ public class RootConfig {
 	public Settings settings(DataSource dataSource) throws SettingsException, SQLException {
 		return new Settings(dataSource);
 	}
+	
+	@Bean 
+	public Cards cards() {return new Cards();}
+	
+	@Bean 
+	public Banks banks() {return new Banks();}
+	
 }

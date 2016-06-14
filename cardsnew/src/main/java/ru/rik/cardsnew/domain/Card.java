@@ -25,8 +25,8 @@ import lombok.experimental.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"oper", "group", "bank","channel"})
-@ToString(exclude = {"oper", "group", "bank","channel"})
+@EqualsAndHashCode(exclude = { "group", "bank","channel"})
+@ToString(exclude = {"group", "bank","channel"})
 @Entity
 @Table(name="CARD")
 public class Card {
@@ -38,7 +38,7 @@ public class Card {
     @Version
     protected long version;
     
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     @NotNull(message = "{error.card.name.null}")
 	@NotEmpty(message = "{error.card.name.empty}")
 	@Size(min = 3, max = 20, message = "{error.card.name.size}")
@@ -52,10 +52,10 @@ public class Card {
     @Column(unique=true)
 	private String sernumber;
     
-    @ManyToOne//(optional = false)
+	@Column
 	private Oper oper;
     
-    @ManyToOne//(optional = false)
+    @ManyToOne
 	private Grp group;
     
     @ManyToOne
@@ -66,4 +66,7 @@ public class Card {
 	@OneToOne
 	private Channel channel;
 	
+	public enum Oper {
+		RED, GREEN, YELLOW
+	}
 }

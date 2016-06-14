@@ -10,5 +10,6 @@ public class GroupRepoImpl extends GenericRepoImpl<Grp, Long>  {
 
 
 	public GroupRepoImpl() {
-		super(Grp.class);	}
+		super(Grp.class);	
+	}
 }

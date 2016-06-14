@@ -19,7 +19,7 @@ import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.JpaConfig;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Oper;
+
 @EnableTransactionManagement
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=JpaConfig.class)
@@ -40,9 +40,7 @@ public class Test1 {
 //    @Test
     @Rollback(false) // All tests by default rollback transactions
 	public void insertData( ) {
-		 Oper o1 = new Oper();
-		 o1.setName("BBB");		 
-		 
+		
 		 Grp g1 = new Grp();
 		 g1.setName("3211231s");
 
