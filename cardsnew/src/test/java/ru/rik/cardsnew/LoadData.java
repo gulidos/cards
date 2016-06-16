@@ -22,11 +22,10 @@ import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.Card.Oper;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
-
+import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.Trunk;
 

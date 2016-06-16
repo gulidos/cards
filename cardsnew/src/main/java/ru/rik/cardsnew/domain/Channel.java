@@ -2,6 +2,7 @@ package ru.rik.cardsnew.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,6 +55,6 @@ public class Channel extends MyEntity {
 	private Trunk trunk;
 	
 	@Getter	@Setter
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	private Card card;
 }

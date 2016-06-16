@@ -46,7 +46,17 @@
 					<button type="button" class="btn btn-primary">Add</button>
 				</a>
 			</div>
+			<div class="col-sm-8">
+			<!-- 	<a href="#" data-th-href="@{/reload(phase=reload)}"> -->
+				<a th:href="@{/cards/reload(phase=reload)}">
+					<button type="button" class="btn btn-primary">Refresh_Settings</button>
+				</a>
+			</div>
 		</div>
+		
+		
+
+		
 
 		<div id="footer" th:include="page :: copy"></div>
 		<script type="text/css" src="../../resources/js/jquery-1.12.1.min.js"

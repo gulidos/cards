@@ -36,29 +36,39 @@ public class DataLoader {
 	public void init() {
 		System.out.println("cardRepo: " + cardRepo);
 		for (Card c : cardRepo.findAll()) {
-			if (cards.add(c.getName(), c) != null) 
+			if (cards.add(c.getId(), c) != null) 
 				throw new IllegalStateException("The card already axists " + c.toString());
 		
-			if (c.getGroup() != null )
-				grps.add(c.getGroup().getName(), c.getGroup());
+			if (c.getGroup() != null ) {
+				grps.add(c.getGroup().getId(), c.getGroup());
+			}	
 			
-			banks.add(c.getBank().getIp(), c.getBank());
+			if (c.getBank() != null)
+				banks.add(c.getBank().getId(), c.getBank());
 		}
 		
 		for (Channel ch : chRepo.findAll()) {
-			if (channels.add(ch.getName(), ch) != null) 
+			if (channels.add(ch.getId(), ch) != null) 
 				throw new IllegalStateException("The channel already axists " + ch.toString());
 			
-			if (ch.getGroup() != null )
-				grps.add(ch.getGroup().getName(), ch.getGroup());
+			if (ch.getGroup() != null ) {
+				ch.getGroup().hashCode();
+				grps.add(ch.getGroup().getId(), ch.getGroup());
+			}	
 			
 			if (ch.getTrunk() != null)
-				trunks.add(ch.getTrunk().getName(), ch.getTrunk());
+				trunks.add(ch.getTrunk().getId(), ch.getTrunk());
 			
-//			if (ch.getCard() != null ) 
-				
-			
+//			if (ch.getCard() != null ) 	
 		}
+	}
+	
+	public void clearData() {
+		cards.clear();
+		channels.clear();
+		banks.clear();
+		grps.clear();
+		trunks.clear();
 	}
 
 }

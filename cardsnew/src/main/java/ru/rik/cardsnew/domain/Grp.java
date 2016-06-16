@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude="cards")
+@ToString(exclude={"cards","channels"})
 //@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class Grp extends MyEntity {
 	@Id
@@ -38,10 +39,11 @@ public class Grp extends MyEntity {
 	String name;
 	
 	@Getter @Setter
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     Set<Card> cards;
-    
-    @OneToMany(mappedBy = "group")
+
+	@Getter @Setter
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     Set<Channel> channels;
 
 }

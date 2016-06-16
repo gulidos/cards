@@ -11,7 +11,7 @@ import ru.rik.cardsnew.domain.MyEntity;
 public abstract class GenericMemImpl<T extends MyEntity> implements GenericMem<T> {
 
 	protected final Class<T> eClass; //entity Class
-	private ConcurrentMap<String, T> emap;
+	private ConcurrentMap<Long, T> emap;
 	private  GenericRepo<T, Long> repo;
 	
 	public GenericMemImpl(Class<T> entityClass, GenericRepo<T, Long> repo) {
@@ -21,26 +21,26 @@ public abstract class GenericMemImpl<T extends MyEntity> implements GenericMem<T
 	}
 
 	@Override
-	public T add(String key, T e) {
+	public T add(Long key, T e) {
 		return emap.putIfAbsent(key, e);
 	}
 	
 	@Override
-	public ConcurrentMap<String, T> getMap( ) {
+	public ConcurrentMap<Long, T> getMap( ) {
 		return emap;
 	}
 	
 	@Override
-	public T findByName(String name) {
-		return emap.get(name);
+	public T findById(Long id) {
+		return emap.get(id);
 	}
 	
 	@Override
-	public T findById(Long id) {
-		if (id == null ) 
+	public T findByName(String name) {
+		if (name == null ) 
 			throw new NullPointerException("Id can not be null!");
 		for (T e: emap.values()) {
-			if (e.getId() == id)
+			if (e.getName() == name)
 				return e;
 		}
 		return null;
@@ -48,10 +48,13 @@ public abstract class GenericMemImpl<T extends MyEntity> implements GenericMem<T
 	
 	@Override
 	public T update(T e) {
-		if (emap.get(e.getName()) == null)
-			throw new IllegalArgumentException("The entity doesn't exist");
+//		if (emap.get(e.getName()) == null)
+//			throw new IllegalArgumentException("The entity doesn't exist");
 		return repo.makePersistent(e);
 	}
-
 	
+	@Override
+	public void clear() {
+		emap.clear();
+	}
 }

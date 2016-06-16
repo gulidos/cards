@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.repo.Cards;
+import ru.rik.cardsnew.domain.repo.Grps;
+import ru.rik.cardsnew.service.DataLoader;
 
 @Controller
 @RequestMapping("/cards")
@@ -66,7 +69,7 @@ public class CardsController {
 //			return "redirect:/cards";
 //		}
 //	}
-	
+	@Autowired Grps groups;
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public String  editCardPage(@RequestParam(value="id", required=true) long id, Model model) {
@@ -75,7 +78,9 @@ public class CardsController {
 			System.out.println("Reading a card for a first time");
 			Card card = cards.findById(id);
 			model.addAttribute("card", card);
+			model.addAttribute("opers", Oper.values());
 			model.addAttribute("places", Place.values());
+			model.addAttribute("groups", groups.getMap().values());
 		}
 		return "card-edit";
 	}
@@ -94,18 +99,35 @@ public class CardsController {
 			String message = "Card " + card.toString() + " edit cancelled";
 			model.addAttribute("message", message);
 		} else if (result.hasErrors()) {
-			System.out.println("there are validation errors");
+			System.out.println("there are validation errors" + result.getAllErrors().toString());
 			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.card", result);
 			redirectAttrs.addFlashAttribute("card", card);
 			return "redirect:/cards/edit?id=" + card.getId();
-		} else if (action.equals("save")) {
-			System.out.println("Card "+ card.toString() + " was successfully edited");
-			Card cardP = cards.update(card);
-			String message = "Card " + cardP.getId() + " was successfully edited";
+		} else if (action.equals("save") && card != null) {
+//			System.out.println("Card "+ card.toString() + " was successfully edited");
+			Card existingCard = cards.findById(card.getId()); 
+			
+			cards.update(card);
+			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		} 
 
 		return "redirect:/cards";		
+	}
+	
+	@Autowired
+	DataLoader dataLoader;
+	@RequestMapping(value = "/reload", method = RequestMethod.GET)
+	public String reloadSetings(Model model,
+			RedirectAttributes redirectAttrs,
+			@RequestParam(value="phase", required=true) String phase) {
+
+		if (phase.equals("reload")) {
+			dataLoader.clearData();
+			dataLoader.init();
+		} 
+		
+		return "redirect:/";
 	}
 	
 //	@Transactional
