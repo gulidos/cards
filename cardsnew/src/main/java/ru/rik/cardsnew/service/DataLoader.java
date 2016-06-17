@@ -6,8 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.repo.Banks;
 import ru.rik.cardsnew.domain.repo.Cards;
 import ru.rik.cardsnew.domain.repo.Channels;
@@ -21,10 +23,10 @@ public class DataLoader {
 	@Autowired Banks banks;
 	@Autowired Grps grps;
 	@Autowired Trunks trunks;
-	@Autowired 
-	CardRepoImpl cardRepo;
+	
+	@Autowired 	CardRepoImpl cardRepo;
 	@Autowired ChannelRepoImpl chRepo;
-
+	@Autowired 	GroupRepoImpl grRepo;
 	
 	
 	
@@ -60,6 +62,12 @@ public class DataLoader {
 				trunks.add(ch.getTrunk().getId(), ch.getTrunk());
 			
 //			if (ch.getCard() != null ) 	
+		}
+		
+		for (Grp gr: grRepo.findAll()) {
+			if (gr != null ) {
+				grps.add(gr.getId(), gr);
+			}
 		}
 	}
 	

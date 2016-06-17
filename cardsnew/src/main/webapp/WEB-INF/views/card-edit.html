@@ -47,7 +47,7 @@
 				<label class="col-sm-4 col-xs-8 control-label">group</label>
 				<div class="col-sm-2"  > 
 				<select	class="form-control" th:value="*{group.id}" th:field="*{group.id}" >
-					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.id}" ></option>
+					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}" ></option>
 				</select>
 				</div>
 			</div>

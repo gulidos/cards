@@ -46,4 +46,10 @@ public class Grp extends MyEntity {
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     Set<Channel> channels;
 
+	@Override
+	public void update(MyEntity e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

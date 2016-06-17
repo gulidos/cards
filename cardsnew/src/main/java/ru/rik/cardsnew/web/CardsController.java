@@ -94,7 +94,7 @@ public class CardsController {
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
 		
-		System.out.println("action: " + action + " card: " + card.toString());
+		System.out.println("action: " + action + " card: " + card.toStringAll());
 		if (action.equals("cancel")) {
 			String message = "Card " + card.toString() + " edit cancelled";
 			model.addAttribute("message", message);
@@ -105,7 +105,7 @@ public class CardsController {
 			return "redirect:/cards/edit?id=" + card.getId();
 		} else if (action.equals("save") && card != null) {
 //			System.out.println("Card "+ card.toString() + " was successfully edited");
-			Card existingCard = cards.findById(card.getId()); 
+//			Card existingCard = cards.findById(card.getId()); 
 			
 			cards.update(card);
 			String message = "Card " + card.getId() + " was successfully edited";

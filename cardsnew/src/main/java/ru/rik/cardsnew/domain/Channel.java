@@ -57,4 +57,12 @@ public class Channel extends MyEntity {
 	@Getter	@Setter
 	@OneToOne(fetch = FetchType.EAGER)
 	private Card card;
+
+	@Override
+	public void update(MyEntity e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

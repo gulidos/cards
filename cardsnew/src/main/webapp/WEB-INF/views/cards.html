@@ -19,7 +19,9 @@
 				<tr>
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-2">number</th>
-					<th class="col-sm-2">place</th>
+					<th class="col-sm-1">place</th>
+					<th class="col-sm-1">oper</th>
+					<th class="col-sm-1">group</th>
 					<th class="col-sm-2">sernumber</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
@@ -27,6 +29,8 @@
 					<td th:text="${card.name}"></td>
 					<td th:text="${card.number}"></td>
 					<td th:text="${card.place}"></td>
+					<td th:text="${card.oper}"></td>
+					<td th:text="${card.group.name}"></td>
 					<td th:text="${card.sernumber}"></td>
 					<td style="text-align: center;"><a href="#"	data-th-href="@{/cards/edit(id=${card.id})}">
 							<button type="button" class="btn btn-default btn-xs">

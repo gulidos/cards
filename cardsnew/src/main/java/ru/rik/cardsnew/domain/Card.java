@@ -67,4 +67,33 @@ public class Card extends MyEntity {
 	@OneToOne(fetch = FetchType.EAGER)
 	private Channel channel;
 	
+	public String toStringAll() {
+		return toString() 
+				+ " group: " + ( group != null ? group.getId() : "none") 
+				+ " bank: "  + (bank != null ? bank.getIp() : "none") 
+				+ " ch: "    + (channel != null ? channel.getName() : "none");
+	}
+
+	@Override
+	public void update(MyEntity e) {
+		if (e == null ) 
+			throw new IllegalStateException("When update the card can not be null");
+		Card cnew = null;
+		if (!(e instanceof Card)) 
+			throw new IllegalArgumentException("e should be a Card instatnce");
+		else 
+			cnew = (Card) e;
+		
+		setName(cnew.getName());
+		setPlace(cnew.getPlace());
+		setSernumber(cnew.getSernumber());
+		setOper(cnew.getOper());
+		setGroup(cnew.getGroup());
+		setBank(cnew.getBank());
+		setNumber(cnew.getNumber());
+		setChannel(cnew.getChannel());
+	}
+	
+
+
 }

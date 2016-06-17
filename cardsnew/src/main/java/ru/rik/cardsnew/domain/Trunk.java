@@ -41,4 +41,10 @@ public class Trunk extends MyEntity {
 	@OneToMany(mappedBy = "trunk")
 	Set<Channel> channel = new HashSet<>();
 
+	@Override
+	public void update(MyEntity e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

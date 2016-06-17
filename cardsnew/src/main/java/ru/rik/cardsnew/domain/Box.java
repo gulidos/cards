@@ -56,5 +56,11 @@ public class Box extends MyEntity{
 		return getIp();
 	}
 
+	@Override
+	public void update(MyEntity e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

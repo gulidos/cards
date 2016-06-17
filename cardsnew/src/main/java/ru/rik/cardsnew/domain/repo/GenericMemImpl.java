@@ -47,10 +47,16 @@ public abstract class GenericMemImpl<T extends MyEntity> implements GenericMem<T
 	}
 	
 	@Override
-	public T update(T e) {
-//		if (emap.get(e.getName()) == null)
-//			throw new IllegalArgumentException("The entity doesn't exist");
-		return repo.makePersistent(e);
+	public T update(T enew) {
+		if (enew == null)
+			throw new NullPointerException("The new entity can not be null!");
+		
+		T eold = emap.get(enew.getId());
+		if (eold == null)
+			throw new IllegalArgumentException("The entity doesn't exist");
+		
+		eold.update(enew);
+		return repo.makePersistent(enew);
 	}
 	
 	@Override
