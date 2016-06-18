@@ -14,28 +14,29 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.repo.Cards;
-import ru.rik.cardsnew.domain.repo.Grps;
+
 import ru.rik.cardsnew.service.DataLoader;
 
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
 public class CardsController {
-	private Cards cards;
+	private CardRepo cards;
 
 	@Autowired
-	public CardsController(Cards cards) {
+	public CardsController(CardRepo cards) {
 		this.cards = cards;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
-		model.addAttribute("cards", cards.getMap().values());
+		model.addAttribute("cards", cards.findAll());
 		
 		if(! model.containsAttribute("card")) {
 			Card card = new Card();
@@ -70,7 +71,7 @@ public class CardsController {
 //			return "redirect:/cards";
 //		}
 //	}
-	@Autowired Grps groups;
+	@Autowired GroupRepoImpl groups;
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public String  editCardPage(@RequestParam(value="id", required=true) long id, Model model) {
@@ -81,7 +82,7 @@ public class CardsController {
 			model.addAttribute("card", card);
 			model.addAttribute("opers", Oper.values());
 			model.addAttribute("places", Place.values());
-			model.addAttribute("groups", groups.getMap().values());
+			model.addAttribute("groups", groups.findAll());
 		}
 		return "card-edit";
 	}
@@ -106,12 +107,11 @@ public class CardsController {
 			redirectAttrs.addFlashAttribute("card", card);
 			return "redirect:/cards/edit?id=" + card.getId();
 		} else if (action.equals("save") && card != null) {
-//			System.out.println("Card "+ card.toString() + " was successfully edited");
-//			Card existingCard = cards.findById(card.getId());
+
 			Long groupId = card.getGroup() != null ? card.getGroup().getId() : null;
 			Grp g = groups.findById(groupId);
 			card.setGroup(g);
-			cards.update(card);
+			cards.makePersistent(card);
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		} 
@@ -119,16 +119,14 @@ public class CardsController {
 		return "redirect:/cards";		
 	}
 	
-	@Autowired
-	DataLoader dataLoader;
+
 	@RequestMapping(value = "/reload", method = RequestMethod.GET)
 	public String reloadSetings(Model model,
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="phase", required=true) String phase) {
 
 		if (phase.equals("reload")) {
-			dataLoader.clearData();
-			dataLoader.init();
+
 		} 
 		
 		return "redirect:/";
