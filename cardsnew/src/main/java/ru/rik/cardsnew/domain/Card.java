@@ -83,7 +83,7 @@ public class Card extends MyEntity {
 			throw new IllegalArgumentException("e should be a Card instatnce");
 		else 
 			cnew = (Card) e;
-		
+		setVersion(cnew.getVersion());
 		setName(cnew.getName());
 		setPlace(cnew.getPlace());
 		setSernumber(cnew.getSernumber());

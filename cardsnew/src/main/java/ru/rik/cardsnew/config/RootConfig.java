@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
-import ru.inlinetelecom.commons.settings.exceptions.SettingsException;
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
@@ -40,10 +39,6 @@ public class RootConfig {
 		}
 	}
 
-	@Bean
-	public Settings settings(DataSource dataSource) throws SettingsException, SQLException {
-		return new Settings(dataSource);
-	}
 	
 	@Bean @Autowired 
 	public Cards cards(CardRepoImpl repo) {return new Cards(repo);}

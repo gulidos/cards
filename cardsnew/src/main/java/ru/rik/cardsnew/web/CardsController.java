@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.repo.Cards;
@@ -85,6 +86,7 @@ public class CardsController {
 		return "card-edit";
 	}
 	
+	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editCard(
@@ -105,8 +107,10 @@ public class CardsController {
 			return "redirect:/cards/edit?id=" + card.getId();
 		} else if (action.equals("save") && card != null) {
 //			System.out.println("Card "+ card.toString() + " was successfully edited");
-//			Card existingCard = cards.findById(card.getId()); 
-			
+//			Card existingCard = cards.findById(card.getId());
+			Long groupId = card.getGroup() != null ? card.getGroup().getId() : null;
+			Grp g = groups.findById(groupId);
+			card.setGroup(g);
 			cards.update(card);
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
