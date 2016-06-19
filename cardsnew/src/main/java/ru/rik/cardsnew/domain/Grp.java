@@ -39,11 +39,11 @@ public class Grp extends MyEntity {
 	String name;
 	
 	@Getter @Setter
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group")
     Set<Card> cards;
 
 	@Getter @Setter
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group")
     Set<Channel> channels;
 
 	@Override

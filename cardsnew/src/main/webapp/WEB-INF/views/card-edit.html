@@ -10,35 +10,44 @@
 </head>
 <body>
 	<div class="container">
-	<div class="panel panel-default">
+	<div class="panel panel-default" >
 		<div class="panel-heading">ItemC</div>
-		<form class="form-horizontal" action="#" th:action="@{/cards/edit}" th:object="${card}" method="post">
-			<div class="form-group">
-				<label class="col-sm-4 col-xs-8 control-label">name</label>
+		<form class="form-horizontal" action="#" th:action="@{/cards/edit}" th:object="${card}" method="post" >
+			<div class="form-group" >
+				<label class="col-sm-4 col-xs-8 control-label" >name</label>
 				<div class="col-sm-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
-					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-4 col-xs-8 control-label">number</label>
 				<div class="col-sm-2">
-					<input type="text" class="form-control" th:value="*{number}" th:field="*{number}"></input>
+					<input type="text" class="form-control" th:value="*{number}" th:field="*{number}" 
+					th:readonly="${action}=='delete'"></input>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">b</label>
+				<div class="col-sm-2"  >  
+				<select	class="form-control" th:value="*{bank}?*{bank.id}:0" th:field="*{bank.id}" th:disabled="${action}=='delete'" >
+					<option th:each="bank: ${banklst}" th:value="${bank.id}" th:text="${bank.ip}"></option>
+				</select> 
 				</div>
 			</div>
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">place</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{place}" th:field="*{place}" >
-					<option th:each="place: ${places}" th:value="${place}" th:text="${place}" ></option>
+				<select	class="form-control" th:value="*{place}" th:field="*{place}" th:disabled="${action}=='delete'" >
+					<option th:each="place: ${places}" th:value="${place}" th:text="${place}"></option>
 				</select>
 				</div>
 			</div>
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">oper</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{oper}" th:field="*{oper}" >
+				<select	class="form-control" th:value="*{oper}" th:field="*{oper}" th:disabled="${action}=='delete'">
 					<option th:each="oper: ${opers}" th:value="${oper}" th:text="${oper}" ></option>
 				</select>
 				</div>
@@ -46,7 +55,7 @@
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">group</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{group.id}" th:field="*{group.id}" >
+				<select	class="form-control" th:value="*{group}?*{group.id}:0" 	th:field="*{group.id}" th:disabled="${action}=='delete'" >
 					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}" ></option>
 				</select>
 				</div>
@@ -54,13 +63,17 @@
 			<div class="form-group">
 				<label class="col-sm-4 col-xs-8 control-label">sernumber</label>
 				<div class="col-sm-2">
-					<input type="text" class="form-control" th:value="*{sernumber}" th:field="*{sernumber}"></input>
+					<input type="text" class="form-control" th:value="*{sernumber}" th:field="*{sernumber}"
+					th:readonly="${action}=='delete'"></input>
 				</div>
 			</div>			
 			
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
-					<button type="submit" class="btn btn-primary" name="action"	value="save">Save</button>
+					<button type="submit" class="btn btn-primary" name="action"	value="save" 
+					th:readonly="${action}=='delete'">Save</button>
+					<button type="submit" class="btn btn-primary" name="action"	value="save" 
+					th:readonly="${action}!='delete'">Delete</button>
 					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
 				</div>
 			</div>

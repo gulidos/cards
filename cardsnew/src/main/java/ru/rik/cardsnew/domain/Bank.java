@@ -12,14 +12,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString(exclude={"cards"})
+@EqualsAndHashCode(exclude={"cards"})
 public class Bank extends MyEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
