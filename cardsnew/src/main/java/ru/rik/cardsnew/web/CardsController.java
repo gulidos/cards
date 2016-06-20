@@ -1,7 +1,5 @@
 package ru.rik.cardsnew.web;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.GroupRepoImpl;
-import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
@@ -147,6 +144,8 @@ public class CardsController {
 		
 		return "redirect:/";
 	}
+	
+	
 	
 	@Transactional
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)

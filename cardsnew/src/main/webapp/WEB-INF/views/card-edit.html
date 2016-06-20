@@ -12,7 +12,7 @@
 	<div class="container">
 	<div class="panel panel-default" >
 		<div class="panel-heading">ItemC</div>
-		<form class="form-horizontal" action="#" th:action="@{/cards/edit}" th:object="${card}" method="post" >
+		<form class="form-horizontal" th:object="${card}" th:action="@{/cards/edit}" th:method="post" >
 			<div class="form-group" >
 				<label class="col-sm-4 col-xs-8 control-label" >name</label>
 				<div class="col-sm-2">
@@ -70,10 +70,10 @@
 			
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
-					<button type="submit" class="btn btn-primary" name="action"	value="save" 
-					th:readonly="${action}=='delete'">Save</button>
-					<button type="submit" class="btn btn-primary" name="action"	value="save" 
-					th:readonly="${action}!='delete'">Delete</button>
+					<button type="submit" class="btn btn-primary" name="action"	
+						th:value="${action}=='delete' ? 'delete' : 'save'" 
+						th:text="${action}=='delete' ? 'delete' : 'save'"> 
+					</button>
 					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
 				</div>
 			</div>
@@ -87,7 +87,6 @@
 					<!-- 	<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p> -->
 					<p class="text-danger" data-th-if="${#fields.hasErrors('place')}"
 						data-th-errors="*{place}">place error</p>
-					<!-- 				<p class="text-danger" data-th-if="${#fields.hasErrors('sernumber')}" data-th-errors="*{sernumber}">im error</p> -->
 				</div>
 			</div>
 		</form>
