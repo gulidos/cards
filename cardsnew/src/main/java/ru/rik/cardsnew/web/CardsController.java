@@ -154,7 +154,11 @@ public class CardsController {
 			@RequestParam(value="phase", required=true) String phase) {
 		
 		Card card = cards.findById(id);
-		System.out.println("card/delete-GET | id = " + id + " | phase = " + phase + " | " + card.toString());
+		if (card != null)
+			System.out.println(card.toString());
+		else 
+			System.out.println("!!! Card not found");
+//		System.out.println("card/delete-GET | id = " + id + " | phase = " + phase + " | " + card.toString());
 		
 		String view = null;
 		if (phase.equals("stage")) {
