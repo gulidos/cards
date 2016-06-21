@@ -14,16 +14,20 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude={"channels"})
+@EqualsAndHashCode(exclude={"channels"})
 @Entity
 @Table(name = "TRUNK")
-public class Trunk extends MyEntity {
+public class Trunk {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +43,5 @@ public class Trunk extends MyEntity {
 	private String descr;
 
 	@OneToMany(mappedBy = "trunk")
-	Set<Channel> channel = new HashSet<>();
-
-	@Override
-	public void update(MyEntity e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	Set<Channel> channels = new HashSet<>();
 }

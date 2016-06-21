@@ -29,16 +29,13 @@ public class CardsController {
 
 	@Autowired GroupRepoImpl groups;
 	@Autowired BankRepoImpl banks;
-	
-	private CardRepo cards;
+	@Autowired CardRepo cards;
 
-	@Autowired
-	public CardsController(CardRepo cards) {
-		this.cards = cards;
-	}
+	
+	public CardsController() {	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String spittles(Model model) {
+	public String getList(Model model) {
 		model.addAttribute("cards", cards.findAll());
 		
 		if(! model.containsAttribute("card")) {
@@ -52,34 +49,8 @@ public class CardsController {
 	@RequestMapping(value="/add", method=RequestMethod.GET)
 	public String  addCard(Model model) {
 		Card card = new Card();
-		model.addAttribute("card", card);
-		model.addAttribute("opers", Oper.values());
-		model.addAttribute("places", Place.values());
-		model.addAttribute("groups", groups.findAll());
-		model.addAttribute("banklst", banks.findAll());
+		addToModel(model, card);
 		return "card-edit";
-	}
-	
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String saveCard(@Valid @ModelAttribute Card card, 
-			BindingResult errors,
-			Model model, 
-			RedirectAttributes redirectAttrs) {
-		
-		if (errors.hasErrors()) {
-			System.out.println("there are validation errors");
-			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.card", errors);
-			redirectAttrs.addFlashAttribute("card", card);
-			return "redirect:/cards";
-		} else {
-			Long groupId = card.getGroup() != null ? card.getGroup().getId() : null;
-			Grp g = groups.findById(groupId);
-			card.setGroup(g);
-			cards.makePersistent(card);
-			String message = "Strategy " + card.getId() + " was successfully added";
-			model.addAttribute("message", message);
-			return "redirect:/cards";
-		}
 	}
 	
 	
@@ -89,17 +60,21 @@ public class CardsController {
 		
 		if(! model.containsAttribute("card")) {
 			Card card = cards.findById(id);
-			model.addAttribute("card", card);
-			model.addAttribute("opers", Oper.values());
-			model.addAttribute("places", Place.values());
-			model.addAttribute("groups", groups.findAll());
-			model.addAttribute("banklst", banks.findAll());
+			addToModel(model, card);
 			System.out.println("Reading a card for editing " + card.toStringAll());
 			
 		}
 		return "card-edit";
 	}
 	
+	private void addToModel(Model model, Card card) {
+		model.addAttribute("card", card);
+		model.addAttribute("opers", Oper.values());
+		model.addAttribute("places", Place.values());
+		model.addAttribute("groups", groups.findAll());
+		model.addAttribute("banklst", banks.findAll());
+	}
+		
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
@@ -130,19 +105,6 @@ public class CardsController {
 		} 
 
 		return "redirect:/cards";		
-	}
-	
-
-	@RequestMapping(value = "/reload", method = RequestMethod.GET)
-	public String reloadSetings(Model model,
-			RedirectAttributes redirectAttrs,
-			@RequestParam(value="phase", required=true) String phase) {
-
-		if (phase.equals("reload")) {
-
-		} 
-		
-		return "redirect:/";
 	}
 	
 	

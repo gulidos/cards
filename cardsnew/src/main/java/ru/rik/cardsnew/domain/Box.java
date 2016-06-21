@@ -14,18 +14,22 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Builder;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude={"channels"})
+@EqualsAndHashCode(exclude={"channels"})
 @Entity
 @Table(name="BOX")
-public class Box extends MyEntity{
+public class Box {
   @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
   	
@@ -51,16 +55,7 @@ public class Box extends MyEntity{
     @OneToMany( mappedBy = "box")
     Set<Channel> channels = new HashSet<>();
 
-	@Override
 	public String getName() {
 		return getIp();
 	}
-
-	@Override
-	public void update(MyEntity e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 }

@@ -30,7 +30,7 @@ import lombok.experimental.Builder;
 @ToString(exclude = {"group", "bank","channel"})
 @Entity
 @Table(name="CARD")
-public class Card extends MyEntity {
+public class Card {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -73,27 +73,4 @@ public class Card extends MyEntity {
 				+ " bank: "  + (bank != null ? bank.getIp() : "none") 
 				+ " ch: "    + (channel != null ? channel.getName() : "none");
 	}
-
-	@Override
-	public void update(MyEntity e) {
-		if (e == null ) 
-			throw new IllegalStateException("When update the card can not be null");
-		Card cnew = null;
-		if (!(e instanceof Card)) 
-			throw new IllegalArgumentException("e should be a Card instatnce");
-		else 
-			cnew = (Card) e;
-		setVersion(cnew.getVersion());
-		setName(cnew.getName());
-		setPlace(cnew.getPlace());
-		setSernumber(cnew.getSernumber());
-		setOper(cnew.getOper());
-		setGroup(cnew.getGroup());
-		setBank(cnew.getBank());
-		setNumber(cnew.getNumber());
-		setChannel(cnew.getChannel());
-	}
-	
-
-
 }

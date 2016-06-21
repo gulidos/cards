@@ -25,7 +25,7 @@ import lombok.ToString;
 @Entity
 @ToString(exclude={"cards"})
 @EqualsAndHashCode(exclude={"cards"})
-public class Bank extends MyEntity {
+public class Bank {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter
@@ -47,16 +47,8 @@ public class Bank extends MyEntity {
 //   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
  @OneToMany(mappedBy = "bank")
     Set<Card> cards = new HashSet<>();
-
-	@Override
-	public String getName() {
+    
+    public String getName() {
 		return getIp();
 	}
-
-	@Override
-	public void update(MyEntity e) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -12,13 +12,24 @@
 						<span class="icon-bar"></span> 
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand"  href="#">cards</a>
+					<a class="navbar-brand"  href="#">C</a>
 			</div> 
 			
 			<div class="collapse navbar-collapse" id="mynavbar-collapse">	
 				<ul class="nav navbar-nav">
+					<li class="dropdown">
+					        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lists <b class="caret"></b></a>
+					        <ul class="dropdown-menu">
+					            <li><a th:href="@{/cards}">cards</a></li>
+					            <li><a th:href="@{/chans}">channels</a></li>
+					            <li class="divider"></li>
+					            <li><a th:href="@{/cards}">groups</a></li>
+					            <li><a th:href="@{/cards}">boxes</a></li>
+					            <li><a th:href="@{/cards}">bnks</a></li>
+					            
+					        </ul>
+					    </li>
 					<li><a th:href="@{/}">Settings</a></li>
-					<li><a th:href="@{/cards}">Cards</a></li>
 					<li><a th:href="@{/counters}">Counters</a></li>
 
 				</ul>

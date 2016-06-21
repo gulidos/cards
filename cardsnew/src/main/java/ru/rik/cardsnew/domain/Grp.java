@@ -4,7 +4,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +23,7 @@ import lombok.experimental.Builder;
 @Entity
 @ToString(exclude={"cards","channels"})
 //@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
-public class Grp extends MyEntity {
+public class Grp {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter
@@ -45,11 +44,4 @@ public class Grp extends MyEntity {
 	@Getter @Setter
     @OneToMany(mappedBy = "group")
     Set<Channel> channels;
-
-	@Override
-	public void update(MyEntity e) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
