@@ -59,6 +59,7 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
     @Override
     public Long getCount() {
         CriteriaQuery<Long> c = em.getCriteriaBuilder().createQuery(Long.class);
+       
         c.select(em.getCriteriaBuilder().count(c.from(entityClass)));
         return em.createQuery(c).getSingleResult();
     }
