@@ -42,12 +42,10 @@
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
 					</a> &nbsp; 
-					<!-- <a href="#"	data-th-href="@{/cards/delete(id=${card.id},phase=stage)}"> -->
 							<button type="button" class="btn btn-default btn-xs" data-toggle="modal" 
-							data-target="#delModal" th:attr="data-cardid=${card.id}">
+							data-target="#delModal" th:attr="data-cardid=${card.id}" >
 								<span class="glyphicon glyphicon-trash"></span>Delete
 							</button>
-					<!-- </a> -->
 					</td>
 				</tr>
 			</table>
@@ -59,19 +57,17 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h4 class="modal-title" id="delModalLabel">New message</h4>
+						<h4 class="modal-title" id="delModalLabel">Are you sure?</h4>
 					</div>
 					<div class="modal-body">
-					<h4 id="recipient-name" th:text="'are you sure to delete'">New message</h4>
-						<form>
-							<div class="form-group">
-								<input type="text" class="form-control" id="recipient-name"></input>
-							</div>
-						</form>
+						<h4 id="cardname" th:text="'are you sure to delete'"></h4>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Confirm</button>
+						<a id="confirm_del" th:href="@{/cards/delete}">
+							<button type="button" class="btn btn-primary" >Confirm</button>
+						</a>
+						<!-- th:href="@{/cards/delete(id=${card.id},phase=stage)}" -->
 					</div>
 				</div>
 			</div>
@@ -84,29 +80,20 @@
 					<button type="button" class="btn btn-primary">Add</button>
 				</a>
 			</div>
-			
-		</div>
-		
-		
-		
+		</div>		
 
 		<div id="footer" th:include="page :: copy"></div>
-		<script type="text/css" src="../../resources/js/jquery-1.12.1.min.js"
-			th:href="@{/resources/js/jquery-1.12.1.min.js}"></script>
-		<script type="text/css" src="../../resources/js/bootstrap.min.js"
-			th:href="@{/resources/js/bootstrap.min.js}"></script>
 		</br>
 	</div>
+	
 </body>
      <script>
       $('#delModal').on('show.bs.modal', function (event) {
-    	  var button = $(event.relatedTarget) // Button that triggered the modal
-    	  var recipient = button.data('cardid') // Extract info from data-* attributes
-    	  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    	  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    	  var modal = $(this)
-    	  modal.find('.modal-title').text('Are you sure to delete ' + recipient)
-    	  modal.find('.modal-body input').val(recipient)
+    	  var button = $(event.relatedTarget)
+    	  var card_id = button.data('cardid') // Extract info from data-* attributes
+    	  var oldRef=  $('#confirm_del').attr('href');
+    	  var ref = oldRef + "?"+ jQuery.param( { id:card_id, phase:'confirm' } ); 
+    	 $('#confirm_del').attr('href', ref);  
     	})
 		</script>
 </html>
