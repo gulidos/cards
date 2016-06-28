@@ -71,7 +71,9 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Confirm</button>
+						<a href="#"	id="confirm777" data-th-href="@{/cards/delete(id=${card.id},phase=stage)}">
+						<button type="button" class="btn btn-primary" id="confirm777">Confirm</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -107,6 +109,8 @@
     	  var modal = $(this)
     	  modal.find('.modal-title').text('Are you sure to delete ' + recipient)
     	  modal.find('.modal-body input').val(recipient)
+    	  $('#confirm777').val(recipient)
+    	  console.log(recipient);
     	})
 		</script>
 </html>

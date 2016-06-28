@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>Title</title>
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.min.css"
+	th:href="@{/resources/css/bootstrap.min.css}" />
+</head>
+<body>
+	<div class="container">
+	<div class="panel panel-default" >
+		<div class="panel-heading">ItemC</div>
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/chans/edit}" th:method="post" >
+			<div class="form-group" >
+				<label class="col-sm-4 col-xs-8 control-label" >name</label>
+				<div class="col-sm-2">
+					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
+					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
+				</div>
+			</div>
+	
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">box</label>
+				<div class="col-sm-2"  >  
+				<select	class="form-control" th:value="*{box}?*{box.id}:0" th:field="*{box.id}" th:disabled="${action}=='delete'" >
+					<option th:each="box: ${boxes}" th:value="${box.id}" th:text="${box.ip}"></option>
+				</select> 
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">line</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{line}" th:field="*{line}" th:disabled="${action}=='delete'" >
+					<option th:each="line: ${lines}" th:value="${line}" th:text="${line}"></option>
+				</select>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">group</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{group}?*{group.id}:0" 	th:field="*{group.id}" th:disabled="${action}=='delete'" >
+					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}" ></option>
+				</select>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">trunk</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" th:disabled="${action}=='delete'">
+					<option th:each="trunk: ${trunks}" th:value="${trunk.id}" th:text="${trunk.name}" ></option>
+				</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	
+						th:value="${action}=='delete' ? 'delete' : 'save'" 
+						th:text="${action}=='delete' ? 'delete' : 'save'"> 
+					</button>
+					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+				</div>
+			</div>
+			
+<!-- 			<div class="form-group">
+				<div class="col-sm-offset-5 col-sm-7">
+					<p class="text-danger" data-th-if="${#fields.hasErrors('name')}"
+						data-th-errors="*{name}">name error</p>
+					<p class="text-danger" data-th-if="${#fields.hasErrors('number')}"
+						data-th-errors="*{number}">number error</p>
+						<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p>
+					<p class="text-danger" data-th-if="${#fields.hasErrors('place')}"
+						data-th-errors="*{place}">place error</p>
+				</div>
+			</div> -->
+		</form>
+		</div>
+		</div>
+		<div class="col-sm-3"></div>
+
+
+	<script type="text/javascript"
+		src="../../resources/js/jquery-1.11.0.min.js"
+		data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap-3.3.3.min.js"
+		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
+</body>
+</html>
+
