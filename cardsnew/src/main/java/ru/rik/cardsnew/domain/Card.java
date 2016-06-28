@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.domain;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.cache.annotation.Cacheable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Builder;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +30,7 @@ import lombok.experimental.Builder;
 @EqualsAndHashCode(exclude = { "group", "bank","channel"},callSuper = false)
 @ToString(exclude = {"group", "bank","channel"})
 @Entity
+@Cacheable("cardsCache")
 @Table(name="CARD")
 public class Card {
     @Id

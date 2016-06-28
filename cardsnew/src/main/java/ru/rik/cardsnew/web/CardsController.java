@@ -114,7 +114,7 @@ public class CardsController {
 	public String showSpitterProfile(Model model,
 			@RequestParam(value = "id", required = true) long id,
 			@RequestParam(value="phase", required=true) String phase) {
-		
+		System.out.println("we are about to delete cardId: " + id );
 		Card card = cards.findById(id);
 		if (card != null)
 			System.out.println(card.toString());
