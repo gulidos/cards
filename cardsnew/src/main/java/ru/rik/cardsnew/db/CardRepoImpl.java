@@ -14,4 +14,6 @@ public class CardRepoImpl extends GenericRepoImpl<Card, Long> implements CardRep
 		System.out.println("!!! Create CardRepoImpl ");
 	}
 	
+	
+	
 }

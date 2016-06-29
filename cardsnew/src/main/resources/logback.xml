@@ -28,9 +28,16 @@
    	
    	<logger name="org.hibernate.type" level="TRACE" /> 	
    	 <logger name="org.hibernate.SQL" level="DEBUG" />
+   	 
+   	 net.sf.ehcache
 
   	<logger
 		name="org"
+		level="INFO">
+		<appender-ref ref="core-log" />
+	</logger> 
+	<logger
+		name=" net.sf.ehcache"
 		level="INFO">
 		<appender-ref ref="core-log" />
 	</logger> 

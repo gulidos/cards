@@ -2,7 +2,7 @@ package ru.rik.cardsnew.domain.repo;
 
 import java.util.concurrent.ConcurrentMap;
 
-public interface GenericMem<T> {
+public interface GenericStats<T> {
 	
 	public T add(Long key, T entity);
 	

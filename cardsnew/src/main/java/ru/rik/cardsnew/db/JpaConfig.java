@@ -1,12 +1,20 @@
 package ru.rik.cardsnew.db;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,6 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
+@EnableCaching
 @EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
 public class JpaConfig {
 	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards;mv_store=false";
@@ -44,6 +53,23 @@ public class JpaConfig {
 	  return ds;
   }
 
+  
+
+  private Map<String,?> jpaProperties() {
+	  Map<String,String> jpaPropertiesMap = new HashMap<String,String>(); 
+//	  jpaPropertiesMap.put("hibernate.dialect","org.hibernate.dialect.H2Dialect"); 
+//	  jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
+	  jpaPropertiesMap.put("hibernate.cache.use_second_level_cache", "true");
+	  jpaPropertiesMap.put("hibernate.cache.use_query_cache", "true");
+	  jpaPropertiesMap.put("hibernate.cache.region.factory_class", 
+			  "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+	  jpaPropertiesMap.put("net.sf.ehcache.configurationResourceName", "ehcache.xml");
+	  jpaPropertiesMap.put("hibernate.cache.use_structured_entries","false");
+	  jpaPropertiesMap.put("hibernate.generate_statistics","true");
+	  
+	  return jpaPropertiesMap;
+  }
+  
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
     LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
@@ -51,6 +77,7 @@ public class JpaConfig {
     emf.setPersistenceUnitName("cards");
     emf.setJpaVendorAdapter(jpaVendorAdapter);
     emf.setPackagesToScan("ru.rik.cardsnew.domain");
+    emf.setJpaPropertyMap(jpaProperties());
     return emf;
   }
   
@@ -61,10 +88,26 @@ public class JpaConfig {
     adapter.setDatabase(Database.MYSQL);
     adapter.setShowSql(true);
     adapter.setGenerateDdl(true);
+   
 //    adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
     adapter.setDatabasePlatform("org.hibernate.dialect.MySQL5InnoDBDialect");
     return adapter;
   }
+  
+
+
+	@Bean
+	public CacheManager cacheManager() {
+		return new EhCacheCacheManager(ehCacheCacheManager().getObject());
+	}
+	
+	@Bean
+	public EhCacheManagerFactoryBean ehCacheCacheManager() {
+		EhCacheManagerFactoryBean cmfb = new EhCacheManagerFactoryBean();
+		cmfb.setConfigLocation(new ClassPathResource("ehcache.xml"));
+		cmfb.setShared(true);
+		return cmfb;
+	}
   
 
   @Configuration
