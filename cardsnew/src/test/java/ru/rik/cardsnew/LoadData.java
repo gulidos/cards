@@ -22,12 +22,9 @@ import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.Trunk;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=JpaConfig.class)
@@ -76,11 +73,11 @@ public class LoadData {
 		
 		Box bo1p = boxRepo.makePersistent(Box.builder().capacity(4).descr("first").disposition("at home").ip("3.3.3.3")
 				.channels(new HashSet<>()).build());
-		Trunk t1p = trunkRepo.makePersistent(new Trunk(0, 0, "tr1","descr", new HashSet<>()));
-		Channel ch = chRepo.makePersistent(Channel.builder().box(bo1p).group(g1p).line(Line.L1).name("b1ch1").trunk(t1p).build());
-		bo1p.getChannels().add(ch);
-		ch.setCard(c1);
-		c1.setChannel(ch);
+////		Trunk t1p = trunkRepo.makePersistent(new Trunk(0, 0, "tr1","descr", new HashSet<>()));
+//		Channel ch = chRepo.makePersistent(Channel.builder().box(bo1p).group(g1p).line(Line.L1).name("b1ch1").trunk(t1p).build());
+//		bo1p.getChannels().add(ch);
+//		ch.setCard(c1);
+//		c1.setChannel(ch);
 //		cardRepo.makePersistent(c1);
 		
 		

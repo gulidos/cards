@@ -15,7 +15,7 @@ public class TrunksStates  {
 	/**  Returns:	the previous value associated with the specified key, 
 	 * or null if there was no mapping for the key*/
 	public TrunkState add(TrunkState t) {
-		return trunks.putIfAbsent(t.getId(), t);
+		return trunks.putIfAbsent(t.getTrunkId(), t);
 	}
 	
 	

@@ -12,6 +12,9 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,6 +30,10 @@ import lombok.experimental.Builder;
 @ToString (exclude = {"box", "trunk", "group"})
 @Entity
 @Table(name="CHANNEL")
+@Cacheable
+@org.hibernate.annotations.Cache(
+	    usage = CacheConcurrencyStrategy.READ_WRITE
+	)
 public class Channel {
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter

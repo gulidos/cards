@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,14 @@ public class RestCards {
 		return lst; 
 	}
 	
+	@Transactional
+	@RequestMapping(value = "/card/{id}", method = RequestMethod.GET)
+	public RestCard get(@PathVariable("id") long id) {
+		Card t = cards.findById(id);
+		if (t!= null) 
+			return new RestCard(t);
+		else return null;
+	}
 	@Data
 	public class RestCard {
 		long id;

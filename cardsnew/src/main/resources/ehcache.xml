@@ -1,5 +1,20 @@
 <ehcache>
+ <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="1200"
+            timeToLiveSeconds="1200"
+            overflowToDisk="false"
+            maxElementsOnDisk="10000000"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU"
+    /> 
   <cache name="cardsCache"
+          maxBytesLocalHeap="5m"
+          timeToLiveSeconds="10000">
+  </cache>
+   <cache name="trunkCache"
           maxBytesLocalHeap="5m"
           timeToLiveSeconds="10000">
   </cache>

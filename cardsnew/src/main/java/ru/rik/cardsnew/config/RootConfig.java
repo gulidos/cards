@@ -28,7 +28,13 @@ public class RootConfig {
 	}
 
 	@Bean
-	public TrunksStates trunkStats()  { 
+	public AppInitializer appInitializer()  { 
+		logger.debug("Instantiate the AppInitializer ...");
+		return new AppInitializer();
+	}
+	
+	@Bean
+	public TrunksStates trunksStats()  { 
 		logger.debug("Instantiate the TrunkStats ...");
 		return new TrunksStates();
 	}

@@ -42,16 +42,6 @@ public class RestTrunks {
 	}
 
 	@Transactional
-	@RequestMapping(value = "/trunk", method = RequestMethod.GET)
-	public List<RestTrunk> trunk() {
-		List<RestTrunk> lst = new ArrayList<>();
-		for (Trunk t : trunks.findAll()) {
-			lst.add(new RestTrunk(t));
-		}
-		return lst;
-	}
-	
-	@Transactional
 	@RequestMapping(value = "/trunk/{id}", method = RequestMethod.GET)
 	public RestTrunk get(@PathVariable("id") long id) {
 		Trunk t = trunks.findById(id);
@@ -64,11 +54,14 @@ public class RestTrunks {
 	public class RestTrunk {
 		long id;
 		String name;
+		int next;
+		int n;
 
 		public RestTrunk(Trunk t) {
 			id = t.getId();
-			name = t.getName();
-
+			name = t.getName(); 
+			next = t.getNext();
+			n = t.getChannels().size();
 		}
 	}
 

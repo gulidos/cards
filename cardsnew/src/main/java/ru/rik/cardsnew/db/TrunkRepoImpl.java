@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.db;
 
+import static javax.persistence.LockModeType.NONE;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +32,12 @@ public class TrunkRepoImpl extends GenericRepoImpl<Trunk, Long> {
 
 		return trunks;
 	}
+	
+	 @Override
+	    public Trunk findById(Long id) {
+		 Trunk t = findById(id, NONE);
+		 if (trunksStats.findById(t.getId()) == null)
+				trunksStats.add(new TrunkState(t));
+	        return t;
+	    }
 }

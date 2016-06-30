@@ -12,6 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +32,10 @@ import lombok.experimental.Builder;
 @EqualsAndHashCode(exclude={"channels"})
 @Entity
 @Table(name="BOX")
+@Cacheable
+@org.hibernate.annotations.Cache(
+	    usage = CacheConcurrencyStrategy.READ_WRITE
+	)
 public class Box {
   @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;

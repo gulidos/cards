@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +28,10 @@ import lombok.ToString;
 @Entity
 @ToString(exclude={"cards"})
 @EqualsAndHashCode(exclude={"cards"})
+@Cacheable
+@org.hibernate.annotations.Cache(
+	    usage = CacheConcurrencyStrategy.READ_WRITE
+	)
 public class Bank {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

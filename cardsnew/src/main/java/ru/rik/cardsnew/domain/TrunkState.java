@@ -4,15 +4,12 @@ import lombok.Data;
 
 @Data
 public class TrunkState {
-	private long id;
-	private int last;
+	private long trunkId;
+	private int next;
 
 	
 	public TrunkState(Trunk t) {
-		id = t.getId();
-		last = 1;
+		trunkId = t.getId();
+		next = 1;
 	}
-	
-	
-
 }
