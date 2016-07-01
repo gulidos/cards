@@ -15,6 +15,7 @@ import lombok.Data;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Trunk;
 
 @RestController
@@ -54,14 +55,18 @@ public class RestTrunks {
 	public class RestTrunk {
 		long id;
 		String name;
-		int next;
+//		int next;
 		int n;
+		List<String> channels = new ArrayList<>();
 
 		public RestTrunk(Trunk t) {
 			id = t.getId();
 			name = t.getName(); 
-			next = t.getNext();
+//			next = t.getNext();
 			n = t.getChannels().size();
+			for (Channel ch : t.getChannelsSorted()) 
+				channels.add(ch.toString());
+			
 		}
 	}
 

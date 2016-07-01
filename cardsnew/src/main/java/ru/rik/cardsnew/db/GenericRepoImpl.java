@@ -51,8 +51,9 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
 
     @Override
     public List<T> findAll() {
-        CriteriaQuery<T> c = em.getCriteriaBuilder().createQuery(entityClass);
+        CriteriaQuery<T> c = em.getCriteriaBuilder().createQuery(entityClass); 
         c.select(c.from(entityClass));
+        
         return em.createQuery(c).getResultList();
     }
 

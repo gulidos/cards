@@ -14,6 +14,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.cache.annotation.Cacheable;
 
 import lombok.AllArgsConstructor;
@@ -49,6 +50,7 @@ public class Trunk {
 	protected long version;
 
 	@Column(nullable = false, unique = true)
+	@NaturalId(mutable = true)
 	private String name;
 
 	private String descr;
@@ -76,5 +78,14 @@ public class Trunk {
 			ts.setNext(1);
 		}
 		return next;
+	}
+	public List<Channel> getChannelsSorted() {
+		int start = getNext();
+		List<Channel> sorted = new ArrayList<>();
+		for (int i = start; i < getChannels().size(); i++) 
+			sorted.add(channels.get(i));
+		for (int i = 0; i < start; i++)
+			sorted.add(channels.get(i));
+		return sorted;
 	}
 }
