@@ -57,12 +57,14 @@ public class RestTrunks {
 		String name;
 //		int next;
 		int n;
+		long version;
 		List<String> channels = new ArrayList<>();
 
 		public RestTrunk(Trunk t) {
 			id = t.getId();
 			name = t.getName(); 
 //			next = t.getNext();
+			version = t.getVersion();
 			n = t.getChannels().size();
 			for (Channel ch : t.getChannelsSorted()) 
 				channels.add(ch.toString());

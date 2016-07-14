@@ -1,15 +1,26 @@
 package ru.rik.cardsnew.domain;
 
-import lombok.Data;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@Data
 public class TrunkState {
-	private long trunkId;
-	private int next;
+	private final long trunkId;
+	private final AtomicInteger next;
 
 	
 	public TrunkState(Trunk t) {
 		trunkId = t.getId();
-		next = 1;
+		next = new AtomicInteger(0);
 	}
+
+
+	public int getNext() {
+		return next.getAndIncrement();
+	}
+	
+	public void setNext(int i) {
+		next.set(i);
+	}
+
+	public long getTrunkId() {return trunkId;}
+	
 }

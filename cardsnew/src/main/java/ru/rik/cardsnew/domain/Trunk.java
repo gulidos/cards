@@ -35,8 +35,8 @@ import ru.rik.cardsnew.domain.repo.TrunksStates;
 @Entity 
 @Cacheable
 @org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE,
-	    region = "trunkCache"
+	    usage = CacheConcurrencyStrategy.READ_WRITE
+//	    ,region = "trunkCache"
 	)
 @Table(name = "TRUNK")
 public class Trunk {
@@ -55,7 +55,8 @@ public class Trunk {
 
 	private String descr;
 	
-	@OneToMany(mappedBy = "trunk") @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@OneToMany(mappedBy = "trunk") 
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	List<Channel> channels = new ArrayList<>();
 
 	public TrunkState getState() {
@@ -63,26 +64,29 @@ public class Trunk {
 		return trunksStats.findById(getId());
 	}
 	
-	public int getNext() {
-		int next = 0;
+	
+	public int getFirst() {
+		int first = 0;
 		TrunkState ts = getState();
-		if (ts == null) throw new NullPointerException("TrunkState is null for Trunk " + getName());
-		int n = getChannels().size();
-		if (n == 0) return next;
+		if (ts == null) 
+			throw new NullPointerException("TrunkState is null for Trunk " + getName());
 		
-		int i = ts.getNext();
-		next = i;
-		if (i < n) {
-			ts.setNext(++i);
-		} else if (i >= n) {
-			ts.setNext(1);
-		}
-		return next;
+		int n = getChannels().size();
+		if (n == 0) return first;
+		
+		int next = ts.getNext();
+		if (next < n) 
+			return next;
+		else 
+			ts.setNext(0);
+		return first;
 	}
+	
+	
 	public List<Channel> getChannelsSorted() {
-		int start = getNext();
+		int start = getFirst();
 		List<Channel> sorted = new ArrayList<>();
-		for (int i = start; i < getChannels().size(); i++) 
+		for (int i = start; i <= getChannels().size()-1; i++) 
 			sorted.add(channels.get(i));
 		for (int i = 0; i < start; i++)
 			sorted.add(channels.get(i));

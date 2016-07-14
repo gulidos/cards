@@ -24,6 +24,7 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/chans")
@@ -105,10 +106,12 @@ public class ChannController {
 			Long boxId = chan.getBox() != null ? chan.getBox().getId() : null;
 			chan.setBox(boxes.findById(boxId));
 			Long groupId = chan.getGroup() != null ? chan.getGroup().getId() : null;
-			Grp g = groups.findById(groupId);
+			Grp g = groups.findById(groupId); 
 			chan.setGroup(g);
 			Long trunkId = chan.getTrunk() != null ? chan.getTrunk().getId() : null;
-			chan.setTrunk(trunks.findById(trunkId));
+			Trunk t = trunks.findById(trunkId);
+			
+			chan.setTrunk(t);
 			
 			chans.makePersistent(chan);
 			String message = "Card " + chan.getId() + " was successfully edited";
