@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -55,7 +55,7 @@ public class Trunk {
 
 	private String descr;
 	
-	@OneToMany(mappedBy = "trunk") 
+	@ManyToMany(mappedBy = "trunk") 
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	List<Channel> channels = new ArrayList<>();
 

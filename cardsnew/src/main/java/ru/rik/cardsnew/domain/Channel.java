@@ -1,17 +1,22 @@
 package ru.rik.cardsnew.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -60,8 +65,8 @@ public class Channel {
 	private Grp group;
 
 	@Getter	@Setter
-	@ManyToOne
-	private Trunk trunk;
+	@ManyToMany @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private List<Trunk> trunk = new ArrayList<>();
 	
 	@Getter	@Setter
 	@OneToOne(fetch = FetchType.EAGER)

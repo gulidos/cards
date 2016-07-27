@@ -108,10 +108,10 @@ public class ChannController {
 			Long groupId = chan.getGroup() != null ? chan.getGroup().getId() : null;
 			Grp g = groups.findById(groupId); 
 			chan.setGroup(g);
-			Long trunkId = chan.getTrunk() != null ? chan.getTrunk().getId() : null;
+			Long trunkId = chan.getTrunk() != null ? chan.getTrunk().get(0).getId() : null; //FIXME !!! needs to do properly
 			Trunk t = trunks.findById(trunkId);
 			
-			chan.setTrunk(t);
+			chan.getTrunk().add(t);
 			
 			chans.makePersistent(chan);
 			String message = "Card " + chan.getId() + " was successfully edited";

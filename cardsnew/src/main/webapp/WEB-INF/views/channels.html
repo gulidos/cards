@@ -31,7 +31,7 @@
 					<td th:text="${chan.box.ip}"></td>
 					<td th:text="${chan.group.name}"></td>
 					<td th:text="${chan.line}"></td>
-					<td th:text="${chan.trunk.name}"></td>
+					<td th:text="${chan.trunk[0].id}"></td>
 					<td style="text-align: center;">
 					<a th:href="@{/chans/edit(id=${chan.id})}">
 							<button type="button" class="btn btn-default btn-xs">
