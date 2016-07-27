@@ -46,10 +46,10 @@
 				</select>
 				</div>
 			</div>
-			<div class="form-group ">
+			<div class="form-group "> <!-- http://davidstutz.github.io/bootstrap-multiselect/#getting-started -->
 				<label class="col-sm-4 col-xs-8 control-label">trunk</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" th:disabled="${action}=='delete'">
+				<select	class="form-control" id="example-multiple-selected" multiple="multiple" th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" th:disabled="${action}=='delete'">
 					<option th:each="trunk: ${trunks}" th:value="${trunk.id}" th:text="${trunk.name}" ></option>
 				</select>
 				</div>

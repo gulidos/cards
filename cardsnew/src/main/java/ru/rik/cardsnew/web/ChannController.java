@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.web;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +42,15 @@ public class ChannController {
 	public ChannController() {
 		super();
 	}
-
+	
+	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
-		model.addAttribute("chans", chans.findAll());
+		List<Channel> list = chans.findAll();
+		for (Channel ch: list) 
+			ch.getTrunk().size();
+		
+		model.addAttribute("chans", list);
 		
 		if(! model.containsAttribute("chan")) {
 			Card card = new Card();
@@ -69,7 +76,7 @@ public class ChannController {
 		if(! model.containsAttribute("chan")) {
 			Channel chan = chans.findById(id);
 			addToModel(model, chan);
-			System.out.println("Reading a card for editing " + chan.toString());
+			
 		}
 		return "chan-edit";
 	}
