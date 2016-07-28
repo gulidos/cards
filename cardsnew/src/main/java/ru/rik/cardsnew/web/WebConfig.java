@@ -17,6 +17,8 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import ru.rik.cardsnew.config.AppInitializer;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan("ru.rik.cardsnew.web")
@@ -63,8 +65,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return cnvr;
 	}
 	
+	@Bean
+	public TrunkFormatter trunkFormatter()  { 
+		return new TrunkFormatter();
+	}
+	
 	@Override
     public void addFormatters(FormatterRegistry formatterRegistry) {
-        formatterRegistry.addFormatter(new TrunkFormatter());
+        formatterRegistry.addFormatter(trunkFormatter());
     }
 }
