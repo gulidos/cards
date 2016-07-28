@@ -4,9 +4,18 @@
 
 <head data-th-fragment="header">
 <title>Title</title>
-<link type="text/css" rel="stylesheet"
-	href="../../resources/css/bootstrap.min.css"
-	th:href="@{/resources/css/bootstrap.min.css}" />
+
+<!-- Include the plugin's CSS and JS: -->
+
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+
 </head>
 <body>
 	<div class="container">
@@ -49,9 +58,10 @@
 			<div class="form-group "> <!-- http://davidstutz.github.io/bootstrap-multiselect/#getting-started -->
 				<label class="col-sm-4 col-xs-8 control-label">trunk</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" id="example-multiple-selected" multiple="multiple" th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" th:disabled="${action}=='delete'">
-					<option th:each="trunk: ${trunks}" th:value="${trunk.id}" th:text="${trunk.name}" ></option>
-				</select>
+		 		<select	class="form-control" id="example-getting-started" multiple="multiple" th:field="*{trunks}"
+		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
+					<option th:each="trunk: ${alltrunks}" th:value="${{trunk}}" th:text="${trunk.name}" > </option>
+				</select> 
 				</div>
 			</div>
 			
@@ -81,13 +91,15 @@
 		</div>
 		<div class="col-sm-3"></div>
 
-
-	<script type="text/javascript"
-		src="../../resources/js/jquery-1.11.0.min.js"
+<!-- 	<script type="text/javascript" src="../../resources/js/jquery-1.11.0.min.js"
 		data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
-	<script type="text/javascript"
-		src="../../resources/js/bootstrap-3.3.3.min.js"
-		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
+	<script type="text/javascript"	src="../../resources/js/bootstrap-3.3.3.min.js"
+		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script> -->
 </body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#example-getting-started').multiselect();
+	});
+</script>
 </html>
 

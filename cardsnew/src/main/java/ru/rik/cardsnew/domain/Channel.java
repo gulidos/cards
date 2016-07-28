@@ -31,8 +31,8 @@ import lombok.experimental.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode (exclude = {"box", "trunk", "group", "card"}, callSuper = false)
-@ToString (exclude = {"box", "trunk", "group"})
+@EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
+@ToString (exclude = {"box", "trunks", "group"})
 @Entity
 @Table(name="CHANNEL")
 @Cacheable
@@ -60,13 +60,13 @@ public class Channel {
 	@ManyToOne(optional=false)
 	private Box box;
 	
-	@Setter	@Getter
+	@Setter	@Getter 
 	@ManyToOne
 	private Grp group;
 
 	@Getter	@Setter
 	@ManyToMany @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	private List<Trunk> trunk = new ArrayList<>();
+	private List<Trunk> trunks = new ArrayList<>();
 	
 	@Getter	@Setter
 	@OneToOne(fetch = FetchType.EAGER)

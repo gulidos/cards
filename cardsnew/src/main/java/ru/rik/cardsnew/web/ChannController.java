@@ -39,7 +39,7 @@ public class ChannController {
 	@Autowired ChannelRepoImpl chans;
 	@Autowired CardRepo cards;
 	
-	public ChannController() {
+	public ChannController() { 
 		super();
 	}
 	
@@ -48,7 +48,7 @@ public class ChannController {
 	public String spittles(Model model) {
 		List<Channel> list = chans.findAll();
 		for (Channel ch: list) 
-			ch.getTrunk().size();
+			ch.getTrunks().size();
 		
 		model.addAttribute("chans", list);
 		
@@ -75,6 +75,7 @@ public class ChannController {
 		
 		if(! model.containsAttribute("chan")) {
 			Channel chan = chans.findById(id);
+			chan.getTrunks().size();
 			addToModel(model, chan);
 			
 		}
@@ -87,7 +88,7 @@ public class ChannController {
 		model.addAttribute("lines", Line.values());
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("boxes", boxes.findAll());
-		model.addAttribute("trunks", trunks.findAll());
+		model.addAttribute("alltrunks", trunks.findAll());
 	}
 	
 	@Transactional
@@ -115,10 +116,10 @@ public class ChannController {
 			Long groupId = chan.getGroup() != null ? chan.getGroup().getId() : null;
 			Grp g = groups.findById(groupId); 
 			chan.setGroup(g);
-			Long trunkId = chan.getTrunk() != null ? chan.getTrunk().get(0).getId() : null; //FIXME !!! needs to do properly
+			Long trunkId = chan.getTrunks() != null ? chan.getTrunks().get(0).getId() : null; //FIXME !!! needs to do properly
 			Trunk t = trunks.findById(trunkId);
 			
-			chan.getTrunk().add(t);
+			chan.getTrunks().add(t);
 			
 			chans.makePersistent(chan);
 			String message = "Card " + chan.getId() + " was successfully edited";

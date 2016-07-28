@@ -32,7 +32,7 @@
 					<td th:text="${chan.group.name}"></td>
 					<td th:text="${chan.line}"></td>
 					<td>	
-						<span th:each="trunk : ${chan.trunk}" th:text="${#strings.trim(trunk.name)}"> </span>
+						<span th:each="trunk : ${chan.trunks}" th:text="${#strings.trim(trunk.name)}"> </span>
 					</td>
 					<td style="text-align: center;">
 					<a th:href="@{/chans/edit(id=${chan.id})}">
@@ -64,10 +64,6 @@
 		
 
 		<div id="footer" th:include="page :: copy"></div>
-		<script type="text/css" src="../../resources/js/jquery-1.12.1.min.js"
-			th:href="@{/resources/js/jquery-1.12.1.min.js}"></script>
-		<script type="text/css" src="../../resources/js/bootstrap.min.js"
-			th:href="@{/resources/js/bootstrap.min.js}"></script>
 		</br>
 	</div>
 </body>

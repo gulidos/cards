@@ -55,7 +55,7 @@ public class Trunk {
 
 	private String descr;
 	
-	@ManyToMany(mappedBy = "trunk") 
+	@ManyToMany(mappedBy = "trunks") 
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	List<Channel> channels = new ArrayList<>();
 
