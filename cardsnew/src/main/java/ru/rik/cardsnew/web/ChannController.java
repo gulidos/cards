@@ -116,11 +116,12 @@ public class ChannController {
 			Long groupId = chan.getGroup() != null ? chan.getGroup().getId() : null;
 			Grp g = groups.findById(groupId); 
 			chan.setGroup(g);
-			Long trunkId = chan.getTrunks() != null ? chan.getTrunks().get(0).getId() : null; //FIXME !!! needs to do properly
-			Trunk t = trunks.findById(trunkId);
 			
-			chan.getTrunks().add(t);
-			
+//			Long trunkId = chan.getTrunks() != null ? chan.getTrunks().get(0).getId() : null; //FIXME !!! needs to do properly
+//			Trunk t = trunks.findById(trunkId);
+//			
+//			chan.getTrunks().add(t);
+//			
 			chans.makePersistent(chan);
 			String message = "Card " + chan.getId() + " was successfully edited";
 			model.addAttribute("message", message);
