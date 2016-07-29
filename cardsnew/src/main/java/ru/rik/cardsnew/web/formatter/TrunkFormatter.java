@@ -1,4 +1,4 @@
-package ru.rik.cardsnew.web;
+package ru.rik.cardsnew.web.formatter;
 
 import java.text.ParseException;
 import java.util.Locale;
@@ -19,7 +19,6 @@ public class TrunkFormatter implements Formatter<Trunk> {
 
 	@Override
 	public String print(Trunk trunk, Locale locale) {
-		System.out.println("!!! print id: " + trunk.getId());
 		return String.valueOf(trunk.getId());
 	}
 	
@@ -27,8 +26,7 @@ public class TrunkFormatter implements Formatter<Trunk> {
 	@Override
 	public Trunk parse(String id, Locale locale) throws ParseException {
 		Long trunkId = Long.parseLong(id);
-		Trunk t = trunks.findById(trunkId);
-		return t;
+		return trunks.findById(trunkId);
 	}
 
 }

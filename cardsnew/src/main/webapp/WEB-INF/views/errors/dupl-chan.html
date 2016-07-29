@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+
+<title>Error</title>
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.min.css"
+	th:href="@{/resources/css/bootstrap.min.css}" />
+</head>
+
+<body>
+	<div class="container-fluid">
+		<!-- <div id="header" th:include="page :: header"></div> -->
+
+		<p id="content">
+			The channel with such box and line already exists.
+		</p>
+		<!-- <div id="footer" th:include="page :: copy"></div> -->
+
+		<script type="text/css" src="../../resources/js/jquery-1.12.1.min.js"
+			th:href="@{/resources/js/jquery-1.12.1.min.js}"></script>
+		<script type="text/css" src="../../resources/js/bootstrap.min.js"
+			th:href="@{/resources/js/bootstrap.min.js}"></script>
+	</div>
+</body>
+</html>

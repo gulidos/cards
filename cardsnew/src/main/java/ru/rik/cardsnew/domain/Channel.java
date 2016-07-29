@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
@@ -34,7 +35,7 @@ import lombok.experimental.Builder;
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
 @ToString (exclude = {"box", "trunks", "group"})
 @Entity
-@Table(name="CHANNEL")
+@Table(name="CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @Cacheable
 @org.hibernate.annotations.Cache(
 	    usage = CacheConcurrencyStrategy.READ_WRITE

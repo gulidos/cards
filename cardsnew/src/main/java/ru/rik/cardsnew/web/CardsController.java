@@ -18,7 +18,6 @@ import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 
@@ -96,9 +95,6 @@ public class CardsController {
 			return "redirect:/cards/edit?id=" + card.getId();
 		} else if (action.equals("save") && card != null) {
 
-			Long groupId = card.getGroup() != null ? card.getGroup().getId() : null;
-			Grp g = groups.findById(groupId);
-			card.setGroup(g);
 			cards.makePersistent(card);
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);

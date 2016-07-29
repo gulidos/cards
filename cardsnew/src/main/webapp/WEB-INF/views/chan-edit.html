@@ -21,7 +21,7 @@
 	<div class="container">
 	<div class="panel panel-default" >
 		<div class="panel-heading">ItemC</div>
-		<form class="form-horizontal" th:object="${chan}" th:action="@{/chans/edit}" th:method="post" >
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/edit}" th:method="post" >
 			<div class="form-group" >
 				<label class="col-sm-4 col-xs-8 control-label" >name</label>
 				<div class="col-sm-2">
@@ -49,9 +49,9 @@
 			</div>
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">group</label>
-				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{group}?*{group.id}:0" 	th:field="*{group.id}" th:disabled="${action}=='delete'" >
-					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}" ></option>
+				<div class="col-sm-2"  >    <!-- th:value="*{group}?*{group.id}:0"  th:field="*{group.id}" -->
+				<select	class="form-control" th:value="*{group}" th:field="*{group}" th:disabled="${action}=='delete'" >
+					<option th:each="group: ${groups}" th:value="${{group}}" th:text="${group.name}" ></option>
 				</select>
 				</div>
 			</div>
@@ -75,26 +75,11 @@
 				</div>
 			</div>
 			
-<!-- 			<div class="form-group">
-				<div class="col-sm-offset-5 col-sm-7">
-					<p class="text-danger" data-th-if="${#fields.hasErrors('name')}"
-						data-th-errors="*{name}">name error</p>
-					<p class="text-danger" data-th-if="${#fields.hasErrors('number')}"
-						data-th-errors="*{number}">number error</p>
-						<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p>
-					<p class="text-danger" data-th-if="${#fields.hasErrors('place')}"
-						data-th-errors="*{place}">place error</p>
-				</div>
-			</div> -->
 		</form>
 		</div>
 		</div>
 		<div class="col-sm-3"></div>
 
-<!-- 	<script type="text/javascript" src="../../resources/js/jquery-1.11.0.min.js"
-		data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
-	<script type="text/javascript"	src="../../resources/js/bootstrap-3.3.3.min.js"
-		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script> -->
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
