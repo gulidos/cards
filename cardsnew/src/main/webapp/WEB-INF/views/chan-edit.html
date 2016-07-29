@@ -62,7 +62,7 @@
 		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
 					<option th:each="trunk: ${alltrunks}" th:value="${{trunk}}" th:text="${trunk.name}" > </option>
 				</select> 
-				</div>
+				</div>     <!-- http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service -->
 			</div>
 			
 			<div class="form-group">
