@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,13 +144,5 @@ public class ChannController {
 		return view;
 	}
 	
-	  @ExceptionHandler({DataIntegrityViolationException.class})
-	  public ModelAndView dataIntegrityError(HttpServletRequest req, Exception ex) {
-		  logger.error("Request: " + req.toString() + " raised " + ex);
-		  ModelAndView mav = new ModelAndView();
-		    mav.addObject("exception", ex);
-		    mav.addObject("url", req.getRequestURL());
-		    mav.setViewName("errors/dupl-chan");
-		    return mav;
-	  }
+
 }

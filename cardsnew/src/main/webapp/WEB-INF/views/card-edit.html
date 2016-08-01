@@ -4,9 +4,19 @@
 
 <head data-th-fragment="header">
 <title>Title</title>
-<link type="text/css" rel="stylesheet"
+<!-- <link type="text/css" rel="stylesheet"
 	href="../../resources/css/bootstrap.min.css"
-	th:href="@{/resources/css/bootstrap.min.css}" />
+	th:href="@{/resources/css/bootstrap.min.css}" /> -->
+	
+	
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
 </head>
 <body>
 	<div class="container">
@@ -67,7 +77,15 @@
 					th:readonly="${action}=='delete'"></input>
 				</div>
 			</div>			
-			
+			<div class="form-group "> 
+				<label class="col-sm-4 col-xs-8 control-label">channel</label>
+				<div class="col-sm-2"  > 
+		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{channel}"
+		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
+					<option th:each="channel: ${channels}" th:value="${{channel}}" th:text="${channel.name}" > </option>
+				</select> 
+				</div>     <!-- http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service -->
+			</div>					
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
 					<button type="submit" class="btn btn-primary" name="action"	
@@ -78,15 +96,15 @@
 				</div>
 			</div>
 			
+			
 			<div class="form-group">
 				<div class="col-sm-offset-5 col-sm-7">
-					<p class="text-danger" data-th-if="${#fields.hasErrors('name')}"
-						data-th-errors="*{name}">name error</p>
-					<p class="text-danger" data-th-if="${#fields.hasErrors('number')}"
-						data-th-errors="*{number}">number error</p>
-					<!-- 	<p class="text-danger" data-th-if="${#fields.hasErrors('ip')}" data-th-errors="*{ip}">ip error</p> -->
-					<p class="text-danger" data-th-if="${#fields.hasErrors('place')}"
-						data-th-errors="*{place}">place error</p>
+					<p class="text-danger" th:if="${#fields.hasErrors('name')}"
+						data-th-errors="*{name}"></p>
+					<p class="text-danger" th:if="${#fields.hasErrors('number')}"
+						data-th-errors="*{number}"></p>
+					<p class="text-danger" th:if="${#fields.hasErrors('sernumber')}"
+						data-th-errors="*{sernumber}"></p>
 				</div>
 			</div>
 		</form>
@@ -102,5 +120,10 @@
 		src="../../resources/js/bootstrap-3.3.3.min.js"
 		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
 </body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#channel-select').multiselect();
+	});
+</script>
 </html>
 
