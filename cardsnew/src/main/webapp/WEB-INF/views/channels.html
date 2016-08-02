@@ -31,6 +31,7 @@
 					<th class="col-sm-1">group</th>
 					<th class="col-sm-1">line</th>
 					<th class="col-sm-1">trunk</th>
+					<th class="col-sm-1">card</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
 				<tr th:each="chan : ${chans}">
@@ -39,9 +40,10 @@
 					<td th:text="${chan.box.ip}"></td>
 					<td th:text="${chan.group.name}"></td>
 					<td th:text="${chan.line}"></td>
-					<td>	
+					<td>	 
 						<span th:each="trunk : ${chan.trunks}" th:text="${#strings.trim(trunk.name)}"> </span>
-					</td>
+					</td> 
+					<td th:text="${chan.card}?${chan.card.name}:''"></td>
 					<td style="text-align: center;">
 					<a th:href="@{/channels/edit(id=${chan.id})}">
 							<button type="button" class="btn btn-default btn-xs">

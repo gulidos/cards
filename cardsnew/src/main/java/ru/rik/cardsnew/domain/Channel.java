@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,7 +61,7 @@ public class Channel {
 	@ManyToOne(optional=false)
 	private Box box;
 	
-	@Setter	@Getter 
+	@Setter	@Getter  
 	@ManyToOne
 	private Grp group;
 
@@ -71,7 +70,9 @@ public class Channel {
 	private List<Trunk> trunks = new ArrayList<>();
 	
 	@Getter	@Setter
-	@OneToOne
+	@OneToOne     //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
 	@JoinColumn(name = "card", unique=true )
 	private Card card;
+
+
 }

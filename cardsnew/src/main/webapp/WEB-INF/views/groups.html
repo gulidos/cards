@@ -19,33 +19,24 @@
 				<tr>
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-1">ver</th>
-					<th class="col-sm-2">number</th>
-					<th class="col-sm-1">b</th>
-					<th class="col-sm-1">place</th>
-					<th class="col-sm-1">oper</th>
-					<th class="col-sm-1">group</th>
-					<th class="col-sm-1">sernumber</th>
-					<th class="col-sm-1">ch</th>
-					<th class="col-sm-2">Action</th>
+					<th class="col-sm-2">cards</th>
+					<th class="col-sm-2">chans</th>
+					<th class="col-sm-1">Action</th>
 				</tr>
-				<tr th:each="card : ${cards}">
-					<td th:text="${card.name}"></td>
-					<td th:text="${card.version}"></td>
-					<td th:text="${card.number}"></td>
-					<td th:text="${card.bank.name}"></td>
-					<td th:text="${card.place}"></td>
-					<td th:text="${card.oper}"></td>
-					<td th:text="${card.group.name}"></td>
-					<td th:text="${card.sernumber}"></td>
-					<td th:text="${card.channel}?${card.channel.name}:''"></td>
+				<tr th:each="grp : ${grps}">
+					<td th:text="${grp.name}"></td>
+					<td th:text="${grp.version}"></td>
+					<td><span th:each="card : ${grp.cards}" th:text="${#strings.trim(card.name)}"> </span></td>
+					<td><span th:each="chan : ${grp.channels}" th:text="${#strings.trim(chan.name)}"> </span></td> 
+				<!-- 	<td th:text="${card.channel}?${card.channel.name}:''"></td> -->
 					<td style="text-align: center;">
-					<a th:href="@{/cards/edit(id=${card.id})}">
+					<a th:href="@{/cards/edit(id=${grp.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
 					</a> &nbsp; 
 							<button type="button" class="btn btn-default btn-xs" data-toggle="modal" 
-							data-target="#delModal" th:attr="data-cardid=${card.id}" >
+							data-target="#delModal" th:attr="data-cardid=${grp.id}" >
 								<span class="glyphicon glyphicon-trash"></span>Delete
 							</button>
 					</td>

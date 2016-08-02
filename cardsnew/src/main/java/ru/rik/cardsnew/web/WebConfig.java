@@ -17,6 +17,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import ru.rik.cardsnew.web.formatter.CardFormatter;
 import ru.rik.cardsnew.web.formatter.ChannelFormatter;
 import ru.rik.cardsnew.web.formatter.GroupFormatter;
 import ru.rik.cardsnew.web.formatter.TrunkFormatter;
@@ -73,11 +74,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public GroupFormatter groupFormatter()  {return new GroupFormatter();}
 	@Bean
 	public ChannelFormatter channelFormatter()  {return new ChannelFormatter();}
+	@Bean
+	public CardFormatter cardFormatter()  {return new CardFormatter();}
 	
 	@Override
     public void addFormatters(FormatterRegistry formatterRegistry) {
         formatterRegistry.addFormatter(trunkFormatter());
         formatterRegistry.addFormatter(groupFormatter());
         formatterRegistry.addFormatter(channelFormatter());
+        formatterRegistry.addFormatter(cardFormatter());
     }
 }

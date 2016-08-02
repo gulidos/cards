@@ -3,11 +3,9 @@ package ru.rik.cardsnew.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,12 +19,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.cache.annotation.Cacheable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -39,43 +38,52 @@ import lombok.experimental.Builder;
 	)
 @Table(name="CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
 public class Card {
-    @Id
+    @Id @Getter @Setter
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     
-    @Version
+    @Version @Getter @Setter
     protected long version;
     
     @Column(unique=true, nullable = false)
     @NotNull(message = "{error.card.name.null}")
 	@NotEmpty(message = "{error.card.name.empty}")
 	@Size(min = 3, max = 20, message = "{error.card.name.size}")
+    @Getter @Setter
 	private String name;
     
     @Column(unique=true)
     @Size(min = 10, max = 10, message = "number has to be equal to 10 digits")
+    @Getter @Setter
 	private String number;
 	
+    @Getter @Setter
 	private Place place;
     
 	@NotNull(message = "{error.card.im.null}")
 	@NotEmpty(message = "{error.card.im.empty}")
 	@Size(min = 3, max = 20, message = "sernumber has to be more than 3 and less 10 digits")
     @Column(unique=true, nullable = false)
+	@Getter @Setter
 	private String sernumber;
     
 	@Column
+	@Getter @Setter
 	private Oper oper;
     
     @ManyToOne
+    @Getter @Setter
 	private Grp group;
     
     @ManyToOne
+    @Getter @Setter
 	private Bank bank;
     
-	@OneToOne(fetch = FetchType.EAGER )
-	@JoinColumn(name = "channel", unique=true)
+    
+
+	@OneToOne(mappedBy="card")
+	@Getter @Setter
 	private Channel channel;
 	
 	public String toStringAll() {
@@ -84,4 +92,6 @@ public class Card {
 				+ " bank: "  + (bank != null ? bank.getIp() : "none") 
 				+ " ch: "    + (channel != null ? channel.getName() : "none");
 	}
+	
+
 }

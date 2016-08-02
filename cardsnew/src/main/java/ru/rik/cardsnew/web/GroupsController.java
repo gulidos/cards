@@ -23,16 +23,16 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
-import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 
 @Controller
-@RequestMapping("/channels")
+@RequestMapping("/groups")
 @EnableTransactionManagement
-public class ChannController {
-	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
+public class GroupsController {
+	private static final Logger logger = LoggerFactory.getLogger(GroupsController.class);		
 	
 	@Autowired GroupRepoImpl groups;
 	@Autowired BoxRepoImpl boxes;
@@ -40,26 +40,27 @@ public class ChannController {
 	@Autowired ChannelRepoImpl chans;
 	@Autowired CardRepo cards;
 	
-	
-	public ChannController() { 
+	public GroupsController() { 
 		super();
 	}
 	
 	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
-		List<Channel> list = chans.findAll();
-		for (Channel ch: list) 
-			ch.getTrunks().size();
+		List<Grp> list = groups.findAll();
+		for (Grp gr: list) { 
+			gr.getCards().size();
+			gr.getChannels().size();	
+		}	
 		
-		model.addAttribute("chans", list);
+		model.addAttribute("grps", list);
 		
-		if(! model.containsAttribute("chan")) {
-			Card card = new Card();
-			model.addAttribute("chan", card);
-		}
+//		if(! model.containsAttribute("chan")) {
+//			Card card = new Card();
+//			model.addAttribute("chan", card);
+//		}
 
-		return "channels";
+		return "groups";
 	}
 
 	@RequestMapping(value="/add", method=RequestMethod.GET)
@@ -90,7 +91,6 @@ public class ChannController {
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("boxes", boxes.findAll());
 		model.addAttribute("alltrunks", trunks.findAll());
-		model.addAttribute("cards", cards.findAll());
 	}
 	
 	@Transactional
