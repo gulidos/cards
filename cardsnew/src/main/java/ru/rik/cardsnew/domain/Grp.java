@@ -44,6 +44,10 @@ public class Grp {
 	@Column (nullable = false,  unique=true)
 	String name;
 	
+	@Column
+	@Getter @Setter
+	private Oper oper;
+	
 	@Getter @Setter
     @OneToMany(mappedBy = "group")
     Set<Card> cards;

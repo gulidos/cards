@@ -1,4 +1,4 @@
-package ru.rik.cardsnew.db;
+package ru.rik.cardsnew;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -25,12 +24,14 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ru.rik.cardsnew.domain.repo.TrunksStates;
+
 @Configuration
-@ComponentScan
+@ComponentScan(basePackages="ru.rik.cardsnew.db")
 @EnableTransactionManagement
 @EnableCaching
-@EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
-public class JpaConfig {
+//@EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
+public class TestConfig {
 	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards;mv_store=false";
 	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
 	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3307/TESTM?autoReconnect=true&useSSL=false";
@@ -105,6 +106,10 @@ public class JpaConfig {
 		return cmfb;
 	}
   
+	@Bean
+	public TrunksStates trunksStats()  { 
+		return new TrunksStates();
+	}
 
   @Configuration
   @EnableTransactionManagement
