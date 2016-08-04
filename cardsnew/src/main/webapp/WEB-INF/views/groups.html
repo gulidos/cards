@@ -18,12 +18,14 @@
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
 					<th class="col-sm-1">name</th>
+					<th class="col-sm-1">oper</th>
 					<th class="col-sm-2">cards</th>
 					<th class="col-sm-2">chans</th>
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="grp : ${grps}">
 					<td th:text="${grp.name}"></td>
+					<td th:text="${grp.oper}"></td>
 					<td><span th:each="card : ${grp.cards}" th:text="${#strings.trim(card.name)}"> </span></td>
 					<td><span th:each="chan : ${grp.channels}" th:text="${#strings.trim(chan.name)}"> </span></td> 
 					<td style="text-align: center;">

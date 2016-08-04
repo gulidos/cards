@@ -27,7 +27,7 @@
 				<div class="col-sm-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
-					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
 				</div>
 			</div>
 	
@@ -42,7 +42,7 @@
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">line</label>
 				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{line}" th:field="*{line}" th:disabled="${action}=='delete'" >
+				<select	class="form-control" th:value="*{line}" th:field="*{line}" >
 					<option th:each="line: ${lines}" th:value="${line}" th:text="${line}"></option>
 				</select>
 				</div>
@@ -58,8 +58,7 @@
 			<div class="form-group "> <!-- http://davidstutz.github.io/bootstrap-multiselect/#getting-started -->
 				<label class="col-sm-4 col-xs-8 control-label">trunk</label>
 				<div class="col-sm-2"  > 
-		 		<select	class="form-control" id="example-getting-started" multiple="multiple" th:field="*{trunks}"
-		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
+		 		<select	class="form-control" id="example-getting-started" multiple="multiple" th:field="*{trunks}" th:value="*{trunks}">
 					<option th:each="trunk: ${alltrunks}" th:value="${{trunk}}" th:text="${trunk.name}" > </option>
 				</select> 
 				</div>     <!-- http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service -->
@@ -67,8 +66,7 @@
 			<div class="form-group "> 
 				<label class="col-sm-4 col-xs-8 control-label">card</label>
 				<div class="col-sm-2"  > 
-		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}"
-		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
+		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}">    
 					<option th:each="card: ${cards}" th:value="${{card}}" th:text="${card.name}" > </option>
 				</select> 
 				</div>     <!-- http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service -->

@@ -72,7 +72,7 @@ public class CardsController {
 
 	private void addToModel(Model model, Card card) {
 		model.addAttribute("card", card);
-		model.addAttribute("opers", Oper.values());
+//		model.addAttribute("opers", Oper.values());
 		model.addAttribute("places", Place.values());
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("banklst", banks.findAll());

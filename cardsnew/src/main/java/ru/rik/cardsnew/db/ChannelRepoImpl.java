@@ -10,5 +10,6 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, Long> {
 
 	
 	public ChannelRepoImpl() {
-		super(Channel.class);	}
+		super(Channel.class);	
+	}
 }

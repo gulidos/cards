@@ -30,7 +30,14 @@
 					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
 				</div>
 			</div>
-	
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">oper</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{oper}" th:field="*{oper}" th:disabled="${action}=='delete'">
+					<option th:each="oper: ${opers}" th:value="${oper}" th:text="${oper}" ></option>
+				</select>
+				</div>
+			</div>	
 					
 	
 			<div class="form-group">

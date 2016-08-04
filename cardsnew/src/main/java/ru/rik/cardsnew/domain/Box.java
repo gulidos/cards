@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,9 +34,7 @@ import lombok.experimental.Builder;
 @Entity
 @Table(name="BOX")
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-	)
+@org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Box {
   @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
@@ -59,7 +58,7 @@ public class Box {
 	private String descr;
   	
   	@Getter @Setter
-    @OneToMany( mappedBy = "box")
+    @OneToMany( mappedBy = "box", fetch=FetchType.LAZY)
     Set<Channel> channels = new HashSet<>();
 
 	public String getName() {

@@ -1,7 +1,9 @@
 package ru.rik.cardsnew.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,10 +35,7 @@ import ru.rik.cardsnew.domain.repo.TrunksStates;
 @EqualsAndHashCode(exclude = { "channels" })
 @Entity 
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-//	    ,region = "trunkCache"
-	)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "TRUNK")
 public class Trunk {
 //	@Transient
@@ -55,9 +53,9 @@ public class Trunk {
 
 	private String descr;
 	
-	@ManyToMany(mappedBy = "trunks") 
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	List<Channel> channels = new ArrayList<>();
+	@ManyToMany(mappedBy = "trunks")
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	Set<Channel> channels = new HashSet<>();
 
 	public TrunkState getState() {
 		TrunksStates trunksStats = (TrunksStates) AppInitializer.getContext().getBean("trunksStats");
@@ -86,10 +84,10 @@ public class Trunk {
 	public List<Channel> getChannelsSorted() {
 		int start = getFirst();
 		List<Channel> sorted = new ArrayList<>();
-		for (int i = start; i <= getChannels().size()-1; i++) 
-			sorted.add(channels.get(i));
-		for (int i = 0; i < start; i++)
-			sorted.add(channels.get(i));
+//		for (int i = start; i <= getChannels().size()-1; i++) 
+//			sorted.add(channels.get(i));
+//		for (int i = 0; i < start; i++)
+//			sorted.add(channels.get(i));
 		return sorted;
 	}
 }

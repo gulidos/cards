@@ -27,5 +27,7 @@ public interface GenericRepo<T, ID extends Serializable>
     void makeTransient(T entity);
 
     void checkVersion(T entity, boolean forceUpdate);
+
+	void clearCache();
 }
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Data;
 import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -30,6 +31,7 @@ import ru.rik.cardsnew.domain.Place;
 @EnableTransactionManagement
 public class RestCards {
 	@Autowired CardRepo cards;
+	@Autowired ChannelRepoImpl channels;
 	@Autowired GroupRepoImpl groups;
 	
 	public RestCards() {	}
@@ -52,6 +54,7 @@ public class RestCards {
 			return new RestCard(t);
 		else return null;
 	}
+	
 	@Data
 	public class RestCard {
 		long id;
@@ -64,10 +67,10 @@ public class RestCards {
 			name = c.getName();
 			number = c.getNumber();
 			sernumber = c.getSernumber();
-			bank = (c.getBank() != null ? c.getBank().getName() : "");
-			group = (c.getGroup() != null ? c.getGroup().getName() : "");
-			place = c.getPlace();
-			oper = c.getOper();	
+//			bank = (c.getBank() != null ? c.getBank().getName() : "");
+//			group = (c.getGroup() != null ? c.getGroup().getName() : "");
+//			place = c.getPlace();
+//			oper = c.getOper();	
 		}
 	}
 	
@@ -104,5 +107,29 @@ public class RestCards {
 		}
 	}
 	
+
+	@Transactional
+	@RequestMapping(value = "/chan/{id}", method = RequestMethod.GET)
+	public RestChan getChan(@PathVariable("id") long id) {
+		Channel t = channels.findById(id);
+		if (t!= null) 
+			return new RestChan(t);
+		else return null;
+	}
+	
+	@Data
+	public class RestChan {
+		long id;
+		String name, number, sernumber, bank, group;
+		
+		public RestChan(Channel c) {
+			id = c.getId();
+			name = c.getName();
+//			bank = (c.getBank() != null ? c.getBank().getName() : "");
+//			group = (c.getGroup() != null ? c.getGroup().getName() : "");
+//			place = c.getPlace();
+//			oper = c.getOper();	
+		}
+	}
 	
 }

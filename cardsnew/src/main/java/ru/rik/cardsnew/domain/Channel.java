@@ -1,10 +1,12 @@
 package ru.rik.cardsnew.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +19,6 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -37,9 +38,7 @@ import lombok.experimental.Builder;
 @Entity
 @Table(name="CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-	)
+@org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Channel {
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter
@@ -58,7 +57,7 @@ public class Channel {
 	private Line line;
 	
 	@Setter @Getter
-	@ManyToOne(optional=false)
+	@ManyToOne(optional=false) 
 	private Box box;
 	
 	@Setter	@Getter  
@@ -66,12 +65,13 @@ public class Channel {
 	private Grp group;
 
 	@Getter	@Setter
-	@ManyToMany @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	private List<Trunk> trunks = new ArrayList<>();
+	@ManyToMany(cascade = CascadeType.PERSIST)
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Set<Trunk> trunks = new HashSet<>();
 	
 	@Getter	@Setter
-	@OneToOne     //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
-	@JoinColumn(name = "card", unique=true )
+	@OneToOne(fetch=FetchType.LAZY, cascade = {})     //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
+	@JoinColumn(name = "card", unique=true  )
 	private Card card;
 
 

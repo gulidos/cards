@@ -50,6 +50,13 @@ public class RestTrunks {
 			return new RestTrunk(t);
 		else return null;
 	}
+	
+	@Transactional
+	@RequestMapping(value = "/trunk/clear", method = RequestMethod.POST)
+	public RestTrunk clear() {
+		trunks.clearCache();
+		return null;
+	}
 
 	@Data
 	public class RestTrunk {

@@ -3,6 +3,7 @@ package ru.rik.cardsnew.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,9 +35,7 @@ import lombok.experimental.Builder;
 @ToString(exclude = {"group", "bank","channel"})
 @Entity
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-	)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
 public class Card {
     @Id @Getter @Setter
@@ -68,22 +68,18 @@ public class Card {
 	@Getter @Setter
 	private String sernumber;
     
-	@Column
-	@Getter @Setter
-	private Oper oper;
-    
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY) 
     @Getter @Setter
 	private Grp group;
     
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY) 
     @Getter @Setter
 	private Bank bank;
     
-    
-
+//    try this: http://stackoverflow.com/questions/6068374/hibernate-cache-for-mappedby-object
+    @Getter @Setter
 	@OneToOne(mappedBy="card")
-	@Getter @Setter
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE )
 	private Channel channel;
 	
 	public String toStringAll() {

@@ -27,9 +27,7 @@ import lombok.experimental.Builder;
 @ToString(exclude={"cards","channels"})
 //@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-	)
+@org.hibernate.annotations.Cache( usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Grp {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

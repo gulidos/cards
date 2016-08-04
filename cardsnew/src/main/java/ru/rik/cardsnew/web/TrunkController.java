@@ -23,16 +23,15 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
-import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.Line;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
-@RequestMapping("/channels")
+@RequestMapping("/trunks")
 @EnableTransactionManagement
-public class ChannController {
-	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
+public class TrunkController {
+	private static final Logger logger = LoggerFactory.getLogger(TrunkController.class);		
 	
 	@Autowired GroupRepoImpl groups;
 	@Autowired BoxRepoImpl boxes;
@@ -40,33 +39,27 @@ public class ChannController {
 	@Autowired ChannelRepoImpl chans;
 	@Autowired CardRepo cards;
 	
-	
-	public ChannController() { 
+	public TrunkController() { 
 		super();
 	}
 	
 	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
-		List<Channel> list = chans.findAll();
-		for (Channel ch: list) 
-			ch.getTrunks().size();
+		List<Trunk> list = trunks.findAll();
+		for (Trunk tr: list) { 
+			tr.getChannels().size();	
+		}	
 		
-		model.addAttribute("chans", list);
-		
-		if(! model.containsAttribute("chan")) {
-			Card card = new Card();
-			model.addAttribute("chan", card);
-		}
-
-		return "channels";
+		model.addAttribute("trunks", list);
+		return "trunks";
 	}
 
-	@RequestMapping(value="/add", method=RequestMethod.GET)
+	@RequestMapping(value="/add", method=RequestMethod.GET) 
 	public String  addEntity(Model model) {
-		Channel chan = new 	Channel();
-		addToModel(model, chan);
-		return "chan-edit";
+		Grp group = new Grp();
+		model.addAttribute("group", group);
+		return "group-edit";
 	}
 
 	
@@ -74,73 +67,62 @@ public class ChannController {
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public String  editPage(@RequestParam(value="id", required=true) long id, Model model) {
 		
-		if(! model.containsAttribute("chan")) {
-			Channel chan = chans.findById(id);
-			chan.getTrunks().size();
-			addToModel(model, chan);
-			
+		if(! model.containsAttribute("group")) {
+			Grp group = groups.findById(id);
+			group.getCards().size();
+			group.getChannels().size();
+			addToModel(model, group);	
 		}
-		return "chan-edit";
+		return "group-edit";
 	}
 	
-	private void addToModel(Model model, Channel chan) {
-		model.addAttribute("chan", chan);
+	private void addToModel(Model model, Grp group) {
+		model.addAttribute("group", group);
 		model.addAttribute("opers", Oper.values()); 
-		model.addAttribute("lines", Line.values());
-		model.addAttribute("groups", groups.findAll());
-		model.addAttribute("boxes", boxes.findAll());
-		model.addAttribute("alltrunks", trunks.findAll());
-		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
 	}
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editEntity(
-			@Valid @ModelAttribute Channel chan, 
+			@Valid @ModelAttribute Grp group, 
 			BindingResult result,
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
 		
-		System.out.println("action: " + action + " card: " + chan.toString());
 		if (action.equals("cancel")) {
-			String message = chan.toString() + " edit cancelled";
+			String message = group.toString() + " edit cancelled";
 			redirectAttrs.addFlashAttribute("message", message);
+			
 		} else if (result.hasErrors()) {
 			System.out.println("there are validation errors" + result.getAllErrors().toString());
 			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.channel", result);
-			redirectAttrs.addFlashAttribute("chan", chan);
-			return "redirect:/channels/edit?id=" + chan.getId();
+			redirectAttrs.addFlashAttribute("group", group);
 			
-		} else if (action.equals("save") && chan != null) {
+			return "redirect:/groups/edit?id=" + group.getId();
 			
-//			List<Trunk> trunkId = chan.getTrunks();
-//			Trunk t = trunks.findById(trunkId);
-//			Card c = chan.getCard();
-//			if (c != null)
-//				c.setChannel(chan);
-			chans.makePersistent(chan);
-//			chans.getEntityManager().getEntityManagerFactory().getCache().evictAll();
+		} else if (action.equals("save") && group != null) {
+			groups.makePersistent(group);
 		} 
 
-		return "redirect:/channels";		
+		return "redirect:/groups";		
 	}
 	
 	@Transactional
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public String deleteChannel (Model model,
+	public String delete (Model model,
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value = "id", required = true) long id,
 			@RequestParam(value="phase", required=true) String phase) {
 		
-		Channel chan = chans.findById(id);
+		Grp group = groups.findById(id);
 		String view = null;
 		
 		if (phase.equals("confirm")) {
-			view ="redirect:/channels";
-			chans.makeTransient(chan);
+			view ="redirect:/groups";
+			groups.makeTransient(group);
 			
-			String message = "Channel " + chan.getName() + " was successfully deleted";
+			String message = "Channel " + group.getName() + " was successfully deleted";
 			redirectAttrs.addFlashAttribute("message", message);
 		}
 		

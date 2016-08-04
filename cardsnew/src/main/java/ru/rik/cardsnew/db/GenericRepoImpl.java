@@ -7,16 +7,21 @@ import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 public abstract class GenericRepoImpl<T, ID extends Serializable> implements GenericRepo<T , ID> {
 	private static final long serialVersionUID = 1L;
 	
 	@PersistenceContext
 	protected EntityManager em;
+	
     protected final Class<T> entityClass;
     
    
@@ -49,13 +54,26 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
         return em.getReference(entityClass, id);
     }
 
-    @Override
-    public List<T> findAll() {
-        CriteriaQuery<T> c = em.getCriteriaBuilder().createQuery(entityClass); 
-        c.select(c.from(entityClass));
-        
-        return em.createQuery(c).getResultList();
-    }
+//    @Override
+//    public List<T> findAll() {
+//        CriteriaQuery<T> c = em.getCriteriaBuilder().createQuery(entityClass); 
+//        c.select(c.from(entityClass));
+//        
+//        return em.createQuery(c).getResultList();
+//    }
+
+	@Override
+	public List<T> findAll() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> criteria = cb.createQuery(entityClass);
+		
+		Root<T> c = criteria.from(entityClass);
+		TypedQuery<T> query = em
+				.createQuery(criteria.select(c))
+				.setHint("org.hibernate.cacheable", true);
+
+		return query.getResultList();
+	}
 
     @Override
     public Long getCount() {
@@ -81,5 +99,12 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
     public void makeTransient(T instance) {
         em.remove(instance);
     }
+    
+    @Override
+	public void clearCache() {
+		Cache cache = em.getEntityManagerFactory().getCache();
+
+		cache.evictAll();
+	}
     // ...
 }

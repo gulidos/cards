@@ -37,7 +37,7 @@
 				<tr th:each="chan : ${chans}">
 					<td th:text="${chan.name}"></td>
 					<td th:text="${chan.version}"></td>
-					<td th:text="${chan.box.ip}"></td>
+					<td th:text="${chan.box}?${chan.box.ip}:''"></td>
 					<td th:text="${chan.group.name}"></td>
 					<td th:text="${chan.line}"></td>
 					<td>	 
