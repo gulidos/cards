@@ -3,7 +3,6 @@ package ru.rik.cardsnew.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -68,11 +67,11 @@ public class Card {
 	@Getter @Setter
 	private String sernumber;
     
-    @ManyToOne(fetch=FetchType.LAZY) 
+    @ManyToOne 
     @Getter @Setter
 	private Grp group;
     
-    @ManyToOne(fetch=FetchType.LAZY) 
+    @ManyToOne
     @Getter @Setter
 	private Bank bank;
     

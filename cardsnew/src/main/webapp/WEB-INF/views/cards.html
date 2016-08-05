@@ -31,7 +31,7 @@
 					<td th:text="${card.name}"></td>
 					<td th:text="${card.version}"></td>
 					<td th:text="${card.number}"></td>
-					<td th:text="${card.bank.name}"></td>
+					<td th:text="${card.bank}?${card.bank.name}:''"></td>
 					<td th:text="${card.place}"></td>
 					<td th:text="${card.group.name}"></td>
 					<td th:text="${card.sernumber}"></td>

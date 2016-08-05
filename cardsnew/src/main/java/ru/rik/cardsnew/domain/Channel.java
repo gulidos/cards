@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +18,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -34,7 +34,7 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
-@ToString (exclude = {"box", "trunks", "group"})
+@ToString (exclude = {"box",  "group"})
 @Entity
 @Table(name="CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @Cacheable
@@ -66,12 +66,13 @@ public class Channel {
 
 	@Getter	@Setter
 	@ManyToMany(cascade = CascadeType.PERSIST)
-//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Trunk> trunks = new HashSet<>();
 	
 	@Getter	@Setter
-	@OneToOne(fetch=FetchType.LAZY, cascade = {})     //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
+	@OneToOne    //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
 	@JoinColumn(name = "card", unique=true  )
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Card card;
 
 

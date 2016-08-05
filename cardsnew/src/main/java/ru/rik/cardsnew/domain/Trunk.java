@@ -1,8 +1,6 @@
 package ru.rik.cardsnew.domain;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.cache.annotation.Cacheable;
@@ -54,7 +53,7 @@ public class Trunk {
 	private String descr;
 	
 	@ManyToMany(mappedBy = "trunks")
-//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	Set<Channel> channels = new HashSet<>();
 
 	public TrunkState getState() {
@@ -80,14 +79,22 @@ public class Trunk {
 		return first;
 	}
 	
+	public String toStringAll() {
+		StringBuilder sb = new StringBuilder("");
+		for (Channel ch: channels)
+			sb.append(ch.getName());
+		return toString() 
+				+ " ch: "    + sb.toString() ;
+	}
 	
-	public List<Channel> getChannelsSorted() {
-		int start = getFirst();
-		List<Channel> sorted = new ArrayList<>();
+	
+	public Set<Channel> getChannelsSorted() {
+//		int start = getFirst();
+//		List<Channel> sorted = new ArrayList<>();
 //		for (int i = start; i <= getChannels().size()-1; i++) 
 //			sorted.add(channels.get(i));
 //		for (int i = 0; i < start; i++)
 //			sorted.add(channels.get(i));
-		return sorted;
+		return channels;
 	}
 }

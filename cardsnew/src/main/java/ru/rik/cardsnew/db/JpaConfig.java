@@ -66,7 +66,7 @@ public class JpaConfig {
 	  jpaPropertiesMap.put("net.sf.ehcache.configurationResourceName", "ehcache.xml");
 	  jpaPropertiesMap.put("hibernate.cache.use_structured_entries","false");
 	  jpaPropertiesMap.put("hibernate.generate_statistics","true");
-//	  jpaPropertiesMap.put("hibernate.cache.auto_evict_collection_cache","true"); //!!! without it collections caches dont refresh
+	  jpaPropertiesMap.put("hibernate.cache.auto_evict_collection_cache","true"); //!!! without it collections caches dont refresh
 	  return jpaPropertiesMap;
   }
   

@@ -27,6 +27,7 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/channels")
@@ -113,14 +114,23 @@ public class ChannController {
 			return "redirect:/channels/edit?id=" + chan.getId();
 			
 		} else if (action.equals("save") && chan != null) {
-			
+//			
 //			List<Trunk> trunkId = chan.getTrunks();
 //			Trunk t = trunks.findById(trunkId);
-//			Card c = chan.getCard();
-//			if (c != null)
-//				c.setChannel(chan);
-			chans.makePersistent(chan);
-//			chans.getEntityManager().getEntityManagerFactory().getCache().evictAll();
+			
+			
+			Channel persChan = chans.makePersistent(chan);
+			
+			Card c = chan.getCard();
+			if (c != null) {
+				c.setChannel(persChan);
+				cards.makePersistent(c);
+			}	 
+			
+			
+			
+			for (Trunk t: persChan.getTrunks())	
+				t.getChannels().add(persChan);
 		} 
 
 		return "redirect:/channels";		

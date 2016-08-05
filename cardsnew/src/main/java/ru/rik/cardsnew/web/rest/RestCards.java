@@ -120,11 +120,12 @@ public class RestCards {
 	@Data
 	public class RestChan {
 		long id;
-		String name, number, sernumber, bank, group;
+		String name, number, sernumber, bank, group, card;
 		
 		public RestChan(Channel c) {
 			id = c.getId();
 			name = c.getName();
+			card = (c.getCard() != null ? c.getCard().getName() : "" );
 //			bank = (c.getBank() != null ? c.getBank().getName() : "");
 //			group = (c.getGroup() != null ? c.getGroup().getName() : "");
 //			place = c.getPlace();
