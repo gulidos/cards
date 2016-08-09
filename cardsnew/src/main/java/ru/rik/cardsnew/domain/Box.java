@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -36,6 +37,10 @@ import lombok.experimental.Builder;
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Box {
+	
+	@Transient public static final String DEF_USER = "voip";
+	@Transient public static final String DEF_PASSWORD = "1234";
+	
   @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
   	
@@ -48,7 +53,7 @@ public class Box {
 	private String disposition;
   	
   	@Getter @Setter
-  	@Column (unique=true)
+  	@Column (unique=true, nullable = false)
 	private String ip;
 	
   	@Getter @Setter

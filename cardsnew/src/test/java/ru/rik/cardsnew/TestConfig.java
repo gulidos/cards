@@ -24,7 +24,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ru.rik.cardsnew.config.AppInitializer;
+import ru.rik.cardsnew.domain.repo.ChannelsStates;
 import ru.rik.cardsnew.domain.repo.TrunksStates;
+import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
 @ComponentScan(basePackages="ru.rik.cardsnew.db")
@@ -106,10 +109,10 @@ public class TestConfig {
 		return cmfb;
 	}
   
-	@Bean
-	public TrunksStates trunksStats()  { 
-		return new TrunksStates();
-	}
+	@Bean public AppInitializer appInitializer()  { return new AppInitializer();}
+	@Bean public TrunksStates trunksStats()  { return new TrunksStates();	}
+	@Bean public ChannelsStates channelsStates()  {return new ChannelsStates();}
+	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
 
   @Configuration
   @EnableTransactionManagement
