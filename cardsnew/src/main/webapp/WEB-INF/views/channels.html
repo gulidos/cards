@@ -13,7 +13,7 @@
 <body>
 	<div class="container-fluid">
 		<div id="header" th:include="page :: header"></div>
-		<br>
+		<br>lfdfq
 
 		<div id="content">
 			<div class="row col-sm-12" >
@@ -27,11 +27,13 @@
 				<tr>
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-1">ver</th>
-					<th class="col-sm-2">box</th>
+					<th class="col-sm-1">box</th>
 					<th class="col-sm-1">group</th>
 					<th class="col-sm-1">line</th>
 					<th class="col-sm-1">trunk</th>
 					<th class="col-sm-1">card</th>
+					<th class="col-sm-1">ena</th>
+					<th class="col-sm-1">stat</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
 				<tr th:each="chan : ${chans}">
@@ -44,6 +46,8 @@
 						<span th:each="trunk : ${chan.trunks}" th:text="${#strings.trim(trunk.name)}"> </span>
 					</td> 
 					<td th:text="${chan.card}?${chan.card.name}:''"></td>
+					<td th:text="${chan.enabled}"></td>
+					<td th:text="${chan.state.status}"></td>
 					<td style="text-align: center;">
 					<a th:href="@{/channels/edit(id=${chan.id})}">
 							<button type="button" class="btn btn-default btn-xs">

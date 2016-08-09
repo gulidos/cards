@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
@@ -29,6 +30,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.config.AppInitializer;
+import ru.rik.cardsnew.domain.repo.ChannelsStates;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +43,7 @@ import lombok.experimental.Builder;
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Channel {
+	
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter
     private long id;
@@ -61,7 +65,7 @@ public class Channel {
 	private Box box;
 	
 	@Setter	@Getter  
-	@ManyToOne
+	@ManyToOne 
 	private Grp group;
 
 	@Getter	@Setter
@@ -74,6 +78,13 @@ public class Channel {
 	@JoinColumn(name = "card", unique=true  )
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Card card;
+	
+	@Getter	@Setter
+	private boolean enabled;
 
+	public ChannelState getState() {
+		ChannelsStates channelsStates = (ChannelsStates) AppInitializer.getContext().getBean("channelsStates");
+		return channelsStates.findById(getId());
+	}
 
 }

@@ -28,7 +28,7 @@ public class GetTest {
 					.followRedirects(true);
 			Document doc = con.data("nPortNum", "1").post();
 			
-
+//			System.out.println(doc.html());	
 			Element imob  = doc.select("input[name=COPS]").first();	
 			System.out.println("Operator: " + (imob != null ?  imob.attributes().get("value") : ""));
 			
@@ -43,6 +43,9 @@ public class GetTest {
 
 			imob  = doc.select("input[name=CGSN]").first();
 			System.out.println("S/N: " + (imob != null ?  imob.attributes().get("value") : ""));
+			
+			imob  = doc.select("input[name=MSTT]").first();
+			System.out.println("Motion State: " + (imob != null ?  imob.attributes().get("value") : ""));
 			
 			imob  = doc.select("input[name=IURL]").first();
 			System.out.println("Incoming URL: " + (imob != null ?  imob.attributes().get("value") : ""));

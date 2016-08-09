@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
+import ru.rik.cardsnew.domain.repo.ChannelsStates;
 import ru.rik.cardsnew.domain.repo.TrunksStates;
+import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
 @EnableCaching
@@ -38,4 +40,12 @@ public class RootConfig {
 		logger.debug("Instantiate the TrunkStats ...");
 		return new TrunksStates();
 	}
+	
+	@Bean
+	public ChannelsStates channelsStates()  { 
+		logger.debug("Instantiate the ChannelsStates ...");
+		return new ChannelsStates();
+	}
+	
+	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
 }
