@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -23,6 +24,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import ru.rik.cardsnew.config.AppInitializer;
 import ru.rik.cardsnew.domain.repo.ChannelsStates;
@@ -113,6 +115,17 @@ public class TestConfig {
 	@Bean public TrunksStates trunksStats()  { return new TrunksStates();	}
 	@Bean public ChannelsStates channelsStates()  {return new ChannelsStates();}
 	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
+	
+	@Bean
+    public TaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(42);
+        executor.setQueueCapacity(11);
+        executor.setThreadNamePrefix("MyExecutor-");
+        executor.initialize();
+        return executor;
+    }
 
   @Configuration
   @EnableTransactionManagement

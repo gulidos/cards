@@ -36,7 +36,7 @@ public class HttpHelper {
 	
 	
 	
-	public void getInfo(Channel ch) throws IOException {
+	public void getGsmStatus(Channel ch) throws IOException {
 		String nport = Integer.toString(ch.getLine().getNport());
 		Connection con = getCon(ch, "gsmstatus.cgi");
 		

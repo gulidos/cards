@@ -38,7 +38,7 @@ public class GetChInfo {
 	
 		try {
 			Thread.sleep(2000);
-			httpHelper.getInfo(ch);
+			httpHelper.getGsmStatus(ch);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
