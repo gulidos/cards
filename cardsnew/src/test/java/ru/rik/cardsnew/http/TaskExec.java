@@ -8,10 +8,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import ru.rik.cardsnew.service.PeriodicTasks;
 //https://spring.io/guides/gs/async-method/
 //http://docs.spring.io/spring/docs/current/spring-framework-reference/html/scheduling.html
 //https://www.keyup.eu/en/blog/101-synchronous-and-asynchronous-spring-events-in-one-application
@@ -22,7 +21,8 @@ import ru.rik.cardsnew.service.PeriodicTasks;
 public class TaskExec {
 	
 	@Autowired private ThreadPoolTaskExecutor taskExecutor;
-	@Autowired private PeriodicTasks tasks;
+	@Autowired private ThreadPoolTaskScheduler scheduler;
+	
 	private static Random random = new Random();
 
 
@@ -35,8 +35,13 @@ public class TaskExec {
 //        }
 		
 		for (int i = 0; i < 250; i++) {
-			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			System.out.println("================taskExecutor: active threads: " + taskExecutor.getActiveCount()
+			+ " getPoolSize: " + taskExecutor.getPoolSize()
+			+ " CorePoolSize: " + taskExecutor.getCorePoolSize()
+			);
+//			System.out.println("================scheduler: active threads: " + scheduler.getActiveCount());
+					
 		}
 //		
 	}
