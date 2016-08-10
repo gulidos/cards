@@ -7,10 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import ru.rik.cardsnew.service.PeriodicTasks;
+//https://spring.io/guides/gs/async-method/
+//http://docs.spring.io/spring/docs/current/spring-framework-reference/html/scheduling.html
+//https://www.keyup.eu/en/blog/101-synchronous-and-asynchronous-spring-events-in-one-application
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Test1Config.class)
@@ -18,39 +22,25 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class TaskExec {
 	
 	@Autowired private ThreadPoolTaskExecutor taskExecutor;
+	@Autowired private PeriodicTasks tasks;
 	private static Random random = new Random();
 
 
 	@Test
 	public void t1changeCard() {
-		for(int i = 0; i < 25; i++) {
-            taskExecutor.execute(new MessagePrinterTask("Message" + i));
-        }
+		System.out.println("======================t1ch====================");
+//		for(int i = 0; i < 25; i++) {
+////            taskExecutor.execute(new MessagePrinterTask("Message" + i));
+//			tasks.printMsg(" Message" + i);
+//        }
 		
 		for (int i = 0; i < 250; i++) {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-//			System.out.println("ActiveCount: " + taskExecutor.getActiveCount() 
-//				+" PoolSize: " + taskExecutor.getPoolSize()
-//				+" CorePoolSize: " + taskExecutor.getCorePoolSize()
-//				);
+
 		}
-		
+//		
 	}
 	
-	
-	private class MessagePrinterTask implements Runnable {
 
-        private String message;
-
-        public MessagePrinterTask(String message) {
-            this.message = message;
-        }
-
-        public void run() {
-        	int rnd = Math.abs(random.nextInt()) % 10000;
-            System.out.println(message + " rnd: " + rnd);
-            try {Thread.sleep(rnd);} catch (InterruptedException e) {e.printStackTrace();}
-        }
-    }
 
 }
