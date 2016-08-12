@@ -85,5 +85,7 @@ public class Channel {
 		ChannelsStates channelsStates = (ChannelsStates) AppInitializer.getContext().getBean("channelsStates");
 		return channelsStates.findById(getId());
 	}
+	
+	
 
 }

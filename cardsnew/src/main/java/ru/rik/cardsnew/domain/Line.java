@@ -19,6 +19,10 @@ public enum Line {
 	@Getter	private final int peer;
 	@Getter	private final int nport; // parameter when make http requests. Port's number in pair
 	
+	public Line getPair() {
+		return getInstance(getPeer());
+	}
+	
 	public static Line getInstance(int p) {
 		switch (p) {
 		case 1: return L1;

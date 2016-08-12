@@ -123,7 +123,7 @@ public class ChannController {
 			
 			Card c = chan.getCard();
 			if (c != null) {
-				c.setChannel(persChan);
+//				c.setChannel(persChan);
 				cards.makePersistent(c);
 			}	 
 			

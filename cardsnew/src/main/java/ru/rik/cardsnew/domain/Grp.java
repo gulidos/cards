@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -52,5 +53,6 @@ public class Grp {
 
 	@Getter @Setter
     @OneToMany(mappedBy = "group")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Channel> channels;
 }

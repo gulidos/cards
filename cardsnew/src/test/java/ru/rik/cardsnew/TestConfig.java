@@ -17,14 +17,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import ru.rik.cardsnew.config.AppInitializer;
 import ru.rik.cardsnew.domain.repo.ChannelsStates;
@@ -41,8 +42,8 @@ public class TestConfig {
 	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
 	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3307/TESTM?autoReconnect=true&useSSL=false";
 
-  @Bean
-  public DataSource dataSource() {
+  
+  public DataSource dataSourceTarget() {
 //    EmbeddedDatabaseBuilder ds = new EmbeddedDatabaseBuilder();
 //    edb.setType(EmbeddedDatabaseType.H2);
 //	  JdbcDataSource ds = new JdbcDataSource();
@@ -59,6 +60,12 @@ public class TestConfig {
 	  return ds;
   }
 
+  @Bean
+  public DataSource dataSource() {
+	  LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
+	  dataSourceProxy.setTargetDataSource(dataSourceTarget());
+	  return dataSourceProxy;
+  }
   
 
   private Map<String,?> jpaProperties() {

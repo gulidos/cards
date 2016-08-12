@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -64,6 +65,7 @@ public class Box {
   	
   	@Getter @Setter
     @OneToMany( mappedBy = "box", fetch=FetchType.LAZY)
+  	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Channel> channels = new HashSet<>();
 
 	public String getName() {

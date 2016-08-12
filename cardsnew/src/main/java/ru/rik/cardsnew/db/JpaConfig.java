@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -35,24 +36,31 @@ public class JpaConfig {
 	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
 	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3307/TESTM?autoReconnect=true&useSSL=false";
 
-  @Bean
-  public DataSource dataSource() {
-//    EmbeddedDatabaseBuilder ds = new EmbeddedDatabaseBuilder();
-//    edb.setType(EmbeddedDatabaseType.H2);
-//	  JdbcDataSource ds = new JdbcDataSource();
-	  DriverManagerDataSource ds = new DriverManagerDataSource();
-	  ds.setDriverClassName("com.mysql.jdbc.Driver");
-	  ds.setUrl(MYSQL_JDBC_HP2);
-	  ds.setUsername("root");
-	  ds.setPassword("inline");
+	  public DataSource dataSourceTarget() {
+//	    EmbeddedDatabaseBuilder ds = new EmbeddedDatabaseBuilder();
+//	    edb.setType(EmbeddedDatabaseType.H2);
+//		  JdbcDataSource ds = new JdbcDataSource();
+		  DriverManagerDataSource ds = new DriverManagerDataSource();
+		  ds.setDriverClassName("com.mysql.jdbc.Driver");
+		  ds.setUrl(MYSQL_JDBC_HP2);
+		  ds.setUsername("root");
+		  ds.setPassword("inline");
 
-   // edb.addScript("schema.sql");
-   // edb.addScript("spittr/db/jpa/test-data.sql"); 
-//    EmbeddedDatabase embeddedDatabase = edb.build();
-//    return embeddedDatabase;
-	  return ds; 
-  }
+	   // edb.addScript("schema.sql");
+	   // edb.addScript("spittr/db/jpa/test-data.sql"); 
+//	    EmbeddedDatabase embeddedDatabase = edb.build();
+//	    return embeddedDatabase;
+		  return ds;
+	  }
 
+	  @Bean
+	  public DataSource dataSource() {
+		  LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
+		  dataSourceProxy.setTargetDataSource(dataSourceTarget());
+		  return dataSourceProxy;
+	  }
+
+  
   
 
   private Map<String,?> jpaProperties() {

@@ -46,7 +46,7 @@ public class TestChangeCardInChan {
 		oldCadr = ch.getCard();
 		System.out.println("Channel before: " + ch.toString());
 		ch.setCard(c);
-		c.setChannel(ch);
+//		c.setChannel(ch);
 	}
 	
 	@Test

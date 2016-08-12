@@ -2,9 +2,12 @@ package ru.rik.cardsnew.domain;
 
 import java.util.Date;
 
+import lombok.Data;
+@Data
 public class ChannelState {
 	private final long channelId;
 	private volatile ChStatus status;
+	private volatile int order;
 	private Date lastUpdate;
 
 	
@@ -22,6 +25,7 @@ public class ChannelState {
 	public void setLastUpdate(Date lastUpdate) {this.lastUpdate = lastUpdate;	}
 
 
+	
 	public enum ChStatus {
 		Unknown,
 		Booting,
@@ -37,6 +41,12 @@ public class ChannelState {
 			return Standby;
 		case "Listening":
 			return Listening;
+		case "Booting":
+			return Booting;
+		case "Initing":
+			return Initing;
+		case "Ending":
+			return Ending;	
 		default:
 			return Unknown;
 		}	

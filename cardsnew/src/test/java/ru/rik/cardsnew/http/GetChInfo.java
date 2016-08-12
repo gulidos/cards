@@ -20,11 +20,13 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 @ContextConfiguration(classes = TestConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GetChInfo {
-	@Autowired ChannelRepoImpl chans;
-	@Autowired HttpHelper httpHelper;
+	@Autowired
+	ChannelRepoImpl chans;
+	@Autowired
+	HttpHelper httpHelper;
 
 	public static long chanId = 1;
-	
+
 	public GetChInfo() {
 	}
 
@@ -32,18 +34,17 @@ public class GetChInfo {
 	@Transactional
 	@Rollback(false)
 	public void t1changeCard() {
-		Channel ch = chans.findById(chanId);
-		System.out.println("================ Channel before: " + ch.toString() + " stat: " + ch.getState().getStatus()
-				+ " date: " + ch.getState().getLastUpdate().toString());
-	
-		try {
-			Thread.sleep(2000);
-			httpHelper.getGsmStatus(ch);
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		for (Channel ch : chans.findAll()) {
+
+			try {
+				httpHelper.getGsmStatus(ch);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println(ch.toString() + " stat: " + ch.getState().getStatus() + " date: "
+					+ ch.getState().getLastUpdate().toString());
 		}
-		System.out.println("================ Channel after: " + ch.toString() + " stat: " + ch.getState().getStatus()
-				+ " date: " + ch.getState().getLastUpdate().toString());
 
 	}
 }

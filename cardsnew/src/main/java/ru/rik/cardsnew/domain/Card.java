@@ -7,14 +7,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.cache.annotation.Cacheable;
@@ -76,16 +74,16 @@ public class Card {
 	private Bank bank;
     
 //    try this: http://stackoverflow.com/questions/6068374/hibernate-cache-for-mappedby-object
-    @Getter @Setter
-	@OneToOne(mappedBy="card")
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE )
-	private Channel channel;
+//    @Getter @Setter
+//	@OneToOne(mappedBy="card")
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE )
+//	private Channel channel;
 	
 	public String toStringAll() {
 		return toString() 
 				+ " group: " + ( group != null ? group.getId() : "none") 
-				+ " bank: "  + (bank != null ? bank.getIp() : "none") 
-				+ " ch: "    + (channel != null ? channel.getName() : "none");
+				+ " bank: "  + (bank != null ? bank.getIp() : "none"); 
+//				+ " ch: "    + (channel != null ? channel.getName() : "none");
 	}
 	
 
