@@ -10,5 +10,6 @@ public class BankRepoImpl extends GenericRepoImpl<Bank, Long>  {
 
 
 	public BankRepoImpl() {
-		super(Bank.class);	}
+		super(Bank.class);		
+	}
 }

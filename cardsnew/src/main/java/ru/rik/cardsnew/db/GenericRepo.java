@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.LockModeType;
+import javax.persistence.criteria.Expression;
 
 
 public interface GenericRepo<T, ID extends Serializable>
@@ -20,6 +21,8 @@ public interface GenericRepo<T, ID extends Serializable>
 
     List<T> findAll();
 
+    List<T> findAllRestr(Expression<Boolean> restriction);
+    
     Long getCount();
 
     T makePersistent(T entity);

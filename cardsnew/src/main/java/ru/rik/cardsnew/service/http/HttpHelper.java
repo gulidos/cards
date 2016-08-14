@@ -15,9 +15,7 @@ import ru.rik.cardsnew.domain.ChannelState.ChStatus;
 
 public class HttpHelper {
 
-	public HttpHelper() {
-
-	}
+	public HttpHelper() {}
 
 	private Connection getCon(final Channel ch, final String link) throws IOException {
 		if (ch == null) 	throw new NullPointerException("Channel must not be null!");

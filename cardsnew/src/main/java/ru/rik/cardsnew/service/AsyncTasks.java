@@ -1,17 +1,37 @@
 package ru.rik.cardsnew.service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 
+import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.service.http.HttpHelper;
+
 public class AsyncTasks {
+	private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);		
+
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private static Random random = new Random();
 	
-	
+	@Autowired HttpHelper httpHelper;
 	public AsyncTasks() {
+		logger.debug("Instantiate the AsyncTasks ...");
+	}
+	
+	@Async("taskExecutor")
+	public void checkChannel(Channel ch) {
+		try {
+			httpHelper.getGsmStatus(ch);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		
 	}
 	
 	@Async("taskExecutor")

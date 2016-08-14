@@ -24,7 +24,7 @@
 					<th class="col-sm-1">place</th>
 					<th class="col-sm-1">group</th>
 					<th class="col-sm-1">sernumber</th>
-					<th class="col-sm-1">ch</th>
+
 					<th class="col-sm-2">Action</th>
 				</tr>
 				<tr th:each="card : ${cards}">
@@ -35,7 +35,7 @@
 					<td th:text="${card.place}"></td>
 					<td th:text="${card.group.name}"></td>
 					<td th:text="${card.sernumber}"></td>
-					<td th:text="${card.channel}?${card.channel.name}:''"></td>
+					<!-- <td th:text="${card.channel}?${card.channel.name}:''"></td> -->
 					<td style="text-align: center;">
 					<a th:href="@{/cards/edit(id=${card.id})}">
 							<button type="button" class="btn btn-default btn-xs">

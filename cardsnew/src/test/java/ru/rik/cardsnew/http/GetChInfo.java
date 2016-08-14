@@ -20,15 +20,12 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 @ContextConfiguration(classes = TestConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GetChInfo {
-	@Autowired
-	ChannelRepoImpl chans;
-	@Autowired
-	HttpHelper httpHelper;
+	@Autowired ChannelRepoImpl chans;
+	@Autowired HttpHelper httpHelper;
 
 	public static long chanId = 1;
 
-	public GetChInfo() {
-	}
+	public GetChInfo() {}
 
 	@Test
 	@Transactional

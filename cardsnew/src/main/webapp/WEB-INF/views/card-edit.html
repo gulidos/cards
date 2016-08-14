@@ -70,15 +70,15 @@
 					th:readonly="${action}=='delete'"></input>
 				</div>
 			</div>			
-			<div class="form-group "> 
+	<!-- 		<div class="form-group "> 
 				<label class="col-sm-4 col-xs-8 control-label">channel</label>
 				<div class="col-sm-2"  > 
 		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{channel}"
-		 				 th:disabled="${action}=='delete'">     <!-- th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}" -->
+		 				 th:disabled="${action}=='delete'">     th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}"
 					<option th:each="channel: ${channels}" th:value="${{channel}}" th:text="${channel.name}" > </option>
 				</select> 
-				</div>     <!-- http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service -->
-			</div>					
+				</div>     http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service
+			</div>	 -->				
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
 					<button type="submit" class="btn btn-primary" name="action"	

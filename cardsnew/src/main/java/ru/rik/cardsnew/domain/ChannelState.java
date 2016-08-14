@@ -7,7 +7,7 @@ import lombok.Data;
 public class ChannelState {
 	private final long channelId;
 	private volatile ChStatus status;
-	private volatile int order;
+	private volatile int priority;
 	private Date lastUpdate;
 
 	
@@ -23,7 +23,7 @@ public class ChannelState {
 
 	public Date getLastUpdate() {return lastUpdate;	}
 	public void setLastUpdate(Date lastUpdate) {this.lastUpdate = lastUpdate;	}
-
+	public void incPriority() {priority++;	}
 
 	
 	public enum ChStatus {

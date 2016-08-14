@@ -128,7 +128,7 @@ public class TestConfig {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(7);
         executor.setMaxPoolSize(42);
-        executor.setQueueCapacity(11);
+        executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("MyExecutor-");
         executor.initialize();
         return executor;

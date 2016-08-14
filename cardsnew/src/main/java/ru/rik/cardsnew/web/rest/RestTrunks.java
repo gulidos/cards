@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Data;
 import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Channel;
@@ -26,8 +27,9 @@ public class RestTrunks {
 	GroupRepoImpl groups;
 	@Autowired
 	CardRepo cards;
-	@Autowired
-	TrunkRepoImpl trunks;
+	@Autowired TrunkRepoImpl trunks;
+	@Autowired ChannelRepoImpl chanRepo;
+
 
 	public RestTrunks() {
 	}
@@ -62,7 +64,6 @@ public class RestTrunks {
 	public class RestTrunk {
 		long id;
 		String name;
-//		int next;
 		int n;
 		long version;
 		List<String> channels = new ArrayList<>();
@@ -70,10 +71,9 @@ public class RestTrunks {
 		public RestTrunk(Trunk t) {
 			id = t.getId();
 			name = t.getName(); 
-//			next = t.getNext();
 			version = t.getVersion();
 			n = t.getChannels().size();
-			for (Channel ch : t.getChannelsSorted()) 
+			for (Channel ch : chanRepo.getSorted(t)) 
 				channels.add(ch.toString());
 			
 		}
