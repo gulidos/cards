@@ -9,7 +9,13 @@ public class ChannelState {
 	private volatile ChStatus status;
 	private volatile int priority;
 	private Date lastUpdate;
-
+	private String operator;
+	private String sernum;
+	private int sigquality;
+	private String regstate;
+	private String iURL;
+	private String iName;
+	private String oMob;
 	
 	public ChannelState(Channel t) {
 		channelId = t.getId();

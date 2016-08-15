@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.ChStatus;
 
 public class HttpHelper {
@@ -37,13 +38,37 @@ public class HttpHelper {
 	public void getGsmStatus(final Channel ch) throws IOException {
 		String nport = Integer.toString(ch.getLine().getNport());
 		Connection con = getCon(ch, "gsmstatus.cgi");
+		ChannelState st = ch.getState();
 		
 		Document doc = con.data("nPortNum", nport).post();
+		st.setLastUpdate(new Date());
+		
 		Element imob = doc.select("input[name=MSTT]").first();
 		ChStatus status = ChStatus.getInstance(imob.attributes().get("value"));
+		st.setStatus(status);
+
+		imob  = doc.select("input[name=COPS]").first();	
+		st.setOperator(imob.attributes().get("value"));
 		
-		ch.getState().setStatus(status);
-		ch.getState().setLastUpdate(new Date());
+		imob  = doc.select("input[name=CSQ]").first();
+		int q = Integer.parseInt(imob.attributes().get("value"));
+		st.setSigquality(q);
+		
+		imob  = doc.select("input[name=CREG]").first();
+		st.setRegstate(imob.attributes().get("value"));
+
+		imob  = doc.select("input[name=CGSN]").first();
+		st.setSernum(imob.attributes().get("value"));
+		
+		imob  = doc.select("input[name=IURL]").first();
+		st.setIURL(imob.attributes().get("value"));
+		
+		imob  = doc.select("input[name=INAME]").first();
+		st.setIName(imob.attributes().get("value"));
+
+		imob  = doc.select("input[name=OMOB]").first();
+		st.setOMob(imob.attributes().get("value"));
+		
 	}
 	
 }

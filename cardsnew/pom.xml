@@ -169,5 +169,11 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
+		<dependency>
+    <groupId>org.asteriskjava</groupId>
+    <artifactId>asterisk-java</artifactId>
+    <version>1.0.1</version>
+</dependency>
+		
 	</dependencies>
 </project>
