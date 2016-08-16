@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,10 +19,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
+import org.apache.log4j.Logger;
+
+import ru.rik.cardsnew.domain.Box;
+import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Line;
+import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+
 public abstract class GenericRepoImpl<T, ID extends Serializable> implements GenericRepo<T , ID> {
 	private static final long serialVersionUID = 1L;
 	
 	@PersistenceContext protected EntityManager em;
+	static Logger logger = Logger.getLogger(GenericRepo.class);
+
 	
     protected final Class<T> entityClass;
     protected CriteriaBuilder cb;
@@ -54,12 +64,34 @@ public abstract class GenericRepoImpl<T, ID extends Serializable> implements Gen
     public T findById(ID id) {
         return findById(id, NONE);
     }
+    
+    public T findByName(String name) {
+    	TypedQuery<T> query = em
+				.createQuery(criteria.select(c)
+						.where(cb.equal(c.<String> get("name"), name)
+				)).setHint("org.hibernate.cacheable", true);
+    	
+    	
+    	T result = null;
+    	try {
+    		result = query.getSingleResult();
+		} catch (NoResultException e) {
+			
+		} catch (Exception e1) {
+			logger.error(e1.getMessage(), e1);
+		}
+    	
+    	
+		return result;
+    }
 
+    
     @Override
     public T findById(ID id, LockModeType lockModeType) {
         return em.find(entityClass, id, lockModeType);
     }
 
+    
     @Override
     public T findReferenceById(ID id) {
         return em.getReference(entityClass, id);

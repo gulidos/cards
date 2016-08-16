@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -47,6 +48,7 @@ public class Card {
     @NotNull(message = "{error.card.name.null}")
 	@NotEmpty(message = "{error.card.name.empty}")
 	@Size(min = 3, max = 20, message = "{error.card.name.size}")
+//    @NaturalId(mutable = true)
     @Getter @Setter
 	private String name;
     

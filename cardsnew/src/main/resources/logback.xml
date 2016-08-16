@@ -26,8 +26,8 @@
     
  	<!-- <logger name="org.hibernate.SQL" level="DEBUG" /> -->
    	
-   	<logger name="org.hibernate.type" level="DEBUG" /> 	
-   	 <logger name="org.hibernate.SQL" level="DEBUG" />
+   	<logger name="org.hibernate.type" level="INFO" /> 	
+   	 <logger name="org.hibernate.SQL" level="INFO" />
    	 
   <!--  	 net.sf.ehcache -->
 

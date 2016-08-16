@@ -3,12 +3,18 @@ package ru.rik.cardsnew.domain.repo;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.rik.cardsnew.domain.TrunkState;
 
 public class TrunksStates  {
 	ConcurrentMap<Long, TrunkState> trunks;
+	private static final Logger logger = LoggerFactory.getLogger(TrunksStates.class);
+
 	
 	public TrunksStates() {	
+		logger.debug("Instantiate the TrunkStats ...");
 		trunks = new ConcurrentHashMap<>();
 	}
 	
