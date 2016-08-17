@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Builder;
 @Data
-@Builder
+
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class CdrCardEvent extends Event {
@@ -23,8 +23,9 @@ public class CdrCardEvent extends Event {
 	private String trunk;
 	private String regcode;
 	private Disposition disposition; 
-
-	public CdrCardEvent(String date, String src, String dst, long cardId, int billsec, String trunk, String disp, String regcode)
+	
+	@Builder
+	private CdrCardEvent(String date, String src, String dst, long cardId, int billsec, String trunk, String disp, String regcode)
 			throws ParseException {
 		super(date, cardId);
 		this.src = src;

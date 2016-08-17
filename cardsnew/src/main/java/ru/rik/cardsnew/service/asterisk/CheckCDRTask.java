@@ -32,13 +32,12 @@ public class CheckCDRTask {
 	public void init() {
 		log.info("CheckCDRTask initing");
 		getCDR(5760, true);
-		CardStatHelper.refreshStats();
+		cardsStates.refreshStats();
 		
 		//logStat();
 	}
 	
 	public void getCDR(int min, boolean isInit)  {
-		
 		int n = 0;
 		String query = "select * from cdr where calldate between date_sub(now(), INTERVAL ? minute) and NOW()"
 				+ " and userfield <> \"\" order by calldate";
@@ -53,17 +52,23 @@ public class CheckCDRTask {
 				Card card = cardRepo.findByName(cardname);
 				if (card != null) {
 					try {
-						CdrCardEvent cdr = new CdrCardEvent(rs.getString("calldate"), rs.getString("src"), rs.getString("dst"), card,
-								rs.getInt("billsec"), rs.getString("trunk"), rs.getString("disposition"), rs.getString("regcode"));
-						CardStat cardStat;
-						if ((cardStat = card.getCardStat()) == null)
+						CdrCardEvent cdr = CdrCardEvent.builder()
+								.date(rs.getString("calldate"))
+								.src(rs.getString("src"))
+								.dst(rs.getString("dst"))
+								.cardId(card.getId())
+								.billsec(rs.getInt("billsec"))
+								.trunk(rs.getString("trunk"))
+								.disp(rs.getString("disposition"))
+								.regcode(rs.getString("regcode"))
+								.build();
+						CardStat cardStat = cardsStates.findById(card.getId());
+						if (cardStat == null) {
 							cardStat = new CardStat(card);
+							cardsStates.add(cardStat);
+						}	
 						cardStat.addEvent(cdr);
 						n++;
-						if (!isInit) {
-							cardStat.calcAcd();
-							cardStat.calcAsr();
-						}
 					} catch (ParseException pe) {
 						log.error("can not create CdrEvent calldate: " + rs.getString("calldate") +" cardname: " + cardname, pe);
 					}
@@ -78,23 +83,15 @@ public class CheckCDRTask {
 		log.debug(n + " CDRs loaded");
 	}
 
-	public static void logStat() {
-		Map<String, Card> allcards = Group.getAllcardsByName();
-		for (String c : allcards.keySet()) {
-			Card card = allcards.get(c);
-			CardStat cardStat = card.getCardStat();
-			if (cardStat != null) {
-				log.info(cardStat.toString());
-				
-//				try {
-//					for (Event ev : cardStat.getEvents())
-//						if (ev.isToday())
-//							log.info(ev.toString());
-//				} catch (Exception e) {
-//					log.error(e, e);
-//				}
-			}	
-		}
-	}
+//	public static void logStat() {
+//		Map<String, Card> allcards = Group.getAllcardsByName();
+//		for (String c : allcards.keySet()) {
+//			Card card = allcards.get(c);
+//			CardStat cardStat = card.getCardStat();
+//			if (cardStat != null) {
+//				log.info(cardStat.toString());
+//			}	
+//		}
+//	}
 
 }

@@ -8,17 +8,16 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Builder;
+import ru.rik.cardsnew.domain.CardStat;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Event {
+public  class Event {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private Date date;
 	private long cardId;
-	
-	public abstract String toString();
-	
 	
 	public Event(String date, long card) throws ParseException {
 		this.date = sdf.parse(date); 
@@ -49,4 +48,7 @@ public abstract class Event {
 		return cardId;
 	}
 
+	public interface Executable {
+		public void execute(CardStat cardStat);
+	}
 }

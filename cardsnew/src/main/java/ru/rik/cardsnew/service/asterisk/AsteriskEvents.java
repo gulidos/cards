@@ -3,6 +3,7 @@ package ru.rik.cardsnew.service.asterisk;
 import java.io.IOException;
 import java.text.ParseException;
 
+
 import org.apache.log4j.Logger;
 import org.asteriskjava.manager.AuthenticationFailedException;
 import org.asteriskjava.manager.ManagerConnection;
@@ -66,8 +67,16 @@ public class AsteriskEvents implements ManagerEventListener {
 		Card card = cardRepo.findByName(cardname);
 		if (card != null) {
 			try {
-				CdrCardEvent cdr = new CdrCardEvent(ce.getStartTime(), ce.getSrc(), ce.getDestination(), card.getId(),
-						ce.getBillableSeconds(), ce.getTrunk(), ce.getDisposition(), ce.getRegcode());
+				CdrCardEvent cdr = CdrCardEvent.builder()
+						.date(ce.getStartTime())
+						.src(ce.getSrc())
+						.dst(ce.getDestination())
+						.cardId(card.getId())
+						.billsec(ce.getBillableSeconds())
+						.trunk(ce.getTrunk())
+						.disp(ce.getDisposition())
+						.regcode(ce.getRegcode())
+						.build();
 				
 				CardStat cardStat = cardsStates.findById(card.getId());
 				if (cardStat == null) {
