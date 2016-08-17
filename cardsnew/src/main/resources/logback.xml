@@ -26,13 +26,13 @@
     
  	<!-- <logger name="org.hibernate.SQL" level="DEBUG" /> -->
    	
-   	<logger name="org.hibernate.type" level="INFO" /> 	
-   	 <logger name="org.hibernate.SQL" level="INFO" />
+   	<logger name="org.hibernate.type" level="ERROR" /> 	
+   	 <logger name="org.hibernate.SQL" level="ERROR" />
    	 
   <!--  	 net.sf.ehcache -->
 
   	<logger
-		name="org"
+		name="org.springframework"
 		level="INFO">
 		<appender-ref ref="core-log" />
 	</logger> 

@@ -5,9 +5,13 @@ import java.text.ParseException;
 
 import org.apache.log4j.Logger;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Builder;
 @Data
+@Builder
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class CdrCardEvent extends Event {
 	static Logger log = Logger.getLogger(CdrCardEvent.class);
