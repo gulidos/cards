@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -29,10 +30,9 @@ import lombok.ToString;
 @ToString(exclude={"cards"})
 @EqualsAndHashCode(exclude={"cards"})
 @Cacheable
-@org.hibernate.annotations.Cache(
-	    usage = CacheConcurrencyStrategy.READ_WRITE
-	)
-public class Bank {
+@org.hibernate.annotations.Cache( usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(name="_BANK")
+public class Bank implements State {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter
@@ -55,7 +55,7 @@ public class Bank {
  @OneToMany(mappedBy = "bank")
     Set<Card> cards = new HashSet<>();
     
-    public String getName() {
-		return getIp();
-	}
+    @Override public String getName() {return getIp();}
+
+	@Override public void setName(String name) {	}
 }

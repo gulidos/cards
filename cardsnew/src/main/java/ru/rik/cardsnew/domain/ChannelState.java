@@ -3,9 +3,12 @@ package ru.rik.cardsnew.domain;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 @Data
-public class ChannelState {
-	private final long channelId;
+@NoArgsConstructor
+public class ChannelState implements State {
+	private long id;
+	private String name;
 	private volatile ChStatus status;
 	private volatile int priority;
 	private Date lastUpdate;
@@ -18,18 +21,21 @@ public class ChannelState {
 	private String oMob;
 	
 	public ChannelState(Channel t) {
-		channelId = t.getId();
+		id = t.getId();
 		lastUpdate = new Date();
 		setStatus(ChStatus.Unknown);
 	}
-
-	public long getTrunkId() {return channelId;}
+	
+	@Override
+	public long getId() {return id;}
 	public ChStatus getStatus() {return status;	}
 	public void setStatus(ChStatus status) {this.status = status;}
 
 	public Date getLastUpdate() {return lastUpdate;	}
 	public void setLastUpdate(Date lastUpdate) {this.lastUpdate = lastUpdate;	}
 	public void incPriority() {priority++;	}
+	@Override public String getName() {return name;}
+	@Override public void setName(String name) {this.name = name;}
 
 	
 	public enum ChStatus {

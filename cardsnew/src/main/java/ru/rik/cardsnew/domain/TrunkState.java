@@ -2,13 +2,15 @@ package ru.rik.cardsnew.domain;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TrunkState {
-	private final long trunkId;
-	private final AtomicInteger next;
+public class TrunkState implements State {
+	private long id;
+	private String name;
+	private AtomicInteger next;
 
+	public TrunkState() {}
 	
 	public TrunkState(Trunk t) {
-		trunkId = t.getId();
+		id = t.getId();
 		next = new AtomicInteger(0);
 	}
 
@@ -20,7 +22,10 @@ public class TrunkState {
 	public void setNext(int i) {
 		next.set(i);
 	}
-
-	public long getTrunkId() {return trunkId;}
 	
+	@Override public long getId() {return id;}
+	@Override public void setId(long id) { this.id = id;}
+	
+	@Override public String getName() {return name;}
+	@Override public void setName(String name) {this.name = name;}
 }

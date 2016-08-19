@@ -1,21 +1,14 @@
 package ru.rik.cardsnew.db;
 
-import static javax.persistence.LockModeType.NONE;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.naming.NoPermissionException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import ru.rik.cardsnew.domain.Box;
@@ -23,39 +16,20 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Trunk;
-import ru.rik.cardsnew.domain.repo.ChannelsStates;
 
 @Repository
-public class ChannelRepoImpl extends GenericRepoImpl<Channel, Long> {
+public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> {
 	private static final long serialVersionUID = 1L;
-	@Autowired
-	private ChannelsStates channelsStates;
+	static final Logger logger = LoggerFactory.getLogger(ChannelRepoImpl.class);
 
 	public ChannelRepoImpl() {
-		super(Channel.class);
-	}
-
-	@Override
-	public List<Channel> findAll() {
-		List<Channel> channels = super.findAll();
-		for (Channel ch : channels) {
-			if (channelsStates.findById(ch.getId()) == null)
-				channelsStates.add(new ChannelState(ch));
-		}
-
-		return channels;
-	}
-
-	@Override
-	public Channel findById(Long id) {
-		Channel ch = findById(id, NONE);
-		if (channelsStates.findById(ch.getId()) == null)
-			channelsStates.add(new ChannelState(ch));
-		return ch;
+		super(Channel.class, ChannelState.class);
 	}
 
 	
 	public Channel findPair(Channel ch) {
+		CriteriaQuery<Channel> criteria = cb.createQuery(entityClass);
+    	Root<Channel> c = criteria.from(entityClass);
 		TypedQuery<Channel> query = em
 				.createQuery(
 						criteria.select(c)
@@ -74,8 +48,8 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, Long> {
 				.sorted((ch1, ch2) -> Integer.compare(ch1.getState().getPriority(), 
 						ch2.getState().getPriority()))
 				.collect(Collectors.toList());
-		
-		result.get(0).getState().incPriority();
+		if (result.size() > 0)
+			result.get(0).getState().incPriority();
 		return result;
 	}
 	

@@ -18,11 +18,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import ru.rik.cardsnew.domain.repo.CardsStates;
-import ru.rik.cardsnew.domain.repo.ChannelsStates;
-import ru.rik.cardsnew.domain.repo.TrunksStates;
 import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
@@ -43,13 +42,14 @@ public class RootConfig implements SchedulingConfigurer {
 	}
 
 	@Bean public AppInitializer appInitializer()  { return new AppInitializer();	}
-	@Bean public TrunksStates trunksStats()  { return new TrunksStates();	}
-	@Bean public ChannelsStates channelsStates()  {return new ChannelsStates();}
+
 	@Bean public CardsStates cardsStates()  {return new CardsStates();}
 	
 	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
 	@Bean public PeriodicTasks periodicTasks()  { return new PeriodicTasks();}
 	@Bean public AsyncTasks asyncTasks()  { return new AsyncTasks();}
+	@Bean (initMethod="init") 
+	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 	
 	@Bean(initMethod="start", destroyMethod="stop")
 	public AsteriskEvents asteriskEvents() {

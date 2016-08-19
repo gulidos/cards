@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepoImpl;
-import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
@@ -37,7 +37,7 @@ public class TrunkController {
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chans;
-	@Autowired CardRepo cards;
+	@Autowired CardRepoImpl cards;
 	
 	public TrunkController() { 
 		super();

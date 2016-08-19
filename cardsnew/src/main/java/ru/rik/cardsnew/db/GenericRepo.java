@@ -7,17 +7,19 @@ import java.util.List;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
 
+import ru.rik.cardsnew.domain.State;
 
-public interface GenericRepo<T, ID extends Serializable>
+
+public interface GenericRepo<T extends State, S extends State>
     extends Serializable {
 
-    void joinTransaction();
+//    void joinTransaction();
 
-    T findById(ID id);
+    T findById(long id);
 
-    T findById(ID id, LockModeType lockModeType);
+    T findById(long id, LockModeType lockModeType);
 
-    T findReferenceById(ID id);
+//    T findReferenceById(ID id);
 
     List<T> findAll();
 

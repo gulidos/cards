@@ -34,10 +34,10 @@ import lombok.experimental.Builder;
 @ToString(exclude={"channels"})
 @EqualsAndHashCode(exclude={"channels"})
 @Entity
-@Table(name="BOX")
+@Table(name="_BOX")
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
-public class Box {
+public class Box implements State {
 	
 	@Transient public static final String DEF_USER = "voip";
 	@Transient public static final String DEF_PASSWORD = "1234";
@@ -67,8 +67,12 @@ public class Box {
     @OneToMany( mappedBy = "box", fetch=FetchType.LAZY)
   	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Channel> channels = new HashSet<>();
-
+  	
+  	@Override
 	public String getName() {
 		return getIp();
 	}
+	
+	
+	@Override public void setName(String name) {}
 }

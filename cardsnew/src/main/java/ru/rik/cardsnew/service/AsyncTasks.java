@@ -1,6 +1,5 @@
 package ru.rik.cardsnew.service;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -28,7 +27,7 @@ public class AsyncTasks {
 	public void checkChannel(Channel ch) {
 		try {
 			httpHelper.getGsmStatus(ch);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		

@@ -35,10 +35,12 @@ public class HttpHelper {
 	
 	
 	
-	public void getGsmStatus(final Channel ch) throws IOException {
+	public void getGsmStatus(final Channel ch) throws IOException, IllegalAccessException {
 		String nport = Integer.toString(ch.getLine().getNport());
 		Connection con = getCon(ch, "gsmstatus.cgi");
 		ChannelState st = ch.getState();
+		if (st == null) 
+			throw new IllegalAccessException("Channel does't have state yet!");
 		
 		Document doc = con.data("nPortNum", nport).post();
 		st.setLastUpdate(new Date());
@@ -51,8 +53,11 @@ public class HttpHelper {
 		st.setOperator(imob.attributes().get("value"));
 		
 		imob  = doc.select("input[name=CSQ]").first();
-		int q = Integer.parseInt(imob.attributes().get("value"));
-		st.setSigquality(q);
+		String v = imob.attributes().get("value");
+		if ( v.length() > 0) {
+			int q = Integer.parseInt(v);
+			st.setSigquality(q);
+		}
 		
 		imob  = doc.select("input[name=CREG]").first();
 		st.setRegstate(imob.attributes().get("value"));

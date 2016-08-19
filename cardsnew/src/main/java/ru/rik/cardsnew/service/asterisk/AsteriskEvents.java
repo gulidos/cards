@@ -3,8 +3,6 @@ package ru.rik.cardsnew.service.asterisk;
 import java.io.IOException;
 import java.text.ParseException;
 
-
-import org.apache.log4j.Logger;
 import org.asteriskjava.manager.AuthenticationFailedException;
 import org.asteriskjava.manager.ManagerConnection;
 import org.asteriskjava.manager.ManagerConnectionFactory;
@@ -12,16 +10,19 @@ import org.asteriskjava.manager.ManagerEventListener;
 import org.asteriskjava.manager.TimeoutException;
 import org.asteriskjava.manager.event.CdrEvent;
 import org.asteriskjava.manager.event.ManagerEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.events.CdrCardEvent;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 
 public class AsteriskEvents implements ManagerEventListener {
-	static Logger log = Logger.getLogger(AsteriskEvents.class);
+	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
 
 	private ManagerConnection managerConnection;
 	
@@ -34,12 +35,14 @@ public class AsteriskEvents implements ManagerEventListener {
 	}
 
 	public void start() throws IOException, AuthenticationFailedException, TimeoutException, InterruptedException {
+		logger.info("Asterisk managerConnection log in ");
+
 		managerConnection.addEventListener(this);
 		managerConnection.login();
 	}
 
 	public void stop() throws IllegalStateException {
-		log.info("Asterisk managerConnection is logging off ");
+		logger.info("Asterisk managerConnection is logging off ");
 		managerConnection.logoff();
 	}
 
@@ -47,7 +50,7 @@ public class AsteriskEvents implements ManagerEventListener {
 		if (event instanceof CdrEvent) {
 			CdrEvent cdrevent = (CdrEvent) event;
 			if (cdrevent.getUserField() != null) {
-				log.debug("AnswerTime: " + cdrevent.getAnswerTime() + " AnswerTimeAsDate: "
+				logger.debug("AnswerTime: " + cdrevent.getAnswerTime() + " AnswerTimeAsDate: "
 						+ cdrevent.getAnswerTimeAsDate() + " StartTime: " + cdrevent.getStartTime()
 						+ " StartTimeAsDate: " + cdrevent.getStartTimeAsDate() + " Src: " + cdrevent.getSrc()
 						+ " Destination: " + cdrevent.getDestination() + " Disposition: " + cdrevent.getDisposition()
@@ -87,10 +90,10 @@ public class AsteriskEvents implements ManagerEventListener {
 				cardStat.calcAcd();
 				cardStat.calcAsr();
 			} catch (ParseException pe) {
-				log.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
+				logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
 			}
 		} else 
-			log.debug("The card with name " + cardname + " does not exist");
+			logger.debug("The card with name " + cardname + " does not exist");
 	}
 
 }

@@ -31,7 +31,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.config.AppInitializer;
-import ru.rik.cardsnew.domain.repo.ChannelsStates;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,11 +39,11 @@ import ru.rik.cardsnew.domain.repo.ChannelsStates;
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
 @ToString (exclude = {"box",  "group"})
 @Entity
-@Table(name="CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
+@Table(name="_CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
-public class Channel {
-	@Transient private static ChannelsStates channelsStates;
+public class Channel implements State{
+	@Transient private static ChannelRepoImpl channelRepoImpl;
 	@Transient private static Object sync = new Object();
 	
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -86,12 +86,12 @@ public class Channel {
 
 	public ChannelState getState() {
 
-		if (channelsStates == null) {
+		if (channelRepoImpl == null) {
 			synchronized (sync) {
-				channelsStates = (ChannelsStates) AppInitializer.getContext().getBean("channelsStates");
+				channelRepoImpl = (ChannelRepoImpl) AppInitializer.getContext().getBean("channelRepoImpl");
 			}
 		}	
-		return channelsStates.findById(getId());
+		return channelRepoImpl.findStateById(getId());
 	}
 	
 	

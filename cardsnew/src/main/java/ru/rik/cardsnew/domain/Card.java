@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -29,13 +28,13 @@ import lombok.experimental.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = { "group", "bank","channel"},callSuper = false)
-@ToString(exclude = {"group", "bank","channel"})
+@EqualsAndHashCode(exclude = { "group", "bank"},callSuper = false)
+@ToString(exclude = {"group", "bank"})
 @Entity
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
-public class Card {
+@Table(name="_CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
+public class Card implements State {
     @Id @Getter @Setter
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -24,10 +24,10 @@
         </encoder>
     </appender>
     
- 	<!-- <logger name="org.hibernate.SQL" level="DEBUG" /> -->
+ 	 <logger name="org.hibernate" level="DEBUG" /> 
    	
-   	<logger name="org.hibernate.type" level="ERROR" /> 	
-   	 <logger name="org.hibernate.SQL" level="ERROR" />
+   	<logger name="org.hibernate.type" level="TRACE" /> 	
+   	 <logger name="org.hibernate.SQL" level="TRACE" />
    	 
   <!--  	 net.sf.ehcache -->
 

@@ -5,14 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.events.CdrCardEvent;
@@ -20,17 +21,18 @@ import ru.rik.cardsnew.domain.repo.CardsStates;
 
 
 public class CheckCDRTask {
+	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
+
 	@Autowired private CardsStates cardsStates;
 	@Autowired private CardRepoImpl cardRepo;
 	@Autowired private DataSource ds;
-	static Logger log = Logger.getLogger(CheckCDRTask.class);
 
 	public CheckCDRTask() {
-		log.info("Creating Tast for getting CDRs");
+		logger.info("Creating Tast for getting CDRs");
 	}
 
 	public void init() {
-		log.info("CheckCDRTask initing");
+		logger.info("CheckCDRTask initing");
 		getCDR(5760, true);
 		cardsStates.refreshStats();
 		
@@ -70,7 +72,7 @@ public class CheckCDRTask {
 						cardStat.addEvent(cdr);
 						n++;
 					} catch (ParseException pe) {
-						log.error("can not create CdrEvent calldate: " + rs.getString("calldate") +" cardname: " + cardname, pe);
+						logger.error("can not create CdrEvent calldate: " + rs.getString("calldate") +" cardname: " + cardname, pe);
 					}
 					
 				} else {
@@ -78,9 +80,9 @@ public class CheckCDRTask {
 				}
 			}
 		} catch (SQLException e) {
-			log.error(e, e);
+			logger.error(e.getMessage(), e);
 		}
-		log.debug(n + " CDRs loaded");
+		logger.debug(n + " CDRs loaded");
 	}
 
 //	public static void logStat() {

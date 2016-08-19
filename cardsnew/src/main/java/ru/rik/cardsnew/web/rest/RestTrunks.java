@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Data;
-import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
@@ -26,7 +26,7 @@ public class RestTrunks {
 	@Autowired
 	GroupRepoImpl groups;
 	@Autowired
-	CardRepo cards;
+	CardRepoImpl cards;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chanRepo;
 

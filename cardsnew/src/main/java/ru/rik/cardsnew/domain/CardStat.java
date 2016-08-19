@@ -10,15 +10,17 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import org.apache.log4j.Logger;
 
+import lombok.NoArgsConstructor;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.events.CdrCardEvent;
 import ru.rik.cardsnew.domain.events.Disposition;
 import ru.rik.cardsnew.domain.events.Event;
 
-
-public class CardStat {
+@NoArgsConstructor
+public class CardStat implements State {
 	static Logger log = Logger.getLogger(CardStat.class);
-	private long cardId;
+	private long id;
+	private String name;
 	private Deque<Event> events;
 	private int asr;
 	private double acd;
@@ -30,12 +32,8 @@ public class CardStat {
 	private int mskOperMin;
 	private int offnetOperMin;
 
-
-	public CardStat() {
-	}
-
 	public CardStat(Card card) {
-		this.cardId = card.getId();
+		this.id = card.getId();
 		this.todayMin = 0;
 		this.todayOperMin = 0;
 		this.mskOperMin = 0;
@@ -77,7 +75,7 @@ public class CardStat {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(getCardId());
+		sb.append(getId());
 		sb.append(" today:").append(todayOperMin).append("(").append(getTodayMin()).append(")");
 		sb.append(":").append(mskOperMin);
 		sb.append(":").append(offnetOperMin);
@@ -263,10 +261,11 @@ public class CardStat {
 	public int getAsr() {
 		return this.asr;
 	}
-
-	public long getCardId() {
-		return cardId;
-	}
+	
+	@Override public long getId() {return id;}
+	@Override public void setId(long id) { this.id = id;}
+	@Override public String getName() {return name;}
+	@Override public void setName(String name) {this.name = name;}
 
 	public Deque<Event> getEvents() {
 		return events;

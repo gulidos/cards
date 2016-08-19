@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rik.cardsnew.config.AppInitializer;
-import ru.rik.cardsnew.domain.repo.TrunksStates;
+import ru.rik.cardsnew.db.TrunkRepoImpl;
 
 @Data
 @AllArgsConstructor
@@ -35,8 +35,8 @@ import ru.rik.cardsnew.domain.repo.TrunksStates;
 @Entity 
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name = "TRUNK")
-public class Trunk {
+@Table(name = "_TRUNK")
+public class Trunk implements State {
 //	@Transient
 //	private static final TrunksStates trunksStats = (TrunksStates) AppInitializer.getContext().getBean("trunksStats");
 
@@ -57,8 +57,8 @@ public class Trunk {
 	Set<Channel> channels = new HashSet<>();
 
 	public TrunkState getState() {
-		TrunksStates trunksStats = (TrunksStates) AppInitializer.getContext().getBean("trunksStats");
-		return trunksStats.findById(getId());
+		TrunkRepoImpl trunksStats = (TrunkRepoImpl) AppInitializer.getContext().getBean("trunkRepoImpl");
+		return trunksStats.findStateById(getId());
 	}
 	
 	

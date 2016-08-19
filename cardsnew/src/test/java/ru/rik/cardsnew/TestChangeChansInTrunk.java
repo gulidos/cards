@@ -14,7 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Channel;
@@ -29,7 +29,7 @@ public class TestChangeChansInTrunk {
 //	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chans;
-	@Autowired CardRepo cards;
+	@Autowired CardRepoImpl cards;
 
 	public TestChangeChansInTrunk() {
 	}

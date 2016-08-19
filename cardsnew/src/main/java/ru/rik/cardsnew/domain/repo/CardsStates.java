@@ -22,7 +22,7 @@ public class CardsStates  {
 	/**  Returns:	the previous value associated with the specified key, 
 	 * or null if there was no mapping for the key*/
 	public CardStat add(CardStat c) {
-		return cards.putIfAbsent(c.getCardId(), c);
+		return cards.putIfAbsent(c.getId(), c);
 	}
 	
 	

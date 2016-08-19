@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BankRepoImpl;
-import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.GroupRepoImpl;
 import ru.rik.cardsnew.domain.Card;
@@ -32,7 +32,7 @@ public class CardsController {
 
 	@Autowired GroupRepoImpl groups;
 	@Autowired BankRepoImpl banks;
-	@Autowired CardRepo cards;
+	@Autowired CardRepoImpl cards;
 	@Autowired ChannelRepoImpl channels;
 	
 	public CardsController() {
