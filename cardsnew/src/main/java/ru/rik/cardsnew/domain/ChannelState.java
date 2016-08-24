@@ -3,9 +3,11 @@ package ru.rik.cardsnew.domain;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(of={"id", "name"})
 public class ChannelState implements State {
 	private long id;
 	private String name;

@@ -1,5 +1,8 @@
 package ru.rik.cardsnew.domain;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(of={"id", "name"})
 public class BoxStat implements State {
 	private long id;
 	private String name;

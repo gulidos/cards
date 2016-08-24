@@ -34,8 +34,8 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
     protected final Class<T> entityClass;
     protected final Class<S> entityStateClass;
     protected CriteriaBuilder cb;
-    protected ConcurrentMap<Long, S> statsById;
-    protected ConcurrentMap<String, S> statsByName;
+    protected final ConcurrentMap<Long, S> statsById;
+    protected final ConcurrentMap<String, S> statsByName;
     
     protected GenericRepoImpl(Class<T> entityClass, Class<S> entityStateClass) {
         this.entityClass = entityClass;
@@ -140,6 +140,9 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
     @Override
     public void makeTransient(T instance) {
         em.remove(instance);
+        
+        S s = findStateById(instance.getId());
+        removeStateIfExists(s);
     }
     
     @Override
@@ -172,13 +175,19 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
 		return state;
 	}
 	
+	public boolean removeStateIfExists (S s) {
+		S removed = statsById.remove(s.getId());
+		statsByName.remove(s.getName());
+		return removed != null;
+	}
+	
 	
 	public S findStateById (long id) {
 		return statsById.get(id);
 	}
 	
 	public S findStateByName (String name) {
-		return statsById.get(name);
+		return statsByName.get(name);
 	}
 
 }

@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.events.CdrCardEvent;
@@ -21,7 +20,7 @@ import ru.rik.cardsnew.domain.repo.CardsStates;
 
 
 public class CheckCDRTask {
-	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(CheckCDRTask.class);
 
 	@Autowired private CardsStates cardsStates;
 	@Autowired private CardRepoImpl cardRepo;

@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import org.apache.log4j.Logger;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.events.CdrCardEvent;
@@ -17,6 +18,7 @@ import ru.rik.cardsnew.domain.events.Disposition;
 import ru.rik.cardsnew.domain.events.Event;
 
 @NoArgsConstructor
+@EqualsAndHashCode(of={"id", "name"})
 public class CardStat implements State {
 	static Logger log = Logger.getLogger(CardStat.class);
 	private long id;

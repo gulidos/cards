@@ -1,6 +1,10 @@
 package ru.rik.cardsnew.domain;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(of={"id", "name"})
 public class GrpState implements State {
+	
 	private long id;
 	private String name;
 	
@@ -12,4 +16,5 @@ public class GrpState implements State {
 	
 	@Override public String getName() {return name;}
 	@Override public void setName(String name) {this.name = name;}
+	
 }

@@ -2,6 +2,9 @@ package ru.rik.cardsnew.domain;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(of={"id", "name"})
 public class TrunkState implements State {
 	private long id;
 	private String name;
