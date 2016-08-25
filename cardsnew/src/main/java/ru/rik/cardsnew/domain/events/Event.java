@@ -8,7 +8,6 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.CardStat;
 
 @Data

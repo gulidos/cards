@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.CardStat;
-import ru.rik.cardsnew.domain.events.CdrCardEvent;
+import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.CardsStates;
+import ru.rik.cardsnew.domain.repo.Cdrs;
 
 public class AsteriskEvents implements ManagerEventListener {
 	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
@@ -28,6 +28,7 @@ public class AsteriskEvents implements ManagerEventListener {
 	
 	@Autowired private CardRepoImpl cardRepo;
 	@Autowired private CardsStates cardsStates;
+	@Autowired private Cdrs cdrs;
 
 	public AsteriskEvents() {
 		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "myasterisk", "mycode");
@@ -68,32 +69,25 @@ public class AsteriskEvents implements ManagerEventListener {
 		if (cardname == null ) return;
 		
 		Card card = cardRepo.findByName(cardname);
-		if (card != null) {
-			try {
-				CdrCardEvent cdr = CdrCardEvent.builder()
-						.date(ce.getStartTime())
-						.src(ce.getSrc())
-						.dst(ce.getDestination())
-						.cardId(card.getId())
-						.billsec(ce.getBillableSeconds())
-						.trunk(ce.getTrunk())
-						.disp(ce.getDisposition())
-						.regcode(ce.getRegcode())
-						.build();
-				
-				CardStat cardStat = cardsStates.findById(card.getId());
-				if (cardStat == null) {
-					cardStat = new CardStat(card);
-					cardsStates.add(cardStat);
-				}	
-				cardStat.addEvent(cdr);
-				cardStat.calcAcd();
-				cardStat.calcAsr();
-			} catch (ParseException pe) {
-				logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
-			}
-		} else 
+		if (card == null) {
 			logger.debug("The card with name " + cardname + " does not exist");
+			return;
+		}
+		try {
+			Cdr cdr = Cdr.builder()
+				.date(ce.getStartTime())
+				.src(ce.getSrc())
+				.dst(ce.getDestination())
+				.cardId(card.getId())
+				.billsec(ce.getBillableSeconds())
+				.trunk(ce.getTrunk())
+				.disp(ce.getDisposition())
+				.regcode(ce.getRegcode())
+				.build();
+			
+		cdrs.addCdr(cdr);
+		} catch (ParseException pe) {
+			logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
+		}			
 	}
-
 }

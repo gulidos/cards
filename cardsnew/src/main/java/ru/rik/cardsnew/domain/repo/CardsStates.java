@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.events.Event.Executable;
-import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 
 public class CardsStates  {
 	static Logger logger = Logger.getLogger(CardsStates.class);

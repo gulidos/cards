@@ -13,8 +13,8 @@ import lombok.experimental.Builder;
 
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class CdrCardEvent extends Event {
-	static Logger log = Logger.getLogger(CdrCardEvent.class);
+public class Cdr extends Event {
+	static Logger log = Logger.getLogger(Cdr.class);
 	public static final DecimalFormat df = new DecimalFormat("###.##");
 	
 	private String src;
@@ -25,7 +25,7 @@ public class CdrCardEvent extends Event {
 	private Disposition disposition; 
 	
 	@Builder
-	private CdrCardEvent(String date, String src, String dst, long cardId, int billsec, String trunk, String disp, String regcode)
+	private Cdr(String date, String src, String dst, long cardId, int billsec, String trunk, String disp, String regcode)
 			throws ParseException {
 		super(date, cardId);
 		this.src = src;

@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.rik.cardsnew.config.Settings;
-import ru.rik.cardsnew.domain.events.CdrCardEvent;
+import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.events.Disposition;
 import ru.rik.cardsnew.domain.events.Event;
 
@@ -43,15 +43,15 @@ public class CardStat implements State {
 		this.events = new LinkedBlockingDeque<>();
 	}
 
-	public void addEvent(Event ev) {
-		events.addFirst(ev);
-		if (ev instanceof CdrCardEvent) {
-			CdrCardEvent cdr = (CdrCardEvent) ev;
-			incTodayTime(cdr);
-		}
-	}
+//	public void addEvent(Event ev) {
+//		events.addFirst(ev);
+//		if (ev instanceof CdrCardEvent) {
+//			CdrCardEvent cdr = (CdrCardEvent) ev;
+//			incTodayTime(cdr);
+//		}
+//	}
 
-	private void incTodayTime(CdrCardEvent cdr) {
+	private void incTodayTime(Cdr cdr) {
 		if (cdr.isToday()) {
 			this.todayMin += cdr.getMin();
 			this.todayOperMin += cdr.getMinOper();
@@ -95,10 +95,10 @@ public class CardStat implements State {
 
 
 	public void calcAsr() {
-		List<CdrCardEvent> lastCalls = getLastNCDRs(Settings.ASR_AFFECTED, null);
+		List<Cdr> lastCalls = getLastNCDRs(Settings.ASR_AFFECTED, null);
 		if (lastCalls.size() > 0) {
 			double successCalls = 0;
-			for (CdrCardEvent cdr : lastCalls) {
+			for (Cdr cdr : lastCalls) {
 				if (cdr.getDisposition() == Disposition.ANSWERED) {
 					successCalls++;
 				}
@@ -111,10 +111,10 @@ public class CardStat implements State {
 	}
 
 	public void calcAcd() {
-		List<CdrCardEvent> lastCalls = getLastNCDRs(Settings.ASR_AFFECTED, Disposition.ANSWERED);
+		List<Cdr> lastCalls = getLastNCDRs(Settings.ASR_AFFECTED, Disposition.ANSWERED);
 		if (lastCalls.size() > 0) {
 			double sumSec = 0;
-			for (CdrCardEvent cdr : lastCalls) {
+			for (Cdr cdr : lastCalls) {
 				sumSec += cdr.getBillsec();
 			}
 			double acd = sumSec / Settings.ASR_AFFECTED / 60;
@@ -124,15 +124,15 @@ public class CardStat implements State {
 		}
 	}
 
-	public List<CdrCardEvent> getLastNCDRs(int k, Disposition disp) {
-		List<CdrCardEvent> cdrs = new ArrayList<>();
+	public List<Cdr> getLastNCDRs(int k, Disposition disp) {
+		List<Cdr> cdrs = new ArrayList<>();
 		int count = events.size() < k ? events.size() : k;
 		if (count == 0)
 			return cdrs;
 		int i = 0;
 		for (Event event : events) {
-			if (event instanceof CdrCardEvent) {
-				CdrCardEvent cdr = (CdrCardEvent) event;
+			if (event instanceof Cdr) {
+				Cdr cdr = (Cdr) event;
 				if ((disp != null && cdr.getDisposition() == disp) || (disp == null)) {
 					i++;
 					cdrs.add(cdr);
@@ -185,9 +185,9 @@ public class CardStat implements State {
 	public int getLast24hMinutes () {
 		int n = 0;
 		for (Event event: getDiapasonEvents (86400000)) { //24 * 60 * 60 * 1000
-			CdrCardEvent cdr = null;
-			if (event instanceof CdrCardEvent) 
-				cdr = (CdrCardEvent) event;
+			Cdr cdr = null;
+			if (event instanceof Cdr) 
+				cdr = (Cdr) event;
 			else break;
 			n +=cdr.getMinOper();
 		}
@@ -197,7 +197,7 @@ public class CardStat implements State {
 	public int getLast24hCallNumber () {
 		int n = 0;
 		for (Event event: getDiapasonEvents (86400000)) { //24 * 60 * 60 * 1000
-			if (event instanceof CdrCardEvent) 
+			if (event instanceof Cdr) 
 				n++;
 			else break;
 		}
@@ -209,8 +209,8 @@ public class CardStat implements State {
 		double m = 0; //whole number of Dst 
 		Set <String> uniqNumbers = new HashSet<>();
 		for (Event event: getDiapasonEvents (86400000)) { //24 * 60 * 60 * 1000
-			if (event instanceof CdrCardEvent ) {
-				if(uniqNumbers.add(((CdrCardEvent) event).getDst())) 
+			if (event instanceof Cdr ) {
+				if(uniqNumbers.add(((Cdr) event).getDst())) 
 					uniqN++;
 				m++;
 			}		
@@ -224,8 +224,8 @@ public class CardStat implements State {
 		double m = 0; //whole number of Dst 
 		Set <String> uniqNumbers = new HashSet<>();
 		for (Event event: getDiapasonEvents (345600000)) { //96 * 60 * 60 * 1000
-			if (event instanceof CdrCardEvent ) {
-				if(uniqNumbers.add(((CdrCardEvent) event).getDst())) 
+			if (event instanceof Cdr ) {
+				if(uniqNumbers.add(((Cdr) event).getDst())) 
 					uniqN++;
 				m++;
 			}		
@@ -237,9 +237,9 @@ public class CardStat implements State {
 	public int getLast1hMinutes () {
 		int n = 0;
 		for (Event event: getDiapasonEvents (3600000)) { //60 * 60 * 1000
-			CdrCardEvent cdr = null;
-			if (event instanceof CdrCardEvent) 
-				cdr = (CdrCardEvent) event;
+			Cdr cdr = null;
+			if (event instanceof Cdr) 
+				cdr = (Cdr) event;
 			else break;
 			n +=cdr.getMinOper();
 		}
@@ -249,7 +249,7 @@ public class CardStat implements State {
 	public int getLast1hCallNumber () {
 		int n = 0;
 		for (Event event: getDiapasonEvents (3600000)) { //60 * 60 * 1000
-			if (event instanceof CdrCardEvent) 
+			if (event instanceof Cdr) 
 				n++;
 			else break;
 		}
