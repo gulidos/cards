@@ -54,6 +54,7 @@ public class CheckCDRTask {
 				Card card = cardRepo.findByName(cardname);
 				if (card != null) {
 					try {
+						
 						Cdr cdr = Cdr.builder()
 								.date(rs.getString("calldate"))
 								.src(rs.getString("src"))

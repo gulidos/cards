@@ -26,10 +26,7 @@ public class Cdrs {
 	
 	public boolean  addCdr(Cdr cdr) {
 		
-		CardStat s =  cardRepo.findStateById(cdr.getCardId());
-		if (s == null) {
-			CardStat newS = new CardStat
-		}
+
 //		cdrsByCard.put(cdr.ge, value)
 		return cdrsList.offerFirst(cdr);
 	}

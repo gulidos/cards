@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Builder;
 @Data
-
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class Cdr extends Event {
@@ -22,10 +21,14 @@ public class Cdr extends Event {
 	private int billsec;
 	private String trunk;
 	private String regcode;
-	private Disposition disposition; 
+	private Disposition disposition;
+	private String uniqueid;
+	private String destinationChannel;
+	private long channelId;
 	
 	@Builder
-	private Cdr(String date, String src, String dst, long cardId, int billsec, String trunk, String disp, String regcode)
+	private Cdr(String date, String src, String dst, long cardId, int billsec, String trunk, 
+			String disp, String regcode, String uniqueid, String destinationChannel)
 			throws ParseException {
 		super(date, cardId);
 		this.src = src;
@@ -34,6 +37,8 @@ public class Cdr extends Event {
 		this.trunk = trunk;
 		this.disposition = Disposition.getEnum(disp);
 		this.regcode = regcode;
+		this.uniqueid = uniqueid	;
+		this.destinationChannel = destinationChannel;
 	}
 
 	
@@ -63,5 +68,12 @@ public class Cdr extends Event {
 		double billsecd = (double) billsec;
 		return df.format(billsecd/60);
 	}
+	
+	private void setChannelId(){
+		if (channelId == 0) {
+			// FIXME implemet this!
+		}
+	}
+	
 	
 }
