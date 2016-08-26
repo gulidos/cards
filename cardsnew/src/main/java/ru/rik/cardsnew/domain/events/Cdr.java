@@ -2,6 +2,8 @@ package ru.rik.cardsnew.domain.events;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +17,7 @@ import lombok.experimental.Builder;
 public class Cdr extends Event {
 	static Logger log = Logger.getLogger(Cdr.class);
 	public static final DecimalFormat df = new DecimalFormat("###.##");
+	private static Pattern p = Pattern.compile("^SIP\\/(.*)-.*$");
 	
 	private String src;
 	private String dst;
@@ -23,12 +26,12 @@ public class Cdr extends Event {
 	private String regcode;
 	private Disposition disposition;
 	private String uniqueid;
-	private String destinationChannel;
+//	private String destinationChannel;
 	private long channelId;
 	
 	@Builder
 	private Cdr(String date, String src, String dst, long cardId, int billsec, String trunk, 
-			String disp, String regcode, String uniqueid, String destinationChannel)
+			String disp, String regcode, String uniqueid, long channelId)
 			throws ParseException {
 		super(date, cardId);
 		this.src = src;
@@ -38,7 +41,7 @@ public class Cdr extends Event {
 		this.disposition = Disposition.getEnum(disp);
 		this.regcode = regcode;
 		this.uniqueid = uniqueid	;
-		this.destinationChannel = destinationChannel;
+		this.channelId = channelId;
 	}
 
 	
@@ -69,10 +72,14 @@ public class Cdr extends Event {
 		return df.format(billsecd/60);
 	}
 	
-	private void setChannelId(){
-		if (channelId == 0) {
-			// FIXME implemet this!
-		}
+	public static String parseChannel(String s) {
+		if (s == null & s.equals(""))
+			throw new IllegalArgumentException("String for parsing can not be null");
+		Matcher m = p.matcher(s);
+		if (m.matches())
+			return m.group(1);
+		else
+			return null;
 	}
 	
 	

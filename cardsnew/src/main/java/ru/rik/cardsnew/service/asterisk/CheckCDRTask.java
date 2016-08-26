@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
@@ -24,6 +26,7 @@ public class CheckCDRTask {
 
 	@Autowired private CardsStates cardsStates;
 	@Autowired private CardRepoImpl cardRepo;
+	@Autowired private ChannelRepoImpl chanRepo;
 	@Autowired private DataSource ds;
 	@Autowired private Cdrs cdrs;
 
@@ -49,12 +52,14 @@ public class CheckCDRTask {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				String cardname = rs.getString("userfield");
+				String destchanname = rs.getString("dstchannel");
 				if (cardname == null) continue;
 				
 				Card card = cardRepo.findByName(cardname);
-				if (card != null) {
+				Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
+				
+				if (card != null) { // FIXME to add null checking for channel
 					try {
-						
 						Cdr cdr = Cdr.builder()
 								.date(rs.getString("calldate"))
 								.src(rs.getString("src"))
@@ -64,6 +69,8 @@ public class CheckCDRTask {
 								.trunk(rs.getString("trunk"))
 								.disp(rs.getString("disposition"))
 								.regcode(rs.getString("regcode"))
+								.uniqueid(rs.getString("uniqueid"))
+								.channelId(chan.getId())
 								.build();
 						cdrs.addCdr(cdr);
 						

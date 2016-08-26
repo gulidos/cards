@@ -72,7 +72,9 @@ public class AsteriskEvents implements ManagerEventListener {
 		if (cardname == null ) return;
 		
 		Card card = cardRepo.findByName(cardname);
-		if (card == null) {
+		Channel chan = chanRepo.findByName(Cdr.parseChannel(ce.getDestinationChannel()));
+		
+		if (card == null) { // FIXME to add null checking for channel
 			logger.debug("The card with name " + cardname + " does not exist");
 			return;
 		}
@@ -87,7 +89,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.disp(ce.getDisposition())
 				.regcode(ce.getRegcode())
 				.uniqueid(ce.getUniqueId())
-				.channelId(ce.getDestinationChannel())
+				.channelId(chan.getId())
 				.build();
 			
 		cdrs.addCdr(cdr);
