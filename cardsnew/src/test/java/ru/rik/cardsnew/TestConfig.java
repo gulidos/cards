@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.rik.cardsnew.config.AppInitializer;
 import ru.rik.cardsnew.db.JpaConfig;
 import ru.rik.cardsnew.domain.repo.CardsStates;
+import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
@@ -38,6 +40,9 @@ public class TestConfig {
 	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
 	@Bean public PeriodicTasks periodicTasks()  { return new PeriodicTasks();}
 	@Bean public AsyncTasks asyncTasks()  { return new AsyncTasks();}
+	@Bean (initMethod="init") 
+	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+	@Bean public Cdrs cdrs()  { return new Cdrs();}
 	
 	@Bean(initMethod="start", destroyMethod="stop")
 	public AsteriskEvents asteriskEvents() {

@@ -68,13 +68,15 @@ public class AsteriskEvents implements ManagerEventListener {
 	}
 
 	public void addCdr(CdrEvent ce) {
-		String cardname = ce.getUserField();
-		if (cardname == null ) return;
+		String cardname = ce.getUserField();  //TODO parse cards _mgf...
+		String destchanname = ce.getDestinationChannel();
+
+		if (cardname == null) return;
 		
 		Card card = cardRepo.findByName(cardname);
-		Channel chan = chanRepo.findByName(Cdr.parseChannel(ce.getDestinationChannel()));
+		Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 		
-		if (card == null) { // FIXME to add null checking for channel
+		if (card == null && chan != null) { 
 			logger.debug("The card with name " + cardname + " does not exist");
 			return;
 		}

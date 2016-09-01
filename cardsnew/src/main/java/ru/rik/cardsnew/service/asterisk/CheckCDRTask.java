@@ -53,12 +53,13 @@ public class CheckCDRTask {
 			while (rs.next()) {
 				String cardname = rs.getString("userfield");
 				String destchanname = rs.getString("dstchannel");
-				if (cardname == null) continue;
+				if (cardname == null ) continue; 
 				
+				logger.debug("cardname: "+cardname+" dstchannel:"+destchanname); 
 				Card card = cardRepo.findByName(cardname);
 				Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 				
-				if (card != null) { // FIXME to add null checking for channel
+				if (card != null && chan != null) { 
 					try {
 						Cdr cdr = Cdr.builder()
 								.date(rs.getString("calldate"))

@@ -2,6 +2,7 @@ package ru.rik.cardsnew.domain.repo;
 
 import java.util.Deque;
 import java.util.NavigableMap;
+import java.util.SortedMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -9,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.domain.CardStat;
+
 import ru.rik.cardsnew.domain.events.Cdr;
 
 public class Cdrs {
@@ -25,10 +26,14 @@ public class Cdrs {
 	}
 	
 	public boolean  addCdr(Cdr cdr) {
-		
-
-//		cdrsByCard.put(cdr.ge, value)
+		cdrsByCard.put(cdr.getCardId() + "_" + cdr.getUniqueid(), cdr);
 		return cdrsList.offerFirst(cdr);
+	}
+	
+	public SortedMap <String, Cdr> findCdrByCards(long id) {
+		String keyFrom = String.valueOf(id) + "_" + "0";
+		String keyTo = String.valueOf(id) + "_" + "A";
+		return cdrsByCard.subMap(keyFrom, keyTo);
 	}
 
 }
