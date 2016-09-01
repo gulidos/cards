@@ -19,8 +19,8 @@
 </head>
 <body>
 	<div class="container">
-	<div class="panel panel-default" >
-		<div class="panel-heading">ItemC</div>
+	<div class="panel panel-default " >
+		<div class="panel-heading"></div>
 		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/edit}" th:method="post" >
 			<div class="form-group" >
 				<label class="col-sm-4 col-xs-8 control-label" >name</label>
@@ -77,6 +77,30 @@
 				<input type="checkbox" th:field="*{enabled}" />
 				</div>
 			</div>	 
+	
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	
+						th:value="${action}=='delete' ? 'delete' : 'save'" 
+						th:text="${action}=='delete' ? 'delete' : 'save'"> 
+					</button>
+					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+				</div>
+			</div>
+			
+		</form>
+		</div>
+		
+		<div class="panel panel-default " >
+		<div class="panel-heading">Statistics</div>
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/edit}" th:method="post" >
+					
+		<div class="row">
+			<div class="col-lg-11  ">
+				<pre th:each="counter : ${counters}" th:text="${counter}">
+				</pre>
+			</div>
+		</div>
 	
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">

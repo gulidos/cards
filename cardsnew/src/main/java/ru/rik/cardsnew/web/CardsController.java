@@ -172,4 +172,16 @@ public class CardsController {
 //		return mav;
 //	}
 
+	
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	public String stat(Model model) {
+		model.addAttribute("cards", cards.findAll());
+
+		if (!model.containsAttribute("card")) {
+			Card card = new Card();
+			model.addAttribute("card", card);
+		}
+
+		return "cardsstat";
+	}
 }

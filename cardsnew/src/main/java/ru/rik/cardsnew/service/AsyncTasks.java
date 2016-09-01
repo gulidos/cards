@@ -28,7 +28,7 @@ public class AsyncTasks {
 		try {
 			httpHelper.getGsmStatus(ch);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage() + "trying to check channel " + ch.getName() + " ip: " + ch.getBox().getIp(), e);
 		}
 		
 	}

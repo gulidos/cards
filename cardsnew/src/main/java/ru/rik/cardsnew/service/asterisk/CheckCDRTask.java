@@ -54,12 +54,14 @@ public class CheckCDRTask {
 				String cardname = rs.getString("userfield");
 				String destchanname = rs.getString("dstchannel");
 				if (cardname == null) continue;
-				
+//				logger.debug(cardname + " " + destchanname);
 				Card card = cardRepo.findByName(cardname);
 				Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 				
 				if (card != null) { // FIXME to add null checking for channel
 					try {
+//						logger.debug("== our card: " + card.toString());
+
 						Cdr cdr = Cdr.builder()
 								.date(rs.getString("calldate"))
 								.src(rs.getString("src"))
@@ -70,13 +72,15 @@ public class CheckCDRTask {
 								.disp(rs.getString("disposition"))
 								.regcode(rs.getString("regcode"))
 								.uniqueid(rs.getString("uniqueid"))
-								.channelId(chan.getId())
+								.channelId(chan != null ? chan.getId() : 0)
 								.build();
 						cdrs.addCdr(cdr);
 						
 						n++;
 					} catch (ParseException pe) {
 						logger.error("can not create CdrEvent calldate: " + rs.getString("calldate") +" cardname: " + cardname, pe);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
 					}
 					
 				} else {

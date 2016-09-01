@@ -12,11 +12,8 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
+import ru.rik.cardsnew.service.http.HttpHelper;
 
-//import ru.rik.cardsnew.config.AppInitializer;
-//import ru.rik.cardsnew.domain.repo.ChannelsStates;
-//import ru.rik.cardsnew.domain.repo.TrunksStates;
-//import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
 @EnableAsync
@@ -27,7 +24,7 @@ public class Test1Config implements SchedulingConfigurer {
 //	@Bean public AppInitializer appInitializer()  { return new AppInitializer();}
 //	@Bean public TrunksStates trunksStats()  { return new TrunksStates();	}
 //	@Bean public ChannelsStates channelsStates()  {return new ChannelsStates();}
-//	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
+	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
 	@Bean public PeriodicTasks periodicTasks()  { return new PeriodicTasks();}
 	@Bean public AsyncTasks asyncTasks()  { return new AsyncTasks();}
 	

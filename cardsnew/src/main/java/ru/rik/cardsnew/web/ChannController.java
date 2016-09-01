@@ -157,5 +157,12 @@ public class ChannController {
 		return view;
 	}
 	
+	
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	public String stat(Model model) {
+		List<Channel> list = chans.findAll();
+		model.addAttribute("chans", list);
+		return "channelsstat";
+	}
 
 }

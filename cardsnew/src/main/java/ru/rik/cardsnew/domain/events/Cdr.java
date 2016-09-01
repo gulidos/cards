@@ -26,7 +26,6 @@ public class Cdr extends Event {
 	private String regcode;
 	private Disposition disposition;
 	private String uniqueid;
-//	private String destinationChannel;
 	private long channelId;
 	
 	@Builder
@@ -73,13 +72,13 @@ public class Cdr extends Event {
 	}
 	
 	public static String parseChannel(String s) {
-		if (s == null & s.equals(""))
+		if (s == null )
 			throw new IllegalArgumentException("String for parsing can not be null");
 		Matcher m = p.matcher(s);
 		if (m.matches())
 			return m.group(1);
 		else
-			return null;
+			return "";
 	}
 	
 	

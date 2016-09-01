@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.events.Cdr;
 
 public class Cdrs {
