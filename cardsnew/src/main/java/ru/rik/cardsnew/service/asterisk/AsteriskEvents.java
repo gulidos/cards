@@ -91,7 +91,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.disp(ce.getDisposition())
 				.regcode(ce.getRegcode())
 				.uniqueid(ce.getUniqueId())
-				.channelId(chan.getId())
+				.channelId(chan != null ? chan.getId() : 0)
 				.build();
 			
 		cdrs.addCdr(cdr);

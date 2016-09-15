@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.JpaConfig;
 import ru.rik.cardsnew.domain.Grp;
 
@@ -31,7 +31,7 @@ public class Test1 {
 	@Autowired
 	CardRepoImpl cardsRepository;
 	@Autowired
-	GroupRepoImpl grpRepo;
+	GroupRepo grpRepo;
 	public Test1() {}
     
 	

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Data;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Trunk;
@@ -24,7 +24,7 @@ import ru.rik.cardsnew.domain.Trunk;
 @EnableTransactionManagement
 public class RestTrunks {
 	@Autowired
-	GroupRepoImpl groups;
+	GroupRepo groups;
 	@Autowired
 	CardRepoImpl cards;
 	@Autowired TrunkRepoImpl trunks;

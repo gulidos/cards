@@ -6,12 +6,12 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Grp;
 
 public class GroupFormatter implements Formatter<Grp>{
 
-	@Autowired GroupRepoImpl grps;
+	@Autowired GroupRepo grps;
 	
 	public GroupFormatter()  {
 		super();

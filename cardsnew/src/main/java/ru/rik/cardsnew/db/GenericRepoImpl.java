@@ -21,6 +21,7 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import ru.rik.cardsnew.domain.State;
 // public abstract class GenericRepoImpl<T extends State, S extends State, ID extends Serializable> implements GenericRepo<T , S, ID> {
@@ -84,6 +85,7 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
 //    }
     
     public T findByName(String name) {
+		Assert.notNull(name);
     	S state = findStateByName(name);
     	
     	if (state == null) 
@@ -187,6 +189,7 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
 	}
 	
 	public S findStateByName (String name) {
+		Assert.notNull(name);
 		return statsByName.get(name);
 	}
 

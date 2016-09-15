@@ -57,4 +57,8 @@ public class Grp implements State {
     @OneToMany(mappedBy = "group")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Channel> channels;
+	
+	@Getter @Setter
+	@Column
+	private String descr;
 }

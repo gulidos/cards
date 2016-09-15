@@ -20,15 +20,28 @@
 <body>
 	<div class="container">
 	<div class="panel panel-default" >
-		<div class="panel-heading">ItemC</div>
+		<div class="panel-heading">group</div>
 		<form class="form-horizontal" th:object="${group}" th:action="@{/groups/edit}" th:method="post" >
 			<div class="form-group" >
-				<label class="col-sm-4 col-xs-8 control-label" >name</label>
+				<label class="col-md-4 col-xs-8 control-label" >name</label>
 				<div class="col-sm-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
-					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
+					 <div th:text="${session.cardFilter.groupId}"></div>
 				</div>
+				<a th:href="@{/cards/group(id=*{id})}">
+					<button type="button" class="btn btn-link">	Edit cards </button>
+				</a>
+				<a th:href="@{/channels/group(id=*{id})}">
+					<button type="button" class="btn btn-link">	Edit channels </button>
+				</a>
+				
+			<!-- 	<label class="col-sm-4  control-label"> name1 </label>
+				<div class="col-sm-2">					 
+					 <input class="form-control" type="text" th:value="*{descr}" th:field="*{descr}" ></input>
+				</div> -->
+				
 			</div>
 			<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">oper</label>
@@ -38,15 +51,19 @@
 				</select>
 				</div>
 			</div>	
-					
+			
+			<div class="form-group" >
+				<label class="col-sm-4 col-xs-8 control-label" >descr</label>
+				<div class="col-sm-2">					 
+					 <input class="form-control" type="text" th:value="*{descr}" th:field="*{descr}" ></input>
+				</div>
+			</div>		
 	
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
-					<button type="submit" class="btn btn-primary" name="action"	
-						th:value="${action}=='delete' ? 'delete' : 'save'" 
-						th:text="${action}=='delete' ? 'delete' : 'save'"> 
-					</button>
-					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+					<button type="submit" class="btn btn-primary" name="action"	th:value="save" th:text="save">	</button>
+					<button type="submit" class="btn btn-default active" name="action" 	th:value="cancel" th:text="cancel"></button>
+					
 				</div>
 			</div>
 			
