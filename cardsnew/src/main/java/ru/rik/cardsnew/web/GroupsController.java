@@ -40,6 +40,7 @@ public class GroupsController {
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chans;
 	@Autowired CardRepoImpl cards;
+	@Autowired Filter cardFilter;
 	
 	public GroupsController() { 
 		super();
@@ -49,11 +50,11 @@ public class GroupsController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
 		List<Grp> list = groups.findAll();
-		if (!model.containsAttribute("cardFilter")) {
-			CardFilter cf = new CardFilter();
-			model.addAttribute("cardFilter", cf);
-			logger.debug("create cardFilter attribute");
-		}
+//		if (!model.containsAttribute("cardFilter")) {
+//			Filter cf = new Filter();
+//			model.addAttribute("cardFilter", cf);
+//			logger.debug("create cardFilter attribute");
+//		}
 		
 		model.addAttribute("grps", list);
 		return "groups";
@@ -69,9 +70,9 @@ public class GroupsController {
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
-	public String  editPage(@RequestParam(value="id", required=true) long id, Model model, CardFilter cf) {
-		Assert.notNull(cf);
-		cf.setGroupId(id);
+	public String  editPage(@RequestParam(value="id", required=true) long id, Model model) {
+		Assert.notNull(cardFilter);
+		cardFilter.setGroupId(id);
 		if(! model.containsAttribute("group")) {
 			Grp group = groups.findById(id);
 			group.getCards().size();

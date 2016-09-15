@@ -54,7 +54,6 @@ public class CheckCDRTask {
 				String cardname = rs.getString("userfield");
 				String destchanname = rs.getString("dstchannel");
 				if (cardname == null ) continue; 
-				logger.debug("cardname: "+cardname+" dstchannel:"+destchanname); 
 				Card card = cardRepo.findByName(cardname);
 				Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 				

@@ -37,12 +37,13 @@ public class CardsController {
 	@Autowired BankRepoImpl banks;
 	@Autowired CardRepoImpl cards;
 	@Autowired ChannelRepoImpl channels;
+	@Autowired Filter cf;
 	
 	public CardsController() {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getList(Model model, CardFilter cf) {
+	public String getList(Model model, Filter cf) {
 		cf.setGroupId(0);
 		model.addAttribute("cards", cards.findAll());
 
@@ -95,7 +96,7 @@ public class CardsController {
 	@Transactional
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public String editCard(@Valid @ModelAttribute Card card, BindingResult result, Model model,
-			RedirectAttributes redirectAttrs, @RequestParam(value = "action", required = true) String action, CardFilter cf) {
+			RedirectAttributes redirectAttrs, @RequestParam(value = "action", required = true) String action) {
 
 		System.out.println("action: " + action + " card: " + card.toStringAll());
 		if (action.equals("cancel")) {
