@@ -40,5 +40,6 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat>  {
 		return query.getResultList();
     }
 	
+
 	
 }

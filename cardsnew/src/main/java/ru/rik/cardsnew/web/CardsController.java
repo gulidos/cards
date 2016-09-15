@@ -14,23 +14,26 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
+@SessionAttributes(value = "cardFilter") 
 public class CardsController {
 	private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
 
-	@Autowired GroupRepoImpl groups;
+	@Autowired GroupRepo groups;
 	@Autowired BankRepoImpl banks;
 	@Autowired CardRepoImpl cards;
 	@Autowired ChannelRepoImpl channels;
@@ -39,7 +42,8 @@ public class CardsController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getList(Model model) {
+	public String getList(Model model, CardFilter cf) {
+		cf.setGroupId(0);
 		model.addAttribute("cards", cards.findAll());
 
 		if (!model.containsAttribute("card")) {
@@ -47,6 +51,16 @@ public class CardsController {
 			model.addAttribute("card", card);
 		}
 
+		return "cards";
+	}
+	
+	@RequestMapping(value = "/group", method = RequestMethod.GET)
+	public String getListGroup(@RequestParam(value = "id", required = true) long id, Model model) {
+		Grp grp = groups.findById(id);
+		
+		if (grp != null) 
+			model.addAttribute("cards", cards.findGroupCards(grp));
+		
 		return "cards";
 	}
 
@@ -72,7 +86,6 @@ public class CardsController {
 
 	private void addToModel(Model model, Card card) {
 		model.addAttribute("card", card);
-//		model.addAttribute("opers", Oper.values());
 		model.addAttribute("places", Place.values());
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("banklst", banks.findAll());
@@ -82,7 +95,7 @@ public class CardsController {
 	@Transactional
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public String editCard(@Valid @ModelAttribute Card card, BindingResult result, Model model,
-			RedirectAttributes redirectAttrs, @RequestParam(value = "action", required = true) String action) {
+			RedirectAttributes redirectAttrs, @RequestParam(value = "action", required = true) String action, CardFilter cf) {
 
 		System.out.println("action: " + action + " card: " + card.toStringAll());
 		if (action.equals("cancel")) {
@@ -105,6 +118,8 @@ public class CardsController {
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		}
+		if (cf.getGroupId()!= 0)
+			return "redirect:/cards/group?id=" + cf.getGroupId();
 
 		return "redirect:/cards";
 	}

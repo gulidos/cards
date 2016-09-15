@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Data;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
@@ -32,7 +32,7 @@ import ru.rik.cardsnew.domain.Place;
 public class RestCards {
 	@Autowired CardRepoImpl cards;
 	@Autowired ChannelRepoImpl channels;
-	@Autowired GroupRepoImpl groups;
+	@Autowired GroupRepo groups;
 	
 	public RestCards() {	}
 	

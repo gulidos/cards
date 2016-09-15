@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.rik.cardsnew.db.BoxRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -35,7 +35,7 @@ import ru.rik.cardsnew.domain.Trunk;
 public class ChannController {
 	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
 	
-	@Autowired GroupRepoImpl groups;
+	@Autowired GroupRepo groups;
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chans;

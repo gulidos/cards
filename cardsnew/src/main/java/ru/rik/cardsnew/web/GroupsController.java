@@ -11,17 +11,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepoImpl;
-import ru.rik.cardsnew.db.GroupRepoImpl;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
@@ -29,10 +31,11 @@ import ru.rik.cardsnew.domain.Oper;
 @Controller
 @RequestMapping("/groups")
 @EnableTransactionManagement
+@SessionAttributes(value = "cardFilter") 
 public class GroupsController {
 	private static final Logger logger = LoggerFactory.getLogger(GroupsController.class);		
 	
-	@Autowired GroupRepoImpl groups;
+	@Autowired GroupRepo groups;
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepoImpl chans;
@@ -46,10 +49,11 @@ public class GroupsController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String spittles(Model model) {
 		List<Grp> list = groups.findAll();
-		for (Grp gr: list) { 
-			gr.getCards().size();
-			gr.getChannels().size();	
-		}	
+		if (!model.containsAttribute("cardFilter")) {
+			CardFilter cf = new CardFilter();
+			model.addAttribute("cardFilter", cf);
+			logger.debug("create cardFilter attribute");
+		}
 		
 		model.addAttribute("grps", list);
 		return "groups";
@@ -65,13 +69,15 @@ public class GroupsController {
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
-	public String  editPage(@RequestParam(value="id", required=true) long id, Model model) {
-		
+	public String  editPage(@RequestParam(value="id", required=true) long id, Model model, CardFilter cf) {
+		Assert.notNull(cf);
+		cf.setGroupId(id);
 		if(! model.containsAttribute("group")) {
 			Grp group = groups.findById(id);
 			group.getCards().size();
 			group.getChannels().size();
 			addToModel(model, group);	
+			
 		}
 		return "group-edit";
 	}
