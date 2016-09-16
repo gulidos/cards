@@ -29,7 +29,7 @@ import ru.rik.cardsnew.domain.Place;
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
-@SessionAttributes(value = "cardFilter") 
+@SessionAttributes("fc") 
 public class CardsController {
 	private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
 
@@ -37,16 +37,23 @@ public class CardsController {
 	@Autowired BankRepoImpl banks;
 	@Autowired CardRepoImpl cards;
 	@Autowired ChannelRepoImpl channels;
-	@Autowired Filter cf;
+	
 	
 	public CardsController() {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getList(Model model, Filter cf) {
-		cf.setGroupId(0);
+	public String getList(Model model, @ModelAttribute("fc") Filter fc) {
+		if (fc == null) {
+			fc = new Filter();
+			model.addAttribute("fc", fc);
+		}
+		
+		fc.setGroupId(0);
+		
 		model.addAttribute("cards", cards.findAll());
-
+		
+		
 		if (!model.containsAttribute("card")) {
 			Card card = new Card();
 			model.addAttribute("card", card);
@@ -119,8 +126,8 @@ public class CardsController {
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		}
-		if (cf.getGroupId()!= 0)
-			return "redirect:/cards/group?id=" + cf.getGroupId();
+//		if (fc.getGroupId()!= 0)
+//			return "redirect:/cards/group?id=" + fc.getGroupId();
 
 		return "redirect:/cards";
 	}

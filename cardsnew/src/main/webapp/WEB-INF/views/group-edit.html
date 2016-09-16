@@ -28,7 +28,7 @@
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
 					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
-					 <div th:text="${session.cardFilter.groupId}"></div>
+					  <div th:text="${session.fc}"></div> 
 				</div>
 				<a th:href="@{/cards/group(id=*{id})}">
 					<button type="button" class="btn btn-link">	Edit cards </button>
