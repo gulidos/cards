@@ -31,7 +31,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.config.AppInitializer;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,7 +43,7 @@ import ru.rik.cardsnew.db.ChannelRepoImpl;
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Channel implements State{
-	@Transient private static ChannelRepoImpl channelRepoImpl;
+	@Transient private static ChannelRepo channelRepo;
 	@Transient private static Object sync = new Object();
 	
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -86,12 +86,12 @@ public class Channel implements State{
 
 	public ChannelState getState() {
 
-		if (channelRepoImpl == null) {
+		if (channelRepo == null) {
 			synchronized (sync) {
-				channelRepoImpl = (ChannelRepoImpl) AppInitializer.getContext().getBean("channelRepoImpl");
+				channelRepo = (ChannelRepo) AppInitializer.getContext().getBean("channelRepo");
 			}
 		}	
-		return channelRepoImpl.findStateById(getId());
+		return channelRepo.findStateById(getId());
 	}
 	
 	

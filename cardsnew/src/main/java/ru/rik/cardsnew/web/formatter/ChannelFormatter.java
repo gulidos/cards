@@ -6,12 +6,12 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Channel;
 
 public class ChannelFormatter implements Formatter<Channel>{
 
-	@Autowired ChannelRepoImpl channels;
+	@Autowired ChannelRepo channels;
 	
 	public ChannelFormatter()  {
 		super();

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Trunk;
 
 @Repository
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat>  {
@@ -39,6 +40,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat>  {
 
 		return query.getResultList();
     }
+	
 	
 
 	

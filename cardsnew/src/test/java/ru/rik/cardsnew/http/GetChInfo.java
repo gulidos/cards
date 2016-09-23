@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.rik.cardsnew.TestConfig;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
@@ -20,7 +20,7 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 @ContextConfiguration(classes = TestConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GetChInfo {
-	@Autowired ChannelRepoImpl chans;
+	@Autowired ChannelRepo chans;
 	@Autowired HttpHelper httpHelper;
 
 	public static long chanId = 1;

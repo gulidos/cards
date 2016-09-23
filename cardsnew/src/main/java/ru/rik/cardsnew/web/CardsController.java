@@ -19,58 +19,68 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
+import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
+import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
-@SessionAttributes("fc") 
+@SessionAttributes("filter") 
 public class CardsController {
 	private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
 
 	@Autowired GroupRepo groups;
 	@Autowired BankRepoImpl banks;
 	@Autowired CardRepoImpl cards;
-	@Autowired ChannelRepoImpl channels;
-	
+	@Autowired ChannelRepo channels;
+	@Autowired TrunkRepoImpl trunks;
+	@Autowired Filter filter;
 	
 	public CardsController() {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getList(Model model, @ModelAttribute("fc") Filter fc) {
-		if (fc == null) {
-			fc = new Filter();
-			model.addAttribute("fc", fc);
-		}
+	public String getList(
+			@RequestParam(value = "id", defaultValue = "0") long id, 
+			@RequestParam(value = "url", defaultValue = "") String url,
+			Model model) {
+		logger.debug("!!! url: {}, id: {}", url, id);
 		
-		fc.setGroupId(0);
+		if (url.isEmpty()) {
+			filter.setUrl("");
+			filter.setId(0);
+			model.addAttribute("cards", cards.findAll());
+		}	
+		else if ("group".equals(url)) {
+			Grp grp = groups.findById(id);
+			filter.setUrl("group");
+			filter.setId(id);
+			if (grp != null)
+				model.addAttribute("cards", cards.findGroupCards(grp));
+		} 
+//		else if ("trunk".equals(url)) {
+//			Trunk t = trunks.findById(id);
+//			if (t != null)
+//				model.addAttribute("cards", cards.findTrunkCards(t));
+//		}		
 		
-		model.addAttribute("cards", cards.findAll());
+		model.addAttribute("filter", filter);
 		
 		
 		if (!model.containsAttribute("card")) {
 			Card card = new Card();
 			model.addAttribute("card", card);
 		}
-
 		return "cards";
 	}
 	
-	@RequestMapping(value = "/group", method = RequestMethod.GET)
-	public String getListGroup(@RequestParam(value = "id", required = true) long id, Model model) {
-		Grp grp = groups.findById(id);
-		
-		if (grp != null) 
-			model.addAttribute("cards", cards.findGroupCards(grp));
-		
-		return "cards";
-	}
+
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String addCard(Model model) {
@@ -126,8 +136,8 @@ public class CardsController {
 			String message = "Card " + card.getId() + " was successfully edited";
 			model.addAttribute("message", message);
 		}
-//		if (fc.getGroupId()!= 0)
-//			return "redirect:/cards/group?id=" + fc.getGroupId();
+		if (!filter.getUrl().isEmpty())
+			return "redirect:/cards/?url=" + filter.getUrl() + "&id=" + filter.getId();
 
 		return "redirect:/cards";
 	}

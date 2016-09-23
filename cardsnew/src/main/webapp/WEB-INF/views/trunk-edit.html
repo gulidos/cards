@@ -20,37 +20,20 @@
 <body>
 	<div class="container">
 	<div class="panel panel-default" >
-		<div class="panel-heading">group</div>
-		<form class="form-horizontal" th:object="${group}" th:action="@{/groups/edit}" th:method="post" >
+		<div class="panel-heading">trunk</div>
+		<form class="form-horizontal" th:object="${trunk}" th:action="@{/groups/edit}" th:method="post" >
 			<div class="form-group" >
 				<label class="col-md-4 col-xs-8 control-label" >name</label>
 				<div class="col-sm-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
 					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
-					  <div th:text="${session.fc}"></div> 
 				</div>
-				<a th:href="@{/cards(url=group,id=*{id})}">
-					<button type="button" class="btn btn-link">	Edit cards </button>
-				</a>
-				<a th:href="@{/channels(url=group,id=*{id})}">
+				<a th:href="@{/channels(url=trunk,id=*{id})}">
 					<button type="button" class="btn btn-link">	Edit channels </button>
 				</a>
 				
-			<!-- 	<label class="col-sm-4  control-label"> name1 </label>
-				<div class="col-sm-2">					 
-					 <input class="form-control" type="text" th:value="*{descr}" th:field="*{descr}" ></input>
-				</div> -->
-				
 			</div>
-			<div class="form-group ">
-				<label class="col-sm-4 col-xs-8 control-label">oper</label>
-				<div class="col-sm-2"  > 
-				<select	class="form-control" th:value="*{oper}" th:field="*{oper}" th:disabled="${action}=='delete'">
-					<option th:each="oper: ${opers}" th:value="${oper}" th:text="${oper}" ></option>
-				</select>
-				</div>
-			</div>	
 			
 			<div class="form-group" >
 				<label class="col-sm-4 col-xs-8 control-label" >descr</label>

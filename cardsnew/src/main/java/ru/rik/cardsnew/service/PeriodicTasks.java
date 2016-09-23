@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Channel;
 @Service
 public class PeriodicTasks {
@@ -17,7 +17,7 @@ public class PeriodicTasks {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	
 	@Autowired AsyncTasks asyncTasks;
-	@Autowired ChannelRepoImpl chanRepo;
+	@Autowired ChannelRepo chanRepo;
 
 	public PeriodicTasks() {
 		logger.info("Instantiate the PeriodicTasks ...");

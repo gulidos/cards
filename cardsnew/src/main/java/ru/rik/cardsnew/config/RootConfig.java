@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.config;
 
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+import ru.inlinetelecom.imssf.db.profile.Profile;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
@@ -51,8 +54,8 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean public AsyncTasks asyncTasks()  { return new AsyncTasks();}
 	@Bean public Cdrs cdrs() {return new Cdrs();}
 	
-	@Bean (initMethod="init") 
-	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+//	@Bean (initMethod="init") 
+//	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 	
 	@Bean(initMethod="start", destroyMethod="stop")
 	public AsteriskEvents asteriskEvents() {
@@ -77,7 +80,12 @@ public class RootConfig implements SchedulingConfigurer {
 		scheduler.setPoolSize(5);
         return scheduler;
     }
-	
+
+//	@Bean
+//	public CompletionService<Profile> completionService() {
+//		CompletionService<Profile> service = new ExecutorCompletionService<Profile>(taskExecutor());
+//		return service;
+//	}
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

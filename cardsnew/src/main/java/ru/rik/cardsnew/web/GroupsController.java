@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Grp;
@@ -30,15 +30,16 @@ import ru.rik.cardsnew.domain.Oper;
 @Controller
 @RequestMapping("/groups")
 @EnableTransactionManagement
-@SessionAttributes("fc") 
+@SessionAttributes("filter") 
 public class GroupsController {
 	private static final Logger logger = LoggerFactory.getLogger(GroupsController.class);		
 	
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
-	@Autowired ChannelRepoImpl chans;
+	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;
+	@Autowired Filter filter;
 	
 	public GroupsController() { 
 		super();
@@ -69,15 +70,13 @@ public class GroupsController {
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public String  editPage(@RequestParam(value="id", required=true) long id, Model model) {
-//		Assert.notNull(fc);
-//		fc.setGroupId(id);
+		filter.setId(id);
 		if(! model.containsAttribute("group")) {
 			Grp group = groups.findById(id);
-			group.getCards().size();
-			group.getChannels().size();
+//			group.getCards().size();
+//			group.getChannels().size();
 			addToModel(model, group);	
-//			session.setAttribute("mySessionAttribute", "someValue");
-//			model.addAttribute("fc", fc);
+			model.addAttribute("filter", filter);
 		}
 		return "group-edit";
 	}
@@ -94,7 +93,6 @@ public class GroupsController {
 			BindingResult result,
 			Model model,  
 			RedirectAttributes redirectAttrs,
-			@ModelAttribute("fc") Filter fc,
 			@RequestParam(value="action", required=true) String action ) {
 		
 		if (action.equals("cancel")) {

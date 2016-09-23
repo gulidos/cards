@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Grp;
@@ -29,6 +30,7 @@ import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/trunks")
+@SessionAttributes("filter") 
 @EnableTransactionManagement
 public class TrunkController {
 	private static final Logger logger = LoggerFactory.getLogger(TrunkController.class);		
@@ -36,8 +38,9 @@ public class TrunkController {
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
-	@Autowired ChannelRepoImpl chans;
+	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;
+	@Autowired Filter filter;
 	
 	public TrunkController() { 
 		super();
@@ -66,20 +69,16 @@ public class TrunkController {
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public String  editPage(@RequestParam(value="id", required=true) long id, Model model) {
+		filter.setId(id);
 		
-		if(! model.containsAttribute("group")) {
-			Grp group = groups.findById(id);
-			group.getCards().size();
-			group.getChannels().size();
-			addToModel(model, group);	
+		if(!model.containsAttribute("group")) {
+			Trunk trunk= trunks.findById(id);
+			model.addAttribute("trunk", trunk);
+			model.addAttribute("filter", filter);
 		}
-		return "group-edit";
+		return "trunk-edit";
 	}
 	
-	private void addToModel(Model model, Grp group) {
-		model.addAttribute("group", group);
-		model.addAttribute("opers", Oper.values()); 
-	}
 	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.POST)

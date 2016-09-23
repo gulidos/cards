@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.web;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,21 +18,24 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/channels")
+@SessionAttributes("filter") 
 @EnableTransactionManagement
 public class ChannController {
 	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
@@ -38,9 +43,10 @@ public class ChannController {
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
-	@Autowired ChannelRepoImpl chans;
+	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;
-	
+	@Autowired Filter filter;
+
 	
 	public ChannController() { 
 		super();
@@ -48,12 +54,33 @@ public class ChannController {
 	
 	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
-	public String spittles(Model model) {
-		List<Channel> list = chans.findAll();
+	public String channels(
+			@RequestParam(value = "id", defaultValue = "0") long id, 
+			@RequestParam(value = "url", defaultValue = "") String url,
+			Model model) {
+		List<Channel> list = null;
+		if (url.isEmpty()) {
+			filter.setUrl("");
+			filter.setId(0);
+			list = chans.findAll();
+		} else if ("trunk".equals(url)) {
+			filter.setUrl("trunk");
+			filter.setId(id);
+			Trunk t = trunks.findById(id);
+			if (t != null)
+				list = new ArrayList<>(t.getChannels());
+		} else if ("group".equals(url)) {
+			Grp grp = groups.findById(id);
+			if (grp != null)
+				list = chans.findGroupChans(grp);
+//				model.addAttribute("cards", cards.findGroupCards(grp));
+		} 
+		
 		for (Channel ch: list) 
 			ch.getTrunks().size();
 		
 		model.addAttribute("chans", list);
+		model.addAttribute("filter", filter);
 		
 		if(! model.containsAttribute("chan")) {
 			Card card = new Card();
@@ -114,24 +141,17 @@ public class ChannController {
 			return "redirect:/channels/edit?id=" + chan.getId();
 			
 		} else if (action.equals("save") && chan != null) {
-//			
-//			List<Trunk> trunkId = chan.getTrunks();
-//			Trunk t = trunks.findById(trunkId);
-			
-			
 			Channel persChan = chans.makePersistent(chan);
 			
 			Card c = chan.getCard();
-			if (c != null) {
-//				c.setChannel(persChan);
+			if (c != null) 
 				cards.makePersistent(c);
-			}	 
-			
-			
 			
 			for (Trunk t: persChan.getTrunks())	
 				t.getChannels().add(persChan);
 		} 
+		if (!filter.getUrl().isEmpty())
+			return "redirect:/channels/?url=" + filter.getUrl() + "&id=" + filter.getId();
 
 		return "redirect:/channels";		
 	}

@@ -19,7 +19,7 @@ public class HttpHelper {
 	public HttpHelper() {}
 
 	private Connection getCon(final Channel ch, final String link) throws IOException {
-		if (ch == null) 	throw new NullPointerException("Channel must not be null!");
+		if (ch == null) throw new NullPointerException("Channel must not be null!");
 		
 		String host = ch.getBox().getIp();
 		String port = Integer.toString(ch.getLine().getHttpport());

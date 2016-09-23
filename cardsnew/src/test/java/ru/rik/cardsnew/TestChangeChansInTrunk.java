@@ -15,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Trunk;
@@ -28,7 +28,7 @@ public class TestChangeChansInTrunk {
 //	@Autowired GroupRepoImpl groups;
 //	@Autowired BoxRepoImpl boxes;
 	@Autowired TrunkRepoImpl trunks;
-	@Autowired ChannelRepoImpl chans;
+	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;
 
 	public TestChangeChansInTrunk() {

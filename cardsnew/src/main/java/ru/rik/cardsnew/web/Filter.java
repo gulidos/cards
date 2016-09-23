@@ -9,13 +9,15 @@ import org.springframework.web.context.WebApplicationContext;
 
 import lombok.Data;
 
-@Component(value="fc")
+@Component(value="filter")
 @Scope(value=WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Data
 public class Filter {
-	private static final Logger logger = LoggerFactory.getLogger(TrunkController.class);		
-
-	private long groupId;
+	private static final Logger logger = LoggerFactory.getLogger(Filter.class);		
+	
+	private String url;
+	private long id;
+	
 	public Filter() {
 		logger.debug("filter create in the session scope");
 	}

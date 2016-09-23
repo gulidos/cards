@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -30,7 +30,7 @@ public class AsteriskEvents implements ManagerEventListener {
 	
 	@Autowired private CardRepoImpl cardRepo;
 	@Autowired private CardsStates cardsStates;
-	@Autowired private ChannelRepoImpl chanRepo;
+	@Autowired private ChannelRepo chanRepo;
 	@Autowired private Cdrs cdrs;
 
 	public AsteriskEvents() {

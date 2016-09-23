@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -12,17 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import ru.rik.cardsnew.domain.Box;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
+import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Trunk;
 
 @Repository
-public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> {
+public class ChannelRepo extends GenericRepoImpl<Channel, ChannelState> {
 	private static final long serialVersionUID = 1L;
-	static final Logger logger = LoggerFactory.getLogger(ChannelRepoImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(ChannelRepo.class);
 
-	public ChannelRepoImpl() {
+	public ChannelRepo() {
 		super(Channel.class, ChannelState.class);
 	}
 
@@ -53,5 +56,18 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> {
 		return result;
 	}
 	
+	public List<Channel> findGroupChans(Grp grp) {
+    	CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Channel> criteria = cb.createQuery(Channel.class);
+
+    	Root<Channel> root = criteria.from(Channel.class);
+		TypedQuery<Channel> query = em
+				.createQuery(
+						criteria.select(root).where(cb.equal(root.get("group"), cb.parameter(Grp.class, "group"))))
+				.setParameter("group", grp)
+				.setHint("org.hibernate.cacheable", true);
+
+		return query.getResultList();
+    }
 	
 }

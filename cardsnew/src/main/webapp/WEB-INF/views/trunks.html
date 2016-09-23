@@ -18,14 +18,15 @@
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
 					<th class="col-sm-1">name</th>
-					<th class="col-sm-2">chans</th>
+					<th class="col-sm-6">descr</th>
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="trunk : ${trunks}"> 
 					<td th:text="${trunk.name}"></td>
-					<td><span th:each="chan : ${trunk.channels}" th:text="${#strings.trim(chan.name)}"> </span></td> 
+					<td th:text="${trunk.descr}"></td>
+					 
 					<td style="text-align: center;">
-					<a th:href="@{/gtrunks/edit(id=${trunk.id})}">
+					<a th:href="@{/trunks/edit(id=${trunk.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
