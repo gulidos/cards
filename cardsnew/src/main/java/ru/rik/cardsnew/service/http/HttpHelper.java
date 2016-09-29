@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
-import ru.rik.cardsnew.domain.ChannelState.ChStatus;
+import ru.rik.cardsnew.service.http.GsmState.GsmStatus;
 
 public class HttpHelper {
 
@@ -46,7 +46,7 @@ public class HttpHelper {
 		st.setLastUpdate(new Date());
 		
 		Element imob = doc.select("input[name=MSTT]").first();
-		ChStatus status = ChStatus.getInstance(imob.attributes().get("value"));
+		GsmStatus status = GsmStatus.getInstance(imob.attributes().get("value"));
 		st.setStatus(status);
 
 		imob  = doc.select("input[name=COPS]").first();	

@@ -33,6 +33,13 @@ public class CardStat implements State {
 	private int todayOperMin;
 	private int mskOperMin;
 	private int offnetOperMin;
+	// this.startTime = System.currentTimeMillis() + delay; - time  for checking some status;
+	
+//	      public long getDelay(TimeUnit unit) {
+//	          long diff = startTime - System.currentTimeMillis();
+//	          return unit.convert(diff, TimeUnit.MILLISECONDS);
+//	      }
+
 
 	public CardStat(Card card) {
 		this.id = card.getId();

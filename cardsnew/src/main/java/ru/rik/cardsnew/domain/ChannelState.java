@@ -5,13 +5,14 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import ru.rik.cardsnew.service.http.GsmState;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(of={"id", "name"})
 public class ChannelState implements State {
 	private long id;
 	private String name;
-	private volatile ChStatus status;
+	private volatile GsmState status;
 	private volatile int priority;
 	private Date lastUpdate;
 	private String operator;
@@ -25,13 +26,13 @@ public class ChannelState implements State {
 	public ChannelState(Channel t) {
 		id = t.getId();
 		lastUpdate = new Date();
-		setStatus(ChStatus.Unknown);
+		setStatus(GsmState.Unknown);
 	}
 	
 	@Override
 	public long getId() {return id;}
-	public ChStatus getStatus() {return status;	}
-	public void setStatus(ChStatus status) {this.status = status;}
+	public GsmState getStatus() {return status;	}
+	public void setStatus(GsmState status) {this.status = status;}
 
 	public Date getLastUpdate() {return lastUpdate;	}
 	public void setLastUpdate(Date lastUpdate) {this.lastUpdate = lastUpdate;	}
@@ -39,33 +40,6 @@ public class ChannelState implements State {
 	@Override public String getName() {return name;}
 	@Override public void setName(String name) {this.name = name;}
 
-	
-	public enum ChStatus {
-		Unknown,
-		Booting,
-		Initing,
-		Listening, 
-		Standby,
-		Ending, 
-		Unreachable; 
-		
-		public static ChStatus getInstance(String code) {
-		switch (code) {
-		case "Standby":
-			return Standby;
-		case "Listening":
-			return Listening;
-		case "Booting":
-			return Booting;
-		case "Initing":
-			return Initing;
-		case "Ending":
-			return Ending;	
-		default:
-			return Unknown;
-		}	
-	}
-		
-	}
+
 	
 }
