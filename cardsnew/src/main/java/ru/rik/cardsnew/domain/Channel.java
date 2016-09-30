@@ -85,7 +85,7 @@ public class Channel implements State{
 	private boolean enabled;
 
 	public ChannelState getState() {
-
+		// TODO redo properly !!!
 		if (channelRepo == null) {
 			synchronized (sync) {
 				channelRepo = (ChannelRepo) AppInitializer.getContext().getBean("channelRepo");

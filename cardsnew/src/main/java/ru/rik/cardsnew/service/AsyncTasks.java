@@ -26,7 +26,7 @@ public class AsyncTasks {
 	@Async("taskExecutor")
 	public void checkChannel(Channel ch) {
 		try {
-			httpHelper.getGsmStatus(ch);
+			httpHelper.getGsmState(ch);
 		} catch (Exception e) {
 			logger.error(e.getMessage() + "trying to check channel " + ch.getName() + " ip: " + ch.getBox().getIp(), e);
 		}

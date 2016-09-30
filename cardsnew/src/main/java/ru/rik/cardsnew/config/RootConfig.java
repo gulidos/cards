@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.config;
 
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
+import ru.rik.cardsnew.service.Futurable;
 import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.HttpHelper;
@@ -59,7 +62,7 @@ public class RootConfig implements SchedulingConfigurer {
 	}
 	
 	@Bean
-    public TaskExecutor taskExecutor() {
+    public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(3);
         executor.setMaxPoolSize(30);
@@ -77,11 +80,11 @@ public class RootConfig implements SchedulingConfigurer {
         return scheduler;
     }
 
-//	@Bean
-//	public CompletionService<Profile> completionService() {
-//		CompletionService<Profile> service = new ExecutorCompletionService<Profile>(taskExecutor());
-//		return service;
-//	}
+	@Bean
+	public CompletionService<Futurable> completionService() {
+		CompletionService<Futurable> service = new ExecutorCompletionService<Futurable>(taskExecutor());
+		return service;
+	}
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

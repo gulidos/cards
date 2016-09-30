@@ -2,37 +2,42 @@ package ru.rik.cardsnew.service.http;
 
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.experimental.Builder;
+import ru.rik.cardsnew.service.Futurable;
 @Data
-@AllArgsConstructor
-@EqualsAndHashCode(of={"id", "name"})
-public class GsmState {
-	private final long id;
-	private String name;
-	private volatile GsmStatus status;
-	private volatile int priority;
-	private Date lastUpdate;
-	private String operator;
-	private String sernum;
-	private int sigquality;
-	private String regstate;
-	private String iURL;
-	private String iName;
-	private String oMob;
+public class GsmState implements Futurable {
 	
+	private final Date update;
+	private final GsmApp status;
+	private final String operator;
+	private final String sernum;
+	private final int sigquality;
+	private final String regstate;
+	private final String iURL;
+	private final String iName;
+	private final String oMob;
 	
-	public enum GsmStatus {
-		Unknown,
-		Booting,
-		Initing,
-		Listening, 
-		Standby,
-		Ending, 
-		Unreachable; 
+	@Builder
+	public GsmState(Date update, GsmApp status, String operator, String sernum, int sigquality, String regstate,
+			String iURL, String iName, String oMob) {
+		super();
+		this.update = update;
+		this.status = status;
+		this.operator = operator;
+		this.sernum = sernum;
+		this.sigquality = sigquality;
+		this.regstate = regstate;
+		this.iURL = iURL;
+		this.iName = iName;
+		this.oMob = oMob;
+	}
+
+
+	public enum GsmApp {
+		Unknown, Booting, Initing, Listening, Standby, Ending, Unreachable;
 		
-		public static GsmStatus getInstance(String code) {
+		public static GsmApp getInstance(String code) {
 		switch (code) {
 		case "Standby":	return Standby;
 		case "Listening": return Listening;
@@ -43,5 +48,11 @@ public class GsmState {
 		}	
 	}
 		
+	}
+
+
+	@Override
+	public Class<?> getCalss() {
+		return GsmState.class;
 	}
 }
