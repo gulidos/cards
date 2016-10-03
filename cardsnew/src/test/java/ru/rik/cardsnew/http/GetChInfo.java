@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,7 +31,6 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 public class GetChInfo {
 	@Autowired ChannelRepo chans;
 	@Autowired HttpHelper httpHelper;
-	@Autowired ThreadPoolTaskExecutor taskExecutor;
 	@Autowired CompletionService<Futurable> completionService;
 	
 	public static long chanId = 1;
@@ -44,16 +42,16 @@ public class GetChInfo {
 	@Rollback(false)
 	public void t1changeCard() {
 		int count = 0;
-		Map<Future<Futurable>, Channel> map = new HashMap<>();
+		Map<Future<Futurable>, Long> map = new HashMap<>();
 		for (Channel ch : chans.findAll()) {
 			
 			Callable<Futurable> checkGsm = new Callable<Futurable>() {
 				public GsmState call() throws Exception {
-					return httpHelper.getGsmState(ch);
+					return GsmState.get(ch);
 				}
 			};
 			Future<Futurable> f = completionService.submit(checkGsm);
-			map.put(f, ch);
+			map.put(f, ch.getId());
 			count++;
 		}
 		
