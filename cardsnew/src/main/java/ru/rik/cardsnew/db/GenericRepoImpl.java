@@ -165,7 +165,7 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
 		long id = entity.getId();
 		if (findStateById(id) == null) {
     		try {
-				S newState = entityStateClass.newInstance();
+				S newState = entityStateClass.newInstance();				
 				newState.setId(id);
 				newState.setName(entity.getName());
 				state = statsById.putIfAbsent(id, newState);
@@ -192,5 +192,8 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
 		Assert.notNull(name);
 		return statsByName.get(name);
 	}
-
+	
+	public ConcurrentMap<Long, S> getStates() {
+		return statsById;
+	}
 }
