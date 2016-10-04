@@ -21,7 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.rik.cardsnew.config.RootConfig;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.service.Futurable;
+import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
@@ -31,36 +32,37 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 public class GetChInfo {
 	@Autowired ChannelRepo chans;
 	@Autowired HttpHelper httpHelper;
-	@Autowired CompletionService<Futurable> completionService;
+	@Autowired PeriodicTasks periodicTasks;
+	@Autowired CompletionService<State> completionService;
 	
 	public static long chanId = 1;
 
 	public GetChInfo() {}
 
-	@Test
+//	@Test
 	@Transactional
 	@Rollback(false)
 	public void t1changeCard() {
 		int count = 0;
-		Map<Future<Futurable>, Long> map = new HashMap<>();
+		Map<Future<State>, Long> map = new HashMap<>();
 		for (Channel ch : chans.findAll()) {
 			
-			Callable<Futurable> checkGsm = new Callable<Futurable>() {
+			Callable<State> checkGsm = new Callable<State>() {
 				public GsmState call() throws Exception {
 					return GsmState.get(ch);
 				}
 			};
-			Future<Futurable> f = completionService.submit(checkGsm);
+			Future<State> f = completionService.submit(checkGsm);
 			map.put(f, ch.getId());
 			count++;
 		}
 		
 		for (int i = 0; i < count; i++) {
-			Future<Futurable> f;
+			Future<State> f;
 			try {
 				f = completionService.take();
-				Futurable result = f.get();
-				Class<?> c = result.getCalss();
+				State result = f.get();
+				Class<?> c = result.getClass();
 				GsmState g = (GsmState) result;
 				System.out.println(map.get(f) + " status: " + g);
 			} catch (InterruptedException e) {
@@ -68,10 +70,12 @@ public class GetChInfo {
 			} catch (ExecutionException e) {
 				e.printStackTrace();
 			}
-			
-			
 		}
-		
-
+	}
+	
+	@Test @Transactional
+	public void t2changeCard() throws InterruptedException {
+		periodicTasks.checkChannels();
+		Thread.currentThread().sleep(10000);
 	}
 }

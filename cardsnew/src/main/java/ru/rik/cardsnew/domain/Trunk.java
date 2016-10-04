@@ -36,7 +36,7 @@ import ru.rik.cardsnew.db.TrunkRepoImpl;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "_TRUNK")
-public class Trunk implements State {
+public class Trunk implements MyEntity {
 //	@Transient
 //	private static final TrunksStates trunksStats = (TrunksStates) AppInitializer.getContext().getBean("trunksStats");
 

@@ -7,24 +7,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.service.http.GsmState;
-import ru.rik.cardsnew.service.http.GsmState.GsmApp;
 @Data
-@EqualsAndHashCode(of={"id", "name"})
-public class ChannelState implements State {
+@EqualsAndHashCode(callSuper=true)
+public class ChannelState extends MyState {
 	private long id;
 	private String name;
 	
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
-	private Date lastGsmUpdate; // TODO Use new Date from Java 8 !!!
-	private Date nextGsmUpdate;
+	private Date lastGsmUpdate = new Date(0); // set date the most old when create State 
+	private Date nextGsmUpdate = new Date(0);
 	
 	private volatile Status status = Status.Ready;
 	
 	public void applyGsmStatu(GsmState gs) {
-		boolean isGsmReady = GsmApp.Standby == gs.getStatus() || GsmApp.Listening == gs.getStatus(); //TODO move to GsmState class
-		if (isGsmReady) {
+		if (gs.isReady()) {
 			nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
 			status = Status.Ready;
 		} else { 
@@ -51,6 +49,11 @@ public class ChannelState implements State {
 
 	public enum Status {
 		Ready, Failed, Unreach, Inchange, PeerInchange;
+	}
+
+	@Override
+	public Class<?> getClazz() {
+		return ChannelState.class;
 	}
 
 }

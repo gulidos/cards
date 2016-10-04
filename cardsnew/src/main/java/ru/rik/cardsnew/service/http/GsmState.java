@@ -8,11 +8,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.service.Futurable;
+import ru.rik.cardsnew.domain.MyState;
 @Data
-public class GsmState implements Futurable {
+@EqualsAndHashCode(callSuper=false)
+public class GsmState extends MyState {
 	private final long id;
 	private final String name;
 	private final Date update;
@@ -101,8 +103,12 @@ public class GsmState implements Futurable {
 	}
 
 	
+	public boolean isReady() {
+		return (GsmApp.Standby == getStatus() || GsmApp.Listening == getStatus()); 
+	}
+	
 	@Override
-	public Class<?> getCalss() {
+	public Class<?> getClazz() {
 		return GsmState.class;
 	}
 }

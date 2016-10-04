@@ -42,7 +42,7 @@ import ru.rik.cardsnew.db.ChannelRepo;
 @Table(name="_CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
-public class Channel implements State{
+public class Channel implements MyEntity{
 	@Transient private static ChannelRepo channelRepo;
 	@Transient private static Object sync = new Object();
 	

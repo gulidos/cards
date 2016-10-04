@@ -3,6 +3,7 @@ package ru.rik.cardsnew.db;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,11 +24,18 @@ import ru.rik.cardsnew.domain.Trunk;
 public class ChannelRepo extends GenericRepoImpl<Channel, ChannelState> {
 	private static final long serialVersionUID = 1L;
 	static final Logger logger = LoggerFactory.getLogger(ChannelRepo.class);
+	private static ChannelRepo repo;
 
 	public ChannelRepo() {
 		super(Channel.class, ChannelState.class);
 	}
+	@PostConstruct
+	protected void init() {
+		logger.debug("initializing static variable");
+		repo = this;
+	}
 
+	public static ChannelRepo get() {return repo;	}
 	
 	public Channel findPair(Channel ch) {
 		CriteriaQuery<Channel> criteria = cb.createQuery(entityClass);

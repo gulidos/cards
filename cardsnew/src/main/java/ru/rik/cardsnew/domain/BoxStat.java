@@ -15,4 +15,9 @@ public class BoxStat implements State {
 	
 	@Override public String getName() {return name;}
 	@Override public void setName(String name) {this.name = name;}
+
+	@Override
+	public Class<?> getClazz() {
+		return BoxStat.class;
+	}
 }

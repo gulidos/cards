@@ -19,11 +19,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
-import ru.rik.cardsnew.service.Futurable;
 import ru.rik.cardsnew.service.PeriodicTasks;
+import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
@@ -81,13 +82,18 @@ public class RootConfig implements SchedulingConfigurer {
     }
 
 	@Bean
-	public CompletionService<Futurable> completionService() {
-		CompletionService<Futurable> service = new ExecutorCompletionService<Futurable>(taskExecutor());
+	public CompletionService<State> completionService() {
+		CompletionService<State> service = new ExecutorCompletionService<State>(taskExecutor());
 		return service;
 	}
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		taskRegistrar.setScheduler(taskSheduleExecutor());
+	}
+	
+	@Bean (initMethod="start")
+	public TaskCompleter taskCompleter () {
+		return new TaskCompleter(completionService(), taskExecutor());
 	}
 }

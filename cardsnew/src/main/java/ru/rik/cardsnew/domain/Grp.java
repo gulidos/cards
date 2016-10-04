@@ -31,7 +31,7 @@ import lombok.experimental.Builder;
 @Cacheable
 @org.hibernate.annotations.Cache( usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="_GRP")
-public class Grp implements State {
+public class Grp implements MyEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter

@@ -37,7 +37,7 @@ import lombok.experimental.Builder;
 @Table(name="_BOX")
 @Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
-public class Box implements State {
+public class Box implements MyEntity {
 	
 	@Transient public static final String DEF_USER = "voip";
 	@Transient public static final String DEF_PASSWORD = "1234";

@@ -32,7 +32,7 @@ import lombok.ToString;
 @Cacheable
 @org.hibernate.annotations.Cache( usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="_BANK")
-public class Bank implements State {
+public class Bank implements MyEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter

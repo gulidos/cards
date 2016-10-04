@@ -2,10 +2,8 @@ package ru.rik.cardsnew.domain;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(of={"id", "name"})
-public class TrunkState implements State {
+public class TrunkState extends MyState {
 	private long id;
 	private String name;
 	private AtomicInteger next;
@@ -31,4 +29,7 @@ public class TrunkState implements State {
 	
 	@Override public String getName() {return name;}
 	@Override public void setName(String name) {this.name = name;}
+
+	@Override
+	public Class<?> getClazz() {	return TrunkState.class;	}
 }

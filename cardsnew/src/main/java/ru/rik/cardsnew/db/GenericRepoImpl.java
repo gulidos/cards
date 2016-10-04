@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import ru.rik.cardsnew.domain.MyEntity;
 import ru.rik.cardsnew.domain.State;
-// public abstract class GenericRepoImpl<T extends State, S extends State, ID extends Serializable> implements GenericRepo<T , S, ID> {
 
-public abstract class GenericRepoImpl<T extends State, S extends State> implements GenericRepo<T , S> {
+public abstract class GenericRepoImpl<T extends MyEntity, S extends State> implements GenericRepo<T , S> {
 	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
 	private static final long serialVersionUID = 1L;
 	
@@ -38,6 +38,7 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
     protected final ConcurrentMap<Long, S> statsById;
     protected final ConcurrentMap<String, S> statsByName;
     
+    
     protected GenericRepoImpl(Class<T> entityClass, Class<S> entityStateClass) {
         this.entityClass = entityClass;
         this.entityStateClass = entityStateClass;
@@ -47,7 +48,7 @@ public abstract class GenericRepoImpl<T extends State, S extends State> implemen
     
     @PostConstruct
     protected void Init() {
-    	logger.debug("post constructor initialisation");
+    	logger.debug("post constructor initialisation {} repo", entityClass.getName());
     	  this.cb = em.getCriteriaBuilder();
     	  
     	  for (T entity: findAll()) 

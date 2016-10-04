@@ -34,7 +34,7 @@ import lombok.experimental.Builder;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="_CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
-public class Card implements State {
+public class Card implements MyEntity {
     @Id @Getter @Setter
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)

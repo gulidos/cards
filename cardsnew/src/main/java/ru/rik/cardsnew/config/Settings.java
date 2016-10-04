@@ -14,9 +14,9 @@ public class Settings {
 //    @Setting(description = "Максимальное коли-во свежих event в очереди при удалении")
     public static volatile int STOP_NUMBER = 5;
 // "Interval between normal checking Channel's GSM Status. Sec")
-    public static volatile int NORMAL_CHECK_GSM_INTERVAL = 300;
+    public static volatile int NORMAL_CHECK_GSM_INTERVAL = 90;
     
-    public static volatile int FAILED_CHECK_GSM_INTERVAL = 30;
+    public static volatile int FAILED_CHECK_GSM_INTERVAL = 29;
 
     
     

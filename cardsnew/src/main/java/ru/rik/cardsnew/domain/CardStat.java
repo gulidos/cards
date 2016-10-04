@@ -272,9 +272,9 @@ public class CardStat implements State {
 	}
 	
 	@Override public long getId() {return id;}
-	@Override public void setId(long id) { this.id = id;}
+//	@Override public void setId(long id) { this.id = id;}
 	@Override public String getName() {return name;}
-	@Override public void setName(String name) {this.name = name;}
+//	@Override public void setName(String name) {this.name = name;}
 
 	public Deque<Event> getEvents() {
 		return events;
@@ -338,6 +338,23 @@ public class CardStat implements State {
 
 	public void setWindowCalls(int windowCalls) {
 		this.windowCalls = windowCalls;
+	}
+
+	@Override
+	public Class<?> getClazz() {
+		return CardStat.class;
+	}
+
+	@Override
+	public void setId(long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setName(String name) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

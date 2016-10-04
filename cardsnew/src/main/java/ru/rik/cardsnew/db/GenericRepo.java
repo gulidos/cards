@@ -7,10 +7,10 @@ import java.util.List;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
 
-import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.domain.MyEntity;
 
 
-public interface GenericRepo<T extends State, S extends State>
+public interface GenericRepo<T extends MyEntity, S extends MyEntity>
     extends Serializable {
 
 //    void joinTransaction();
