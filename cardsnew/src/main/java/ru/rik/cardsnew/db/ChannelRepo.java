@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import ru.rik.cardsnew.domain.Box;
-import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Grp;
@@ -55,6 +54,7 @@ public class ChannelRepo extends GenericRepoImpl<Channel, ChannelState> {
 			result.get(0).getState().incPriority();
 		return result;
 	}
+	
 	
 	public List<Channel> findGroupChans(Grp grp) {
     	CriteriaBuilder cb = em.getCriteriaBuilder();
