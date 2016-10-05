@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ru.rik.cardsnew.db.BoxRepoImpl;
+import ru.rik.cardsnew.db.BoxRepo;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
@@ -36,7 +36,7 @@ public class TrunkController {
 	private static final Logger logger = LoggerFactory.getLogger(TrunkController.class);		
 	
 	@Autowired GroupRepo groups;
-	@Autowired BoxRepoImpl boxes;
+	@Autowired BoxRepo boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;

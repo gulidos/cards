@@ -30,6 +30,7 @@ public class ChannelState extends MyState {
 			status = Status.Failed;
 		}	
 		this.gsmstatus = gs; //TODO is it safe?
+		this.lastGsmUpdate = gs.getUpdate();
 		
 	}	
 	

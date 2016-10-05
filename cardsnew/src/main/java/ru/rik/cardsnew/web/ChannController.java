@@ -1,13 +1,10 @@
 package ru.rik.cardsnew.web;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ru.rik.cardsnew.db.BoxRepoImpl;
+import ru.rik.cardsnew.db.BoxRepo;
 import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
@@ -38,10 +37,10 @@ import ru.rik.cardsnew.domain.Trunk;
 @SessionAttributes("filter") 
 @EnableTransactionManagement
 public class ChannController {
-	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
+//	private static final Logger logger = LoggerFactory.getLogger(ChannController.class);		
 	
 	@Autowired GroupRepo groups;
-	@Autowired BoxRepoImpl boxes;
+	@Autowired BoxRepo boxes;
 	@Autowired TrunkRepoImpl trunks;
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepoImpl cards;
@@ -61,23 +60,28 @@ public class ChannController {
 		List<Channel> list = null;
 		if (url.isEmpty()) {
 			filter.setUrl("");
-			filter.setId(0);
 			list = chans.findAll();
 		} else if ("trunk".equals(url)) {
 			filter.setUrl("trunk");
-			filter.setId(id);
 			Trunk t = trunks.findById(id);
 			if (t != null)
 				list = new ArrayList<>(t.getChannels());
 		} else if ("group".equals(url)) {
+			filter.setUrl("group");
 			Grp grp = groups.findById(id);
 			if (grp != null)
 				list = chans.findGroupChans(grp);
-//				model.addAttribute("cards", cards.findGroupCards(grp));
-		} 
+		} else if ("box".equals(url)) {
+			filter.setUrl("box");
+			
+			Box box = boxes.findById(id);
+			if (box != null)
+				list = chans.findBoxChans(box);
+		}
 		
-		for (Channel ch: list) 
-			ch.getTrunks().size();
+		filter.setId(id);
+//		for (Channel ch: list) 
+//			ch.getTrunks().size();
 		
 		model.addAttribute("chans", list);
 		model.addAttribute("filter", filter);
@@ -111,6 +115,15 @@ public class ChannController {
 		return "chan-edit";
 	}
 	
+	
+	@Transactional
+	@RequestMapping(value = "/stat", method = RequestMethod.GET)
+	public String statPage(@RequestParam(value = "id", required = true) long id, Model model) {
+		ChannelState state = chans.findStateById(id);
+		model.addAttribute("state", state);
+		return "chan-stat";
+	}
+
 	private void addToModel(Model model, Channel chan) {
 		model.addAttribute("chan", chan);
 		model.addAttribute("opers", Oper.values()); 
@@ -121,6 +134,7 @@ public class ChannController {
 		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
 	}
 	
+	
 	@Transactional
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editEntity(
@@ -130,12 +144,11 @@ public class ChannController {
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
 		
-		System.out.println("action: " + action + " card: " + chan.toString());
 		if (action.equals("cancel")) {
 			String message = chan.toString() + " edit cancelled";
 			redirectAttrs.addFlashAttribute("message", message);
 		} else if (result.hasErrors()) {
-			System.out.println("there are validation errors" + result.getAllErrors().toString());
+//			System.out.println("there are validation errors" + result.getAllErrors().toString());
 			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.channel", result);
 			redirectAttrs.addFlashAttribute("chan", chan);
 			return "redirect:/channels/edit?id=" + chan.getId();
@@ -155,6 +168,7 @@ public class ChannController {
 
 		return "redirect:/channels";		
 	}
+	
 	
 	@Transactional
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)

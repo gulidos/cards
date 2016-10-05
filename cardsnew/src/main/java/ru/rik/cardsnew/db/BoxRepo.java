@@ -6,11 +6,11 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.BoxStat;
 
 @Repository
-public class BoxRepoImpl extends GenericRepoImpl<Box, BoxStat>  {
+public class BoxRepo extends GenericRepoImpl<Box, BoxStat>  {
 	private static final long serialVersionUID = 1L;
 
 
-	public BoxRepoImpl() {
+	public BoxRepo() {
 		super(Box.class, BoxStat.class);	
 	}
 }

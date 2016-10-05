@@ -78,4 +78,17 @@ public class ChannelRepo extends GenericRepoImpl<Channel, ChannelState> {
 		return query.getResultList();
     }
 	
+	public List<Channel> findBoxChans(Box box) {
+    	CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Channel> criteria = cb.createQuery(Channel.class);
+
+    	Root<Channel> root = criteria.from(Channel.class);
+		TypedQuery<Channel> query = em
+				.createQuery(
+						criteria.select(root).where(cb.equal(root.get("box"), cb.parameter(Box.class, "box"))))
+				.setParameter("box", box)
+				.setHint("org.hibernate.cacheable", true);
+
+		return query.getResultList();
+    }
 }

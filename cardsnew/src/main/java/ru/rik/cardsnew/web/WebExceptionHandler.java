@@ -32,13 +32,13 @@ public class WebExceptionHandler {
 		return mav;
 	}
 
-	@ExceptionHandler({ Exception.class })
-	public ModelAndView anyError(HttpServletRequest req, Exception ex) {
-		logger.error("Request: " + req.toString() + " raised " + ex, ex);
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("exception", ex);
-		mav.addObject("url", req.getRequestURL());
-		mav.setViewName("errors/dupl-entity");
-		return mav;
-	}
+//	@ExceptionHandler({ Exception.class })
+//	public ModelAndView anyError(HttpServletRequest req, Exception ex) {
+//		logger.error("Request: " + req.toString() + " raised " + ex, ex);
+//		ModelAndView mav = new ModelAndView();
+//		mav.addObject("exception", ex);
+//		mav.addObject("url", req.getRequestURL());
+//		mav.setViewName("errors/dupl-entity");
+//		return mav;
+//	}
 }

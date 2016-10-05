@@ -1,7 +1,10 @@
 package ru.rik.cardsnew.config;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -57,10 +60,14 @@ public class RootConfig implements SchedulingConfigurer {
 //	@Bean (initMethod="init") 
 //	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 	
+	
 	@Bean(initMethod="start", destroyMethod="stop")
 	public AsteriskEvents asteriskEvents() {
 		return new AsteriskEvents();
 	}
+	
+
+	@Bean MyThreadFactory threadFactory() { return new MyThreadFactory();}
 	
 	@Bean
     public ThreadPoolTaskExecutor taskExecutor() {
@@ -69,6 +76,7 @@ public class RootConfig implements SchedulingConfigurer {
         executor.setMaxPoolSize(30);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("MyExecutor-");
+        executor.setThreadFactory(threadFactory());
         executor.initialize(); 
         return executor;
     }
@@ -96,4 +104,31 @@ public class RootConfig implements SchedulingConfigurer {
 	public TaskCompleter taskCompleter () {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}
+
+	
+	// =================== Uncaught Exceptions Handler  =====================
+	
+	public static class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+		private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);		
+		private List<String> errors = new LinkedList<>();
+
+		@Override
+		public void uncaughtException(Thread t, Throwable e) {
+			String message = String.format("Thread %s hit by exception %s.", t.getName(), e.toString());
+			logger.error(message);
+			errors.add(message);
+		}
+	}
+
+	public class MyThreadFactory implements ThreadFactory {
+		private MyUncaughtExceptionHandler handler = new MyUncaughtExceptionHandler();
+
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(r);
+			t.setUncaughtExceptionHandler(handler);
+			return t;
+		}
+	}
 }
+

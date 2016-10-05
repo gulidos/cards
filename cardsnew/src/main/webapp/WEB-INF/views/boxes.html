@@ -13,33 +13,30 @@
 <body>
 	<div class="container-fluid">
 		<div id="header" th:include="page :: header"></div>
-		<br>
+		<br> Boxes
 		<div id="content">
+		
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
-					<th class="col-sm-1">name</th>
-					<th class="col-sm-2">number</th>
-					<th class="col-sm-1">b</th>
-					<th class="col-sm-1">place</th>
-					<th class="col-sm-1">group</th>
-
-					<th class="col-sm-2">Action</th>
+					<th class="col-sm-1">ip</th>
+					<th class="col-sm-2">disp</th>
+					<th class="col-sm-1">cap</th>
+					<th class="col-sm-4">descr</th>
+					<th class="col-sm-1">Action</th>
 				</tr>
-				<tr th:each="card : ${cards}">
-					<td th:text="${card.name}"></td>
-					<td th:text="${card.number}"></td>
-					<td th:text="${card.bank}?${card.bank.name}:''"></td>
-					<td th:text="${card.place}"></td>
-					<td th:text="${card.group.name}"></td>
-					<!-- <td th:text="${card.channel}?${card.channel.name}:''"></td> -->
+				<tr th:each="box : ${boxes}"> 
+					<td th:text="${box.ip}"></td>
+					<td th:text="${box.disposition}"></td>
+					<td th:text="${box.capacity}"></td>
+					<td th:text="${box.descr}"></td> 
 					<td style="text-align: center;">
-					<a th:href="@{/cards/edit(id=${card.id})}">
+					<a th:href="@{/box/edit(id=${box.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
 					</a> &nbsp; 
 							<button type="button" class="btn btn-default btn-xs" data-toggle="modal" 
-							data-target="#delModal" th:attr="data-cardid=${card.id}" >
+							data-target="#delModal" th:attr="data-cardid=${box.id}" >
 								<span class="glyphicon glyphicon-trash"></span>Delete
 							</button>
 					</td>
@@ -60,10 +57,9 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<a id="confirm_del" th:href="@{/cards/delete}">
+						<a id="confirm_del" th:href="@{/box/delete}">
 							<button type="button" class="btn btn-primary" >Confirm</button>
 						</a>
-						<!-- th:href="@{/cards/delete(id=${card.id},phase=stage)}" -->
 					</div>
 				</div>
 			</div>
@@ -72,7 +68,7 @@
 
 		<div class="row">
 			<div class="col-sm-8">
-				<a th:href="@{/cards/add}">
+				<a th:href="@{/box/add}">
 					<button type="button" class="btn btn-primary">Add</button>
 				</a>
 			</div>

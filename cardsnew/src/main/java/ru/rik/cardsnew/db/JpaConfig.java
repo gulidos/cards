@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class JpaConfig {
 //	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards;mv_store=false";
 //	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
-	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false";
+	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&characterEncoding=utf-8 ";
 
 	  public DataSource dataSourceTarget() {
 //	    EmbeddedDatabaseBuilder ds = new EmbeddedDatabaseBuilder();
