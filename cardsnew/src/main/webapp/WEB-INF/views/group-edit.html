@@ -31,10 +31,13 @@
 					  <div th:text="${session.fc}"></div> 
 				</div>
 				<a th:href="@{/cards(url=group,id=*{id})}">
-					<button type="button" class="btn btn-link">	Edit cards </button>
+					<button type="button" class="btn btn-link">Edit cards</button>
 				</a>
 				<a th:href="@{/channels(url=group,id=*{id})}">
-					<button type="button" class="btn btn-link">	Edit channels </button>
+					<button type="button" class="btn btn-link">Edit channels</button>
+				</a>
+				<a th:href="@{/channels/chanstats(url=group,id=*{id})}">
+					<button type="button" class="btn btn-link">chans stats</button>
 				</a>
 				
 			<!-- 	<label class="col-sm-4  control-label"> name1 </label>

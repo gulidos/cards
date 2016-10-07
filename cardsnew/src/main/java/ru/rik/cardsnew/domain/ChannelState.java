@@ -47,14 +47,29 @@ public class ChannelState extends MyState {
 	
 	public void incPriority() {priority.incrementAndGet();	}
 	public int getPriority() {	return priority.get();	}
-
+	
+	public String toWeb() {
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append(String.format("%1$s = %2$s%n", "name", getName()));
+		sb.append(String.format("%1$s = %2$s%n", "priority", priority.get()));
+		sb.append(String.format("%1$s = %2$s%n", "lastGsmUpdate", lastGsmUpdate));
+		sb.append(String.format("%1$s = %2$s%n", "status", status));
+		sb.append(" \n");
+		if (gsmstatus != null) {
+			sb.append(String.format("%1$s = %2$s%n", "operator", gsmstatus.getOperator()));
+			sb.append(String.format("%1$s = %2$s%n", "sigquality", gsmstatus.getSigquality()));
+			sb.append(String.format("%1$s = %2$s%n", "status", gsmstatus.getStatus()));
+		}
+		return sb.toString();
+	}
+	
+	
+	@Override
+	public Class<?> getClazz() {return ChannelState.class;	}
+	
 	public enum Status {
 		Ready, Failed, Unreach, Inchange, PeerInchange;
-	}
-
-	@Override
-	public Class<?> getClazz() {
-		return ChannelState.class;
 	}
 
 }

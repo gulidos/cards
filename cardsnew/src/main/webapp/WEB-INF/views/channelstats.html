@@ -13,44 +13,44 @@
 <body>
 	<div class="container-fluid">
 		<div id="header" th:include="page :: header"></div>
-		<br>
+		<br> Channels
+
 		<div id="content">
+			<div class="row col-sm-12" >
+				<div th:if="${message != null}"
+					class="alert alert-success alert-dismissable" role="alert">
+					<span th:text="${message}"></span>
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+				</div>
+			</div>
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
 					<th class="col-sm-1">name</th>
-					<th class="col-sm-1">ver</th>
-					<th class="col-sm-2">number</th>
-					<th class="col-sm-1">b</th>
-					<th class="col-sm-1">place</th>
 					<th class="col-sm-1">group</th>
-					<th class="col-sm-1">sernumber</th>
-
+					<th class="col-sm-1">card</th>
+					<th class="col-sm-1">ena</th>
+					<th class="col-sm-1">stat</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
-				<tr th:each="card : ${cards}">
-					<td th:text="${card.name}"></td>
-					<td th:text="${card.version}"></td>
-					<td th:text="${card.number}"></td>
-					<td th:text="${card.bank}?${card.bank.name}:''"></td>
-					<td th:text="${card.place}"></td>
-					<td th:text="${card.group.name}"></td>
-					<td th:text="${card.sernumber}"></td>
+				<tr th:each="chan : ${chans}">
+					<td th:text="${chan.name}"></td>
+					<td th:text="${chan.group.name}"></td>
+					<td th:text="${chan.card}?${chan.card.name}:''"></td>
+					<td th:text="${chan.enabled}"></td>
+					<td th:text="${chan.state.status}"></td>
 					<td style="text-align: center;">
-					<a th:href="@{/cards/edit(id=${card.id})}">
+					<a th:href="@{/channels/stat(id=${chan.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
-					</a> &nbsp; 
-							<button type="button" class="btn btn-default btn-xs" data-toggle="modal" 
-							data-target="#delModal" th:attr="data-cardid=${card.id}" >
-								<span class="glyphicon glyphicon-trash"></span>Delete
-							</button>
+					</a>  
+							
 					</td>
 				</tr>
 			</table>
 		</div>
-		<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
-			<div class="modal-dialog" role="document">
+			<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
+			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -63,7 +63,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<a id="confirm_del" th:href="@{/cards/delete}">
+						<a id="confirm_del" th:href="@{/channels/delete}">
 							<button type="button" class="btn btn-primary" >Confirm</button>
 						</a>
 					</div>
@@ -71,27 +71,28 @@
 			</div>
 		</div>
 
-
 		<div class="row">
 			<div class="col-sm-8">
-				<a th:href="@{/cards/add}">
+				<a th:href="@{/channels/add}">
 					<button type="button" class="btn btn-primary">Add</button>
 				</a>
 			</div>
-		</div>		
+		</div>
 
 		<div id="footer" th:include="page :: copy"></div>
 		</br>
 	</div>
-	
 </body>
-     <script>
-      $('#delModal').on('show.bs.modal', function (event) {
-    	  var button = $(event.relatedTarget)
-    	  var card_id = button.data('cardid') // Extract info from data-* attributes
-    	  var oldRef=  $('#confirm_del').attr('href');
-    	  var ref = oldRef + "?"+ jQuery.param( { id:card_id, phase:'confirm' } ); 
-    	 $('#confirm_del').attr('href', ref);  
-    	})
-		</script>
+<script>
+	$('#delModal').on('show.bs.modal', function(event) {
+		var button = $(event.relatedTarget)
+		var card_id = button.data('id') // Extract info from data-* attributes
+		var oldRef = $('#confirm_del').attr('href');
+		var ref = oldRef + "?" + jQuery.param({
+			id : card_id,
+			phase : 'confirm'
+		});
+		$('#confirm_del').attr('href', ref);
+	})
+</script>
 </html>

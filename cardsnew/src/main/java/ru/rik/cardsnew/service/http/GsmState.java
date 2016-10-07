@@ -43,22 +43,6 @@ public class GsmState extends MyState {
 		this.iName = iName;
 		this.oMob = oMob;
 	}
-
-
-	public enum GsmApp {
-		Unknown, Booting, Initing, Listening, Standby, Ending, Unreachable;
-		
-		public static GsmApp getInstance(String code) {
-		switch (code) {
-			case "Standby":	return Standby;
-			case "Listening": return Listening;
-			case "Booting": return Booting;
-			case "Initing":	return Initing;
-			case "Ending": return Ending;	
-			default: return Unknown;
-		}	
-		}
-	}
 	
 	public static GsmState get(final Channel ch) throws IOException, IllegalAccessException {
 		String nport = Integer.toString(ch.getLine().getNport());
@@ -103,12 +87,34 @@ public class GsmState extends MyState {
 	}
 
 	
-	public boolean isReady() {
-		return (GsmApp.Standby == getStatus() || GsmApp.Listening == getStatus()); 
-	}
+
+	public boolean isReady() {return status.isReady() ;}
+	@Override public Class<?> getClazz() {return GsmState.class;}
 	
-	@Override
-	public Class<?> getClazz() {
-		return GsmState.class;
+	public enum GsmApp {
+		Unknown(false), Booting(false), Initing(false),
+			Inited(false), OutRing(true), InRing(true), 
+			OutLst(true), InLst(true), Standby(true), 
+			Ending(true), Unreachable(false);
+		
+		private final boolean ready;
+		public boolean isReady() {	return ready;	}
+
+		GsmApp(boolean r) {	this.ready = r;	}
+		
+		public static GsmApp getInstance(String str) {
+			switch (str) {
+				case "Standby":	return Standby;
+				case "Mobile: Listen": return OutLst;
+				case "LAN: Listen": return InLst;
+				case "Mobile: ringback": return OutRing;
+				case "LAN: ringback": return InRing;
+				case "Booting": return Booting;
+				case "Initing":	return Initing;
+				case "Inited":	return Inited;
+				case "Ending": return Ending;	
+				default: return Unknown;
+			}	
+		}
 	}
 }

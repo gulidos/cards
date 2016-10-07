@@ -30,8 +30,12 @@
 					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
 				</div>
 				<a th:href="@{/channels(url=trunk,id=*{id})}">
-					<button type="button" class="btn btn-link">	Edit channels </button>
+					<button type="button" class="btn btn-link">channels</button>
 				</a>
+				<a th:href="@{/channels/chanstats(url=trunk,id=*{id})}">
+					<button type="button" class="btn btn-link">chans stats</button>
+				</a>
+				
 				
 			</div>
 			

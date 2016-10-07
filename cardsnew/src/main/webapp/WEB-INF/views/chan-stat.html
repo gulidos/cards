@@ -28,21 +28,19 @@
 		
 		<div class="panel panel-default " >
 		<div class="panel-heading">Statistics</div>
-		<div class="row">
+
+		
+		<form class="form-horizontal" th:object="${state}" th:action="@{/channels/chanstats/edit}" th:method="post" >
+			<div class="row">
+			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
 			<div class="col-lg-11  ">
-				<pre  th:text="${state}">
+				<pre  th:text="${state.toWeb()}">
 				</pre>
 			</div>
 		</div>
-		
-		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/edit}" th:method="post" >
-	
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
-					<button type="submit" class="btn btn-primary" name="action"	
-						th:value="${action}=='delete' ? 'delete' : 'save'" 
-						th:text="${action}=='delete' ? 'delete' : 'save'"> 
-					</button>
+					<button type="submit" class="btn btn-primary" name="action" th:value="gsmreq" th:text="GsmRequest">	</button>
 					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
 				</div>
 			</div>
