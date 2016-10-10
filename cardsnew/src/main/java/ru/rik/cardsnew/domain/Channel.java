@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +77,7 @@ public class Channel implements MyEntity{
 	private Set<Trunk> trunks = new HashSet<>();
 	
 	@Getter	@Setter
-	@OneToOne    //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
+	@OneToOne  (fetch = FetchType.EAGER)  //the owner side. The inverse side is the one which has the mappedBy attribute (Card)
 	@JoinColumn(name = "card", unique=true  )
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Card card;

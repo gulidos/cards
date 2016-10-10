@@ -21,32 +21,54 @@
 	    
 	<div class="container">
 	<ul class="nav nav-tabs">
-		<li><a th:href="@{/channels/edit(id=*{state.id})}">Settings</a></li>
+		<li><a th:href="@{/channels/edit(id=*{state.id})}">Properties</a></li>
 		<li class="active"><a th:href="@{/channels/stat}">Statistic</a></li>
 		<li><a th:href="@{/channels/stat(id=*{state.id})}">Liked Pages</a></li>
 	</ul>
-		
-		<div class="panel panel-default " >
-		<div class="panel-heading">Statistics</div>
 
-		
+	
+		<h4 >Statistic</h4>
 		<form class="form-horizontal" th:object="${state}" th:action="@{/channels/chanstats/edit}" th:method="post" >
 			<div class="row">
 			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
-			<div class="col-lg-11  ">
+			<div class="col-lg-6 col-sm-6 ">
+				<pre  th:text="${state.toWeb()}">
+				</pre>
+			</div>
+			<div class="col-lg-6 col-sm-6 ">
 				<pre  th:text="${state.toWeb()}">
 				</pre>
 			</div>
 		</div>
-			<div class="form-group">
+		 
+			 <div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
 					<button type="submit" class="btn btn-primary" name="action" th:value="gsmreq" th:text="GsmRequest">	</button>
 					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
 				</div>
-			</div>
+			</div> 
 			
 		</form>
-		</div>
+	
+		 <hr />
+		 
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/chanstats/edit}" th:method="post" >
+			<div class="form-group "> 
+				<label class="col-sm-2 col-xs-2 control-label">card</label>
+				<div class="col-sm-2"  > 
+		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}">    
+					<option th:each="card: ${cards}" th:value="${{card}}" th:text="${card.name}" > </option>
+				</select> 
+				</div>     
+				<div>
+					<button type="submit" class="btn btn-primary" name="action" th:value="install" th:text="install">	</button>
+					<button type="submit" class="btn btn-primary" name="action" th:value="clear" th:text="clear">	</button>
+				</div>
+			</div>	
+		
+	
+		</form>
+		<hr />
 		</div>
 		<div class="col-sm-3"></div>
 

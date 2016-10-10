@@ -2,8 +2,6 @@ package ru.rik.cardsnew.web;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -26,14 +24,12 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.Trunk;
 
 @Controller
 @RequestMapping("/cards")
 @EnableTransactionManagement
 @SessionAttributes("filter") 
 public class CardsController {
-	private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
 
 	@Autowired GroupRepo groups;
 	@Autowired BankRepoImpl banks;
@@ -50,7 +46,6 @@ public class CardsController {
 			@RequestParam(value = "id", defaultValue = "0") long id, 
 			@RequestParam(value = "url", defaultValue = "") String url,
 			Model model) {
-		logger.debug("!!! url: {}, id: {}", url, id);
 		
 		if (url.isEmpty()) {
 			filter.setUrl("");
@@ -96,7 +91,6 @@ public class CardsController {
 		if (!model.containsAttribute("card")) {
 			Card card = cards.findById(id);
 			addToModel(model, card);
-			System.out.println("Reading a card for editing " + card.toStringAll());
 
 		}
 		return "card-edit";
@@ -115,13 +109,11 @@ public class CardsController {
 	public String editCard(@Valid @ModelAttribute Card card, BindingResult result, Model model,
 			RedirectAttributes redirectAttrs, @RequestParam(value = "action", required = true) String action) {
 
-		System.out.println("action: " + action + " card: " + card.toStringAll());
 		if (action.equals("cancel")) {
 			String message = "Card " + card.toString() + " edit cancelled";
 			model.addAttribute("message", message);
 
 		} else if (result.hasErrors()) {
-			System.out.println("there are validation errors" + result.getAllErrors().toString());
 			redirectAttrs.addFlashAttribute("org.springframework.validation.BindingResult.card", result);
 			redirectAttrs.addFlashAttribute("card", card);
 			redirectAttrs.addFlashAttribute("opers", Oper.values());
@@ -146,12 +138,7 @@ public class CardsController {
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	public String showSpitterProfile(Model model, @RequestParam(value = "id", required = true) long id,
 			@RequestParam(value = "phase", required = true) String phase) {
-		System.out.println("we are about to delete cardId: " + id);
 		Card card = cards.findById(id);
-		if (card != null)
-			System.out.println(card.toString());
-		else
-			System.out.println("!!! Card not found");
 		// System.out.println("card/delete-GET | id = " + id + " | phase = " +
 		// phase + " | " + card.toString());
 

@@ -124,6 +124,9 @@ public class ChannController {
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("boxes", boxes.findAll());
 		model.addAttribute("alltrunks", trunks.findAll());
+//		List<Card> listcards = cards.findGroupCards(chan.getGroup());
+//		Card c = new Card();
+//		listcards.add(c);
 		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
 	}
 	
@@ -145,10 +148,16 @@ public class ChannController {
 			redirectAttrs.addFlashAttribute("chan", chan);
 			return "redirect:/channels/edit?id=" + chan.getId();
 		} else if (action.equals("save") && chan != null) {
+			Channel chanBeforeUpdate = chans.findById(chan.getId());
+			Card oldCard = chanBeforeUpdate.getCard();
+			oldCard.setChannelId(0);
+			
 			Channel persChan = chans.makePersistent(chan);
 			Card c = chan.getCard();
-			if (c != null) 
+			if (c != null) {
+				c.setChannelId(chan.getId());
 				cards.makePersistent(c);
+			}	
 			
 			for (Trunk t: persChan.getTrunks())	
 				t.getChannels().add(persChan);
@@ -200,8 +209,11 @@ public class ChannController {
 	@Transactional
 	@RequestMapping(value = "/stat", method = RequestMethod.GET)
 	public String statPage(@RequestParam(value = "id", required = true) long id, Model model) {
-		ChannelState state = chans.findStateById(id);
-		model.addAttribute("state", state);
+		
+		model.addAttribute("state", chans.findStateById(id));
+		Channel chan = chans.findById(id);
+		model.addAttribute("chan", chan);
+		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
 		return "chan-stat";
 	}
 	
@@ -227,7 +239,12 @@ public class ChannController {
 						logger.error(e.getMessage(), e);
 					}
 					return "redirect:/channels/stat" + "?id=" + state.getId();
-				} 
+				} else if (action.equals("install") && state != null) {
+					//TODO needs
+				} else if (action.equals("clear") && state != null) {
+					//TODO needs					
+				}
+				
 				if (!filter.getUrl().isEmpty())
 					return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
 

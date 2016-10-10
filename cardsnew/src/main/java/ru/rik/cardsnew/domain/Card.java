@@ -75,10 +75,9 @@ public class Card implements MyEntity {
 	private Bank bank;
     
 //    try this: http://stackoverflow.com/questions/6068374/hibernate-cache-for-mappedby-object
-//    @Getter @Setter
-//	@OneToOne(mappedBy="card")
-//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE )
-//	private Channel channel;
+    @Getter @Setter
+//	@OneToOne(mappedBy="card", fetch = FetchType.LAZY)
+	private long channelId;
 	
 	public String toStringAll() {
 		return toString() 

@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -32,7 +30,6 @@ import ru.rik.cardsnew.domain.Oper;
 @EnableTransactionManagement
 @SessionAttributes("filter") 
 public class GroupsController {
-	private static final Logger logger = LoggerFactory.getLogger(GroupsController.class);		
 	
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepo boxes;

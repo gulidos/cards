@@ -18,10 +18,9 @@
 			<table class="table table-striped table-bordered table-hover">
 				<tr>
 					<th class="col-sm-1">name</th>
-					<th class="col-sm-1">ver</th>
 					<th class="col-sm-2">number</th>
-					<th class="col-sm-1">b</th>
-					<th class="col-sm-1">place</th>
+					<th class="col-sm-1">chan</th>
+					<th class="col-sm-2">b</th>
 					<th class="col-sm-1">group</th>
 					<th class="col-sm-1">sernumber</th>
 
@@ -29,10 +28,9 @@
 				</tr>
 				<tr th:each="card : ${cards}">
 					<td th:text="${card.name}"></td>
-					<td th:text="${card.version}"></td>
 					<td th:text="${card.number}"></td>
-					<td th:text="${card.bank}?${card.bank.name}:''"></td>
-					<td th:text="${card.place}"></td>
+					<td th:text="${card.channelId}"></td>
+					<td th:text="${card.bank.name} + ' / ' + ${card.place}"></td>
 					<td th:text="${card.group.name}"></td>
 					<td th:text="${card.sernumber}"></td>
 					<td style="text-align: center;">
@@ -40,11 +38,7 @@
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>Edit
 							</button>
-					</a> &nbsp; 
-							<button type="button" class="btn btn-default btn-xs" data-toggle="modal" 
-							data-target="#delModal" th:attr="data-cardid=${card.id}" >
-								<span class="glyphicon glyphicon-trash"></span>Delete
-							</button>
+					</a> 
 					</td>
 				</tr>
 			</table>

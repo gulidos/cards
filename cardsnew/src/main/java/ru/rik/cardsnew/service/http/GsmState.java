@@ -47,12 +47,15 @@ public class GsmState extends MyState {
 	public static GsmState get(final Channel ch) throws IOException, IllegalAccessException {
 		String nport = Integer.toString(ch.getLine().getNport());
 		Connection con = HttpHelper.getCon(ch, "gsmstatus.cgi");
+		
 		GsmStateBuilder b = GsmState.builder();
 
 		Document doc = con.data("nPortNum", nport).post();
+		
 		b.update(new Date());
 		b.id(ch.getId());
 		b.name(ch.getName());
+		
 		
 		Element imob = doc.select("input[name=MSTT]").first();
 		GsmApp status = GsmApp.getInstance(imob.attributes().get("value"));
