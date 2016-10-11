@@ -149,9 +149,9 @@ public class ChannController {
 			redirectAttrs.addFlashAttribute("chan", chan);
 			return "redirect:/channels/edit?id=" + chan.getId();
 		} else if (action.equals("save") && chan != null) {
-			Channel chanBeforeUpdate = chans.findById(chan.getId());
-			Card oldCard = chanBeforeUpdate.getCard();
-			oldCard.setChannelId(0);
+//			Channel chanBeforeUpdate = chans.findById(chan.getId());
+//			Card oldCard = chanBeforeUpdate.getCard();
+//			oldCard.setChannelId(0);
 			
 			Channel persChan = chans.makePersistent(chan);
 			Card c = chan.getCard();

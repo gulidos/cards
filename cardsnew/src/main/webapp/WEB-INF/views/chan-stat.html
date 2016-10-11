@@ -55,6 +55,7 @@
 		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/chanstats/switch}" th:method="post" >
 			<div class="form-group "> 
 				<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
+				<input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
 				<label class="col-sm-2 col-xs-2 control-label">card</label>
 				<div class="col-sm-2"  > 
 		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}">    

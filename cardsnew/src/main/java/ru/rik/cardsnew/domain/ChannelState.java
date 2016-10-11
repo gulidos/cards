@@ -16,10 +16,10 @@ public class ChannelState extends MyState {
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
-	private Date lastGsmUpdate = new Date(0); // set date the most old when create State 
-	private Date nextGsmUpdate = new Date(0);
+	private volatile Date lastGsmUpdate = new Date(0); // set date the most old when create State 
+	private volatile Date nextGsmUpdate = new Date(0);
 	
-	private volatile Status status = Status.Ready;
+	private volatile Status status = Status.Failed;
 	
 	public void applyGsmStatu(GsmState gs) {
 		if (gs.isReady()) {
@@ -29,7 +29,7 @@ public class ChannelState extends MyState {
 			nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
 			status = Status.Failed;
 		}	
-		this.gsmstatus = gs; //TODO is it safe?
+		this.gsmstatus = gs; 
 		this.lastGsmUpdate = gs.getUpdate();
 		
 	}	
@@ -69,7 +69,7 @@ public class ChannelState extends MyState {
 	public Class<?> getClazz() {return ChannelState.class;	}
 	
 	public enum Status {
-		Ready, Failed, Unreach, Inchange, PeerInchange;
+		Ready, Failed, Unreach, Inchange, PeerInchange, Smsfetch, UssdRec;
 	}
 
 }

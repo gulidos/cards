@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.db;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,11 +110,18 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		Assert.notNull(chan);
 		
 		Channel persChan = findById(chan.getId());
+		if (persChan.getVersion() != chan.getVersion())
+			throw new ConcurrentModificationException("Channel " + persChan.getName() + " was modified");	
+		
 		Card oldCard = persChan.getCard();
 		if (oldCard != null)
 			oldCard.setChannelId(0); // set to null channel Id
+		
 		if (c != null) {
 			Card newCard = cards.findById(c.getId());
+			if (newCard.getVersion() != c.getVersion())
+				throw new ConcurrentModificationException("Card " + newCard.getName() + " was modified");	
+
 			newCard.setChannelId(persChan.getId());
 			persChan.setCard(newCard);
 		} else 
