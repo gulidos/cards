@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.db.JpaConfig;
 import ru.rik.cardsnew.db.TrunkRepoImpl;
 import ru.rik.cardsnew.domain.Channel;
@@ -29,7 +29,7 @@ import ru.rik.cardsnew.domain.Trunk;
 public class QueryChannel {
 
 	@Autowired	CardRepoImpl cardRepo;
-	@Autowired	ChannelRepo chanRepo;
+	@Autowired	ChannelRepoImpl chanRepo;
 	@Autowired	TrunkRepoImpl trunks;
 	@PersistenceContext
 	protected EntityManager em;

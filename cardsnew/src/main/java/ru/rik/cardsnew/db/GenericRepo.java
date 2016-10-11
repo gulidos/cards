@@ -3,6 +3,7 @@ package ru.rik.cardsnew.db;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
@@ -34,5 +35,17 @@ public interface GenericRepo<T extends MyEntity, S extends MyEntity>
     void checkVersion(T entity, boolean forceUpdate);
 
 	void clearCache();
+	
+	public S addStateIfAbsent(T entity);
+	
+	public boolean removeStateIfExists(S s);
+	
+	public T findByName(String name);
+	
+	public S findStateById(long id);
+	
+	public S findStateByName(String name);
+	
+	public ConcurrentMap<Long, S> getStates();
 }
 

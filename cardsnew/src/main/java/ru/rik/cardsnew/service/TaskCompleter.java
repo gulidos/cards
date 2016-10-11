@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
@@ -89,7 +90,7 @@ public class TaskCompleter implements Runnable{
 	private void applyGsmState(GsmState g) {
 		logger.debug(g.toString());
 		
-		ChannelRepo repo = ChannelRepo.get();
+		ChannelRepo repo = ChannelRepoImpl.get();
 		ChannelState st = repo.findStateById(g.getId());
 		st.applyGsmStatu(g);
 	}

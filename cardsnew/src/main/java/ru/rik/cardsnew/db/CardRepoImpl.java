@@ -14,10 +14,9 @@ import org.springframework.stereotype.Repository;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Trunk;
 
 @Repository
-public class CardRepoImpl extends GenericRepoImpl<Card, CardStat>  {
+public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
 	static final Logger logger = LoggerFactory.getLogger(CardRepoImpl.class);
 	private static final long serialVersionUID = 1L;
 	
@@ -27,6 +26,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat>  {
 	}
 	
 
+	
 	public List<Card> findGroupCards(Grp grp) {
     	CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Card> criteria = cb.createQuery(Card.class);

@@ -11,16 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.repo.CardsStates;
@@ -33,14 +33,13 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
 @EnableCaching
-@EnableAsync
 @EnableScheduling
-@Import(ru.rik.cardsnew.db.JpaConfig.class)
-// @ComponentScan(basePackages = { "ru.rik.cardsnew" }, excludeFilters = {
-// @Filter(type = FilterType.CUSTOM, value = WebPackage.class) })
+@EnableTransactionManagement
+
+//@Import(ru.rik.cardsnew.db.JpaConfig.class)
+@ComponentScan(basePackages = { "ru.rik.cardsnew.db" })
 
 public class RootConfig implements SchedulingConfigurer {
-	private static final Logger logger = LoggerFactory.getLogger(RootConfig.class);
 
 	public static class WebPackage extends RegexPatternTypeFilter {
 		public WebPackage() {

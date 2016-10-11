@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Data;
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
-import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Trunk;
 
@@ -23,11 +23,9 @@ import ru.rik.cardsnew.domain.Trunk;
 @RequestMapping("/rest")
 @EnableTransactionManagement
 public class RestTrunks {
-	@Autowired
-	GroupRepo groups;
-	@Autowired
-	CardRepoImpl cards;
-	@Autowired TrunkRepoImpl trunks;
+	@Autowired GroupRepo groups;
+	@Autowired CardRepo cards;
+	@Autowired TrunkRepo trunks;
 	@Autowired ChannelRepo chanRepo;
 
 

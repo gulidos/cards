@@ -28,7 +28,7 @@
 
 	
 		<h4 >Statistic</h4>
-		<form class="form-horizontal" th:object="${state}" th:action="@{/channels/chanstats/edit}" th:method="post" >
+		<form class="form-horizontal" th:object="${state}" th:action="@{/channels/chanstats/statistic}" th:method="post" >
 			<div class="row">
 			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
 			<div class="col-lg-6 col-sm-6 ">
@@ -52,8 +52,9 @@
 	
 		 <hr />
 		 
-		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/chanstats/edit}" th:method="post" >
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/chanstats/switch}" th:method="post" >
 			<div class="form-group "> 
+				<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
 				<label class="col-sm-2 col-xs-2 control-label">card</label>
 				<div class="col-sm-2"  > 
 		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}">    

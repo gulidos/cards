@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -25,7 +25,7 @@ public class CheckCDRTask {
 	static final Logger logger = LoggerFactory.getLogger(CheckCDRTask.class);
 
 	@Autowired private CardsStates cardsStates;
-	@Autowired private CardRepoImpl cardRepo;
+	@Autowired private CardRepo cardRepo;
 	@Autowired private ChannelRepo chanRepo;
 	@Autowired private DataSource ds;
 	@Autowired private Cdrs cdrs;

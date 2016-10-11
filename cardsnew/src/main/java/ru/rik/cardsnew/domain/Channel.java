@@ -89,7 +89,7 @@ public class Channel implements MyEntity{
 		// TODO do over properly !!!
 		if (channelRepo == null) {
 			synchronized (sync) {
-				channelRepo = (ChannelRepo) AppInitializer.getContext().getBean("channelRepo");
+				channelRepo = (ChannelRepo) AppInitializer.getContext().getBean("channelRepoImpl");
 			}
 		}	
 		return channelRepo.findStateById(getId());

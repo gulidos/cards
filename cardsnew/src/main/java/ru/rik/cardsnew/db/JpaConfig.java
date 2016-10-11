@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
@@ -99,7 +101,12 @@ public class JpaConfig {
 		return adapter;
 	}
 
+	@Bean
+	public BeanPostProcessor persistenceTranslation() {
+	  return new PersistenceExceptionTranslationPostProcessor();
+	}
 
+	
 	@Bean
 	public CacheManager cacheManager() {
 		return new EhCacheCacheManager(ehCacheCacheManager().getObject());
@@ -118,11 +125,8 @@ public class JpaConfig {
   @EnableTransactionManagement
   public static class TransactionConfig {
 
-
-	@Autowired
-    private EntityManagerFactory emf;
-    @Autowired
-    private DataSource dataSource;
+	@Autowired private EntityManagerFactory emf;
+    @Autowired private DataSource dataSource;
 
     @Bean
     public PlatformTransactionManager transactionManager() {

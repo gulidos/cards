@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.rik.cardsnew.config.AppInitializer;
-import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepo;
 
 @Data
 @AllArgsConstructor
@@ -57,7 +57,7 @@ public class Trunk implements MyEntity {
 	Set<Channel> channels = new HashSet<>();
 
 	public TrunkState getState() {
-		TrunkRepoImpl trunksStats = (TrunkRepoImpl) AppInitializer.getContext().getBean("trunkRepoImpl");
+		TrunkRepo trunksStats = (TrunkRepo) AppInitializer.getContext().getBean("trunkRepoImpl");
 		return trunksStats.findStateById(getId());
 	}
 	

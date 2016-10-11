@@ -6,12 +6,12 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.domain.Card;
 
 public class CardFormatter implements Formatter<Card>{
 
-	@Autowired CardRepoImpl cacrds;
+	@Autowired CardRepo cacrds;
 	
 	public CardFormatter()  {
 		super();

@@ -30,8 +30,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	@PersistenceContext
-	protected EntityManager em;
+	@PersistenceContext	protected EntityManager em;
 
 	protected final Class<T> entityClass;
 	protected final Class<S> entityStateClass;
@@ -83,7 +82,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	//
 	// return result;
 	// }
-
+	@Override
 	public T findByName(String name) {
 		Assert.notNull(name);
 		S state = findStateByName(name);
@@ -155,41 +154,52 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	}
 
 	// ============== State methods =====================
-
+	@Override
 	public S addStateIfAbsent(T entity) {
-		if (entity == null)
-			throw new IllegalArgumentException("entity can not be null here");
-		S state = null;
+		if (entity == null) throw new IllegalArgumentException("entity can not be null here");
+
 		long id = entity.getId();
-		if (findStateById(id) == null) {
+		S state = findStateById(id);
+		if (state == null) {
 			try {
 				S newState = entityStateClass.newInstance();
 				newState.setId(id);
 				newState.setName(entity.getName());
-				state = statsById.putIfAbsent(id, newState);
-				statsByName.putIfAbsent(entity.getName(), newState);
+				
+				if (statsById.putIfAbsent(id, newState) != null)
+					throw new IllegalStateException("statsById anready has the Entity with name" 
+							+ newState.getName() + " class:" +	newState.getClazz());
+				
+				if (statsByName.putIfAbsent(entity.getName(), newState) != null)
+					throw new IllegalStateException("statsByName anready has the Entity with name" 
+							+ newState.getName() + " class:" +	newState.getClazz());
+				
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-		}
+		} else 
+			if (!entity.getName().equals(state.getName())) 
+				state.setName(entity.getName());
+		
 		return state;
 	}
 
+	@Override
 	public boolean removeStateIfExists(S s) {
 		S removed = statsById.remove(s.getId());
 		statsByName.remove(s.getName());
 		return removed != null;
 	}
-
+	@Override
 	public S findStateById(long id) {
 		return statsById.get(id);
 	}
-
+	@Override
 	public S findStateByName(String name) {
 		Assert.notNull(name);
 		return statsByName.get(name);
 	}
-
+	@Override
 	public ConcurrentMap<Long, S> getStates() {
 		return statsById;
 	}

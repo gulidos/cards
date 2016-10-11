@@ -6,11 +6,11 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 
-import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Trunk;
 
 public class TrunkFormatter implements Formatter<Trunk> {
-	@Autowired TrunkRepoImpl trunks;
+	@Autowired TrunkRepo trunks;
 	
 	
 	public TrunkFormatter() {

@@ -14,22 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.db.GenericRepoImpl;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.events.Cdr;
-import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 
 public class AsteriskEvents implements ManagerEventListener {
-	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(AsteriskEvents.class);
 
 	private ManagerConnection managerConnection;
 	
-	@Autowired private CardRepoImpl cardRepo;
-	@Autowired private CardsStates cardsStates;
+	@Autowired private CardRepo cardRepo;
 	@Autowired private ChannelRepo chanRepo;
 	@Autowired private Cdrs cdrs;
 

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ru.rik.cardsnew.db.BankRepoImpl;
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
-import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
@@ -32,10 +32,10 @@ import ru.rik.cardsnew.domain.Place;
 public class CardsController {
 
 	@Autowired GroupRepo groups;
-	@Autowired BankRepoImpl banks;
-	@Autowired CardRepoImpl cards;
+	@Autowired BankRepo banks;
+	@Autowired CardRepo cards;
 	@Autowired ChannelRepo channels;
-	@Autowired TrunkRepoImpl trunks;
+	@Autowired TrunkRepo trunks;
 	@Autowired Filter filter;
 	
 	public CardsController() {

@@ -1,16 +1,8 @@
 package ru.rik.cardsnew.db;
 
-import org.springframework.stereotype.Repository;
-
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.BoxStat;
 
-@Repository
-public class BoxRepo extends GenericRepoImpl<Box, BoxStat>  {
-	private static final long serialVersionUID = 1L;
+public interface BoxRepo extends GenericRepo<Box, BoxStat> {
 
-
-	public BoxRepo() {
-		super(Box.class, BoxStat.class);	
-	}
 }

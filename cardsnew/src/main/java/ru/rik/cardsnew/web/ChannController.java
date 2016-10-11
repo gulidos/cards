@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +23,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ru.rik.cardsnew.db.BoxRepo;
-import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
-import ru.rik.cardsnew.db.TrunkRepoImpl;
+import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -45,9 +46,9 @@ public class ChannController {
 	
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepo boxes;
-	@Autowired TrunkRepoImpl trunks;
+	@Autowired TrunkRepo trunks;
 	@Autowired ChannelRepo chans;
-	@Autowired CardRepoImpl cards;
+	@Autowired CardRepo cards;
 	@Autowired Filter filter;
 
 	
@@ -218,13 +219,14 @@ public class ChannController {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/chanstats/edit", method=RequestMethod.POST)
-	public String editChanStat(
+	@RequestMapping(value="/chanstats/statistic", method=RequestMethod.POST)
+	public String refreshChanStat(
 			@Valid @ModelAttribute ChannelState state, 
 			BindingResult result,
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
+logger.debug("State: {}", state.toString());
 				if (action.equals("cancel")) {
 //					String message = chan.toString() + " edit cancelled";
 //					redirectAttrs.addFlashAttribute("message", message);
@@ -239,11 +241,7 @@ public class ChannController {
 						logger.error(e.getMessage(), e);
 					}
 					return "redirect:/channels/stat" + "?id=" + state.getId();
-				} else if (action.equals("install") && state != null) {
-					//TODO needs
-				} else if (action.equals("clear") && state != null) {
-					//TODO needs					
-				}
+				} 
 				
 				if (!filter.getUrl().isEmpty())
 					return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
@@ -251,5 +249,25 @@ public class ChannController {
 				return "redirect:/channels/chanstats";		
 	}
 			
+	
+	@RequestMapping(value = "/chanstats/switch", method = RequestMethod.POST)
+	public String switchCard(
+			@ModelAttribute Channel chan,
+			// BindingResult result,
+			Model model, RedirectAttributes redirectAttrs,
+			@RequestParam(value = "action", required = true) String action) {
+		Assert.notNull(chan);
+		logger.debug("Channel: {} ", chan.toString() );
 
+		if (action.equals("install")) {
+			chans.switchCard(chan, chan.getCard());
+		} else if (action.equals("clear")) {
+			chans.switchCard(chan, null);
+		}
+		if (!filter.getUrl().isEmpty())
+			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
+
+		return "redirect:/channels/chanstats";
+
+	}
 }
