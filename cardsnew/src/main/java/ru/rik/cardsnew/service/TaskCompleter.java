@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.service;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -75,7 +76,7 @@ public class TaskCompleter implements Runnable{
      */
 	private void execExceptionHandler(Future<State> f, ExecutionException e) {
 		Throwable cause = e.getCause();
-		if (cause instanceof SocketTimeoutException) {
+		if (cause instanceof SocketTimeoutException || cause instanceof ConnectException) {
 			State st = map.remove(f);
 			if (st.getClazz() == ChannelState.class) {
 				ChannelState chState = (ChannelState) st;

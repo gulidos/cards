@@ -7,9 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.rik.cardsnew.config.Settings;
@@ -23,6 +25,8 @@ public class CardStat implements State {
 	static Logger log = Logger.getLogger(CardStat.class);
 	private long id;
 	private String name;
+	private AtomicBoolean free = new AtomicBoolean(true);
+	
 	private Deque<Event> events;
 	private int asr;
 	private double acd;
@@ -50,14 +54,18 @@ public class CardStat implements State {
 		this.events = new LinkedBlockingDeque<>();
 	}
 
-//	public void addEvent(Event ev) {
-//		events.addFirst(ev);
-//		if (ev instanceof CdrCardEvent) {
-//			CdrCardEvent cdr = (CdrCardEvent) ev;
-//			incTodayTime(cdr);
-//		}
-//	}
 
+	public boolean isFree() {return free.get();	}
+	
+	/** true if successful     
+	 * @param expect the expected value
+     * @param update the new value
+     * @return {@code true} if successful. False return indicates that
+     * the actual value was not equal to the expected value. */
+	public boolean setFree(boolean expect, boolean update) {
+		return free.compareAndSet(expect, update);
+	}
+	
 	private void incTodayTime(Cdr cdr) {
 		if (cdr.isToday()) {
 			this.todayMin += cdr.getMin();
@@ -82,23 +90,24 @@ public class CardStat implements State {
 		this.todayCalls = 0;
 	}
 
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(getId());
-		sb.append(" today:").append(todayOperMin).append("(").append(getTodayMin()).append(")");
-		sb.append(":").append(mskOperMin);
-		sb.append(":").append(offnetOperMin);
-		sb.append("-").append(todayCalls);
-		sb.append(" 24h:").append(getLast24hMinutes());
-		sb.append("-").append(getLast24hCallNumber());
-		sb.append(" 1h:").append(getLast1hMinutes());
-		sb.append("-").append(getLast1hCallNumber());
-		sb.append(" ASR:").append(getAsr());
-		sb.append(" ACD:").append(getAcd());
-		sb.append(" s:").append(Settings.d_int.format(getSpread()));
-		sb.append(":").append(Settings.d_int.format(getLast24hSpread()));
-		return sb.toString();
-	}
+	
+//	public String toString() {
+//		StringBuffer sb = new StringBuffer();
+//		sb.append(getId());
+//		sb.append(" today:").append(todayOperMin).append("(").append(getTodayMin()).append(")");
+//		sb.append(":").append(mskOperMin);
+//		sb.append(":").append(offnetOperMin);
+//		sb.append("-").append(todayCalls);
+//		sb.append(" 24h:").append(getLast24hMinutes());
+//		sb.append("-").append(getLast24hCallNumber());
+//		sb.append(" 1h:").append(getLast1hMinutes());
+//		sb.append("-").append(getLast1hCallNumber());
+//		sb.append(" ASR:").append(getAsr());
+//		sb.append(" ACD:").append(getAcd());
+//		sb.append(" s:").append(Settings.d_int.format(getSpread()));
+//		sb.append(":").append(Settings.d_int.format(getLast24hSpread()));
+//		return sb.toString();
+//	}
 
 
 	public void calcAsr() {
@@ -355,6 +364,12 @@ public class CardStat implements State {
 	public void setName(String name) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public String toString() {
+		return "CardStat [id=" + id + ", name=" + name + ", free=" + free + "]";
 	}
 
 }

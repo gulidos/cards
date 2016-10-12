@@ -22,7 +22,7 @@
 					<th class="col-sm-1">b</th>
 					<th class="col-sm-1">place</th>
 					<th class="col-sm-1">group</th>
-
+					<th class="col-sm-1">active</th>
 					<th class="col-sm-2">Action</th>
 				</tr>
 				<tr th:each="card : ${cards}">
@@ -31,6 +31,7 @@
 					<td th:text="${card.bank}?${card.bank.name}:''"></td>
 					<td th:text="${card.place}"></td>
 					<td th:text="${card.group.name}"></td>
+					<td th:text="${card.active}"></td>
 					<!-- <td th:text="${card.channel}?${card.channel.name}:''"></td> -->
 					<td style="text-align: center;">
 					<a th:href="@{/cards/edit(id=${card.id})}">

@@ -126,9 +126,9 @@ public class ChannController {
 		model.addAttribute("boxes", boxes.findAll());
 		model.addAttribute("alltrunks", trunks.findAll());
 //		List<Card> listcards = cards.findGroupCards(chan.getGroup());
-//		Card c = new Card();
+//		Card c = chan.getCard();
 //		listcards.add(c);
-		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
+//		model.addAttribute("cards", listcards);
 	}
 	
 	
@@ -149,12 +149,9 @@ public class ChannController {
 			redirectAttrs.addFlashAttribute("chan", chan);
 			return "redirect:/channels/edit?id=" + chan.getId();
 		} else if (action.equals("save") && chan != null) {
-//			Channel chanBeforeUpdate = chans.findById(chan.getId());
-//			Card oldCard = chanBeforeUpdate.getCard();
-//			oldCard.setChannelId(0);
-			
-			Channel persChan = chans.makePersistent(chan);
 			Card c = chan.getCard();
+			Channel persChan = chans.makePersistent(chan);
+			
 			if (c != null) {
 				c.setChannelId(chan.getId());
 				cards.makePersistent(c);
@@ -214,7 +211,13 @@ public class ChannController {
 		model.addAttribute("state", chans.findStateById(id));
 		Channel chan = chans.findById(id);
 		model.addAttribute("chan", chan);
-		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
+//		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
+		List<Card> listcards = cards.findFreeCardsInGroup(chan.getGroup());
+		if (chan.getCard() != null) {
+			Card c = cards.findById(chan.getCard().getId());
+			listcards.add(c);
+		}
+		model.addAttribute("cards", listcards);
 		return "chan-stat";
 	}
 	
@@ -253,15 +256,17 @@ logger.debug("State: {}", state.toString());
 	@RequestMapping(value = "/chanstats/switch", method = RequestMethod.POST)
 	public String switchCard(
 			@ModelAttribute Channel chan,
-			// BindingResult result,
 			Model model, RedirectAttributes redirectAttrs,
 			@RequestParam(value = "action", required = true) String action) {
 		Assert.notNull(chan);
 		logger.debug("Channel: {} ", chan.toString() );
 
 		if (action.equals("install")) {
+			Card newCard = chan.getCard(); //has to be free
+			newCard.engage();
 			chans.switchCard(chan, chan.getCard());
 		} else if (action.equals("clear")) {
+			
 			chans.switchCard(chan, null);
 		}
 		if (!filter.getUrl().isEmpty())
@@ -270,4 +275,6 @@ logger.debug("State: {}", state.toString());
 		return "redirect:/channels/chanstats";
 
 	}
+
+
 }

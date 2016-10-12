@@ -20,6 +20,7 @@
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-2">number</th>
 					<th class="col-sm-1">chan</th>
+					<th class="col-sm-1">free</th>
 					<th class="col-sm-2">b</th>
 					<th class="col-sm-1">group</th>
 					<th class="col-sm-1">sernumber</th>
@@ -30,6 +31,7 @@
 					<td th:text="${card.name}"></td>
 					<td th:text="${card.number}"></td>
 					<td th:text="${card.channelId}"></td>
+					<td th:text="${card.stat.free}"></td>
 					<td th:text="${card.bank.name} + ' / ' + ${card.place}"></td>
 					<td th:text="${card.group.name}"></td>
 					<td th:text="${card.sernumber}"></td>

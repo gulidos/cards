@@ -1,12 +1,9 @@
 package ru.rik.cardsnew.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -19,29 +16,46 @@ import ru.rik.cardsnew.domain.Grp;
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
 	static final Logger logger = LoggerFactory.getLogger(CardRepoImpl.class);
 	private static final long serialVersionUID = 1L;
+	private static CardRepoImpl repo;
+
 	
 	public CardRepoImpl() {
 		super(Card.class, CardStat.class);
 		System.out.println("!!! Create CardRepoImpl ");
 	}
 	
-
+	@PostConstruct
+	@Override
+	protected void Init() {
+		logger.debug("post constructor initialisation {} repo", entityClass.getName());
+		this.cb = em.getCriteriaBuilder();
+		repo = this;
+		for (Card c : findAll()) {
+			CardStat s = addStateIfAbsent(c);
+			if (c.getChannelId() != 0)
+				s.setFree(true, false);
+		}	
+	}
 	
+	public static CardRepoImpl get() {return repo;	}
+
+	@Override
 	public List<Card> findGroupCards(Grp grp) {
-    	CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Card> criteria = cb.createQuery(Card.class);
-
-    	Root<Card> card = criteria.from(Card.class);
-		TypedQuery<Card> query = em
-				.createQuery(
-						criteria.select(card).where(cb.equal(card.get("group"), cb.parameter(Grp.class, "group"))))
-				.setParameter("group", grp)
-				.setHint("org.hibernate.cacheable", true);
-
-		return query.getResultList();
+		return em.createNamedQuery("findAllCardsInGrp", Card.class)
+				.setParameter("g", grp)
+				.setHint("org.hibernate.cacheable", true)
+				.getResultList();
     }
 	
-	
+	@Override
+	public List<Card> findFreeCardsInGroup(Grp grp) {
+		List<Card> result = new ArrayList<>();
+		for (Card c : em.createNamedQuery("findActiveCardsInGrp", Card.class).setParameter("g", grp)
+				.setHint("org.hibernate.cacheable", true).getResultList())
+			if (c.getStat().isFree())
+				result.add(c);
+		return result;
+    }
 
 	
 }

@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Grp;
@@ -114,8 +115,11 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			throw new ConcurrentModificationException("Channel " + persChan.getName() + " was modified");	
 		
 		Card oldCard = persChan.getCard();
-		if (oldCard != null)
+		if (oldCard != null) {
 			oldCard.setChannelId(0); // set to null channel Id
+			CardStat st = oldCard.getStat();
+			st.setFree(false, true);
+		}	
 		
 		if (c != null) {
 			Card newCard = cards.findById(c.getId());

@@ -58,12 +58,7 @@ public class CardsController {
 			filter.setId(id);
 			if (grp != null)
 				model.addAttribute("cards", cards.findGroupCards(grp));
-		} 
-//		else if ("trunk".equals(url)) {
-//			Trunk t = trunks.findById(id);
-//			if (t != null)
-//				model.addAttribute("cards", cards.findTrunkCards(t));
-//		}		
+		} 		
 		
 		model.addAttribute("filter", filter);
 		

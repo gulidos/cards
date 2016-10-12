@@ -64,24 +64,6 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 		return em.find(entityClass, id, lockModeType);
 	}
 
-	// public T findByName(String name) {
-	// CriteriaQuery<T> criteria = cb.createQuery(entityClass);
-	// Root<T> c = criteria.from(entityClass);
-	// TypedQuery<T> query = em
-	// .createQuery(criteria.select(c)
-	// .where(cb.equal(c.<String> get("name"), name)
-	// )).setHint("org.hibernate.cacheable", true);
-	// T result = null;
-	// try {
-	// result = query.getSingleResult();
-	// } catch (NoResultException e) {
-	//
-	// } catch (Exception e1) {
-	// logger.error(e1.getMessage(), e1);
-	// }
-	//
-	// return result;
-	// }
 	@Override
 	public T findByName(String name) {
 		Assert.notNull(name);
@@ -154,6 +136,10 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	}
 
 	// ============== State methods =====================
+	/**
+     * Returns the State for a given entity. If there weren't such state, it is a new State
+     * otherwise - existing state
+     */
 	@Override
 	public S addStateIfAbsent(T entity) {
 		if (entity == null) throw new IllegalArgumentException("entity can not be null here");
@@ -173,7 +159,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 				if (statsByName.putIfAbsent(entity.getName(), newState) != null)
 					throw new IllegalStateException("statsByName anready has the Entity with name" 
 							+ newState.getName() + " class:" +	newState.getClazz());
-				
+				state = newState;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}

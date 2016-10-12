@@ -10,4 +10,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	List<Card> findGroupCards(Grp grp);
 
+	List<Card> findFreeCardsInGroup(Grp grp);
+
 }

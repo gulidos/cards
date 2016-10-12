@@ -34,14 +34,10 @@ import lombok.experimental.Builder;
 import ru.rik.cardsnew.config.AppInitializer;
 import ru.rik.cardsnew.db.ChannelRepo;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor @AllArgsConstructor @Builder@ToString (exclude = {"box",  "group"})
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
-@ToString (exclude = {"box",  "group"})
-@Entity
+@Entity @Cacheable
 @Table(name="_CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
-@Cacheable
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Channel implements MyEntity{
 	@Transient private static ChannelRepo channelRepo;

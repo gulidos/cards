@@ -1,12 +1,16 @@
 package ru.rik.cardsnew.domain;
 
 
+import java.util.ConcurrentModificationException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -24,14 +28,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NamedQueries({ 
+	@NamedQuery(name = "findAllCardsInGrp", query = "SELECT c FROM Card c WHERE c.group = :g"), 
+	@NamedQuery(name = "findActiveCardsInGrp", query = "SELECT c FROM Card c "
+			+ "WHERE c.group = :g and c.active = true")
+	}
+)
+@NoArgsConstructor @AllArgsConstructor @Builder 
 @EqualsAndHashCode(exclude = { "group", "bank"},callSuper = false)
 @ToString(exclude = {"group", "bank"})
-@Entity
-@Cacheable
+@Entity @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="_CARD", uniqueConstraints=@UniqueConstraint(columnNames={"bank_id", "place"}))
 public class Card implements MyEntity {
@@ -66,7 +75,7 @@ public class Card implements MyEntity {
 	@Getter @Setter
 	private String sernumber;
     
-    @ManyToOne 
+    @ManyToOne //Default- Eager
     @Getter @Setter
 	private Grp group;
     
@@ -79,6 +88,21 @@ public class Card implements MyEntity {
 //	@OneToOne(mappedBy="card", fetch = FetchType.LAZY)
 	private long channelId;
 	
+    @Getter @Setter
+  	private boolean active;
+    
+    public CardStat getStat () {
+    	CardRepo cards = CardRepoImpl.get();
+    	return cards.findStateById(id);
+    }
+    
+    /** tries to make CardStat not free. If fails, throws ConcurrentModificationException*/
+    public void engage() {
+		CardStat st = getStat();
+		if (!st.setFree(true, false)) 
+			throw new ConcurrentModificationException("Card " + getName() + " is already engaged");
+	}
+    
 	public String toStringAll() {
 		return toString() 
 				+ " group: " + ( group != null ? group.getId() : "none") 
