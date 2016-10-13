@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.NoResultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +42,16 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	
 	
 	public Channel findPair(Channel ch) {
-		return em.createNamedQuery("findPair", Channel.class)
-		.setParameter("box", ch.getBox())
-		.setParameter("line", ch.getLine().getPair())
-		.setHint("org.hibernate.cacheable", true)
-		.getSingleResult();
+		try {
+			return em.createNamedQuery("findPair", Channel.class)
+					.setParameter("box", ch.getBox())
+					.setParameter("line", ch.getLine().getPair())
+					.setHint("org.hibernate.cacheable", true)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+		
 	}
 		
 	

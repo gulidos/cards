@@ -26,6 +26,11 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
+
 @EnableTransactionManagement
 @EnableCaching
 @Configuration
@@ -102,6 +107,9 @@ public class ConfigJpaLite {
 		cmfb.setShared(true);
 		return cmfb;
 	}
+	
+	@Bean public ChannelRepo chanRepo() {return new ChannelRepoImpl();}
+	@Bean public CardRepo cardRepo() {return new CardRepoImpl();}
 
 	// @Bean public TrunksStates trunksStats() { return new TrunksStates();
 	// }

@@ -1,6 +1,7 @@
 package ru.rik.cardsnew.http;
 
 import java.io.IOException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -27,7 +28,8 @@ public class TestSimSet {
 	@Transactional
 	public void t1changeCard() throws IOException {
 
-		TypedQuery<Channel> q = em.createQuery("SELECT c FROM Channel c", Channel.class);
+		TypedQuery<Channel> q = em.createQuery("SELECT c FROM Channel c", Channel.class)
+				.setHint("org.hibernate.cacheable", true);
 		
 		
 		for (Channel ch : q.getResultList()) {
