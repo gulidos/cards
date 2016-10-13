@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.service.http.GsmState;
+import ru.rik.cardsnew.service.http.SimSet;
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class ChannelState extends MyState {
@@ -16,6 +17,7 @@ public class ChannelState extends MyState {
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
+	private volatile SimSet simset;
 	private volatile Date lastGsmUpdate = new Date(0); // set date the most old when create State 
 	private volatile Date nextGsmUpdate = new Date(0);
 	
@@ -60,7 +62,8 @@ public class ChannelState extends MyState {
 			sb.append(String.format("%1$s = %2$s%n", "operator", gsmstatus.getOperator()));
 			sb.append(String.format("%1$s = %2$s%n", "sigquality", gsmstatus.getSigquality()));
 			sb.append(String.format("%1$s = %2$s%n", "status", gsmstatus.getStatus()));
-		}
+		} 
+		
 		return sb.toString();
 	}
 	

@@ -20,7 +20,7 @@ public class HttpHelper {
 		String password = Box.DEF_PASSWORD;
 		String login = user + ":" + password;
 		String authString = new String(Base64.encodeBase64(login.getBytes()));
-		
+		System.out.println(ch.getName() + " connect to: " + "http://" + host + ":" + port +"/" + link);
 		return Jsoup.connect("http://" + host + ":" + port +"/" + link)
 				.header("Authorization", "Basic " + authString)
 				.followRedirects(true);

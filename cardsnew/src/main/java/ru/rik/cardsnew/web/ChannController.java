@@ -125,10 +125,6 @@ public class ChannController {
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("boxes", boxes.findAll());
 		model.addAttribute("alltrunks", trunks.findAll());
-//		List<Card> listcards = cards.findGroupCards(chan.getGroup());
-//		Card c = chan.getCard();
-//		listcards.add(c);
-//		model.addAttribute("cards", listcards);
 	}
 	
 	
@@ -211,7 +207,6 @@ public class ChannController {
 		model.addAttribute("state", chans.findStateById(id));
 		Channel chan = chans.findById(id);
 		model.addAttribute("chan", chan);
-//		model.addAttribute("cards", cards.findGroupCards(chan.getGroup()));
 		List<Card> listcards = cards.findFreeCardsInGroup(chan.getGroup());
 		if (chan.getCard() != null) {
 			Card c = cards.findById(chan.getCard().getId());

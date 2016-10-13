@@ -355,16 +355,10 @@ public class CardStat implements State {
 	}
 
 	@Override
-	public void setId(long id) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setId(long id) {this.id = id;	}
 
 	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setName(String name) {this.name = name;}
 
 
 	@Override

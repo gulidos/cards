@@ -70,6 +70,8 @@ public class GetTest {
 			imob  = doc.select("input[name=OMOB]").first();
 			System.out.println("Outgoing Mob: " + (imob != null ?  imob.attributes().get("value") : ""));
 
+			System.out.println("======== SIMSet=========");
+								   
 			 doc =  Jsoup.connect("http://192.168.200.45:8080/SimSet.htm")
 			.header("Authorization", "Basic " + encodedString)
 			.followRedirects(true)
@@ -94,7 +96,7 @@ public class GetTest {
 			 System.out.println("B Bank URL: " + (imob != null ?  imob.attributes().get("value") : "-"));
 //			 
 			
-			 
+			 System.out.println("======== SIP=========");
 			 doc =  Jsoup.connect("http://192.168.200.45:8180/servdompage.cgi")
 						.header("Authorization", "Basic " + encodedString)
 						.followRedirects(true)

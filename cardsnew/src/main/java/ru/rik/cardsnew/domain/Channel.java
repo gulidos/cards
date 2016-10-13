@@ -13,9 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
@@ -31,17 +32,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
-import ru.rik.cardsnew.config.AppInitializer;
-import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 
-@NoArgsConstructor @AllArgsConstructor @Builder@ToString (exclude = {"box",  "group"})
+@NamedQueries({  
+	@NamedQuery(name = "findPair", query = "SELECT c FROM Channel c WHERE c.line = :line and c.box = :box"),
+	@NamedQuery(name = "findByGrp", query = "SELECT c FROM Channel c WHERE c.group = :grp"),
+	@NamedQuery(name = "findByBox", query = "SELECT c FROM Channel c WHERE c.box = :box")
+	}
+)
+@NoArgsConstructor @AllArgsConstructor @Builder @ToString (exclude = {"box",  "group"})
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
 @Entity @Cacheable
 @Table(name="_CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))
 @org.hibernate.annotations.Cache(  usage = CacheConcurrencyStrategy.READ_WRITE	)
 public class Channel implements MyEntity{
-	@Transient private static ChannelRepo channelRepo;
-	@Transient private static Object sync = new Object();
 	
     @Id   @Column(name="id")   @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter
@@ -82,13 +86,11 @@ public class Channel implements MyEntity{
 	private boolean enabled;
 
 	public ChannelState getState() {
-		// TODO do over properly !!!
-		if (channelRepo == null) {
-			synchronized (sync) {
-				channelRepo = (ChannelRepo) AppInitializer.getContext().getBean("channelRepoImpl");
-			}
-		}	
-		return channelRepo.findStateById(getId());
+		return ChannelRepoImpl.get().findStateById(getId());
+	}
+	
+	public Channel getPair() {
+		return ChannelRepoImpl.get().findPair(this);
 	}
 	
 	

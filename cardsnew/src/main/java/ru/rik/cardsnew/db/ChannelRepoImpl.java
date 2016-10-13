@@ -23,7 +23,6 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Trunk;
 
 @Repository
@@ -46,18 +45,13 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	
 	
 	public Channel findPair(Channel ch) {
-		CriteriaQuery<Channel> criteria = cb.createQuery(entityClass);
-    	Root<Channel> c = criteria.from(entityClass);
-		TypedQuery<Channel> query = em
-				.createQuery(
-						criteria.select(c)
-								.where(cb.and(cb.equal(c.<Line> get("line"), ch.getLine().getPair()),
-										cb.equal(c.<Box> get("box"), ch.getBox()))))
-				.setHint("org.hibernate.cacheable", true);
-		return query.getSingleResult();
+		return em.createNamedQuery("findPair", Channel.class)
+		.setParameter("box", ch.getBox())
+		.setParameter("line", ch.getLine().getPair())
+		.setHint("org.hibernate.cacheable", true)
+		.getSingleResult();
 	}
-	
-	
+		
 	
 	public List<Channel> getSorted(Trunk t) throws NullPointerException {
 		if (t == null)	throw new NullPointerException("trunk can not be null");
@@ -72,39 +66,21 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		return result;
 	}
 	
-	
 
 	public List<Channel> findGroupChans(Grp grp) {
-    	CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Channel> criteria = cb.createQuery(Channel.class);
-
-    	Root<Channel> root = criteria.from(Channel.class);
-		TypedQuery<Channel> query = em
-				.createQuery(
-						criteria.select(root).where(cb.equal(root.get("group"), cb.parameter(Grp.class, "group"))))
-				.setParameter("group", grp)
-				.setHint("org.hibernate.cacheable", true);
-
-		return query.getResultList();
-    }
+		return em.createNamedQuery("findByGrp", Channel.class)
+				.setParameter("grp", grp)
+				.setHint("org.hibernate.cacheable", true)
+				.getResultList();
+	}
+    	
 	
-	
-
 	public List<Channel> findBoxChans(Box box) {
-    	CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Channel> criteria = cb.createQuery(Channel.class);
-
-    	Root<Channel> root = criteria.from(Channel.class);
-		TypedQuery<Channel> query = em
-				.createQuery(
-						criteria.select(root).where(cb.equal(root.get("box"), cb.parameter(Box.class, "box"))))
+		return em.createNamedQuery("findByBox", Channel.class)
 				.setParameter("box", box)
-				.setHint("org.hibernate.cacheable", true);
-
-		return query.getResultList();
-    }
-
-	
+				.setHint("org.hibernate.cacheable", true)
+				.getResultList();
+	}	
 
 	@Transactional
 	public void switchCard(Channel chan, Card c) {
