@@ -3,9 +3,6 @@ package ru.rik.cardsnew.http;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.transaction.Transactional;
@@ -23,7 +20,6 @@ import ru.rik.cardsnew.config.RootConfig;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.State;
-import ru.rik.cardsnew.service.http.SimSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RootConfig.class)
@@ -44,8 +40,8 @@ public class GetChInfo {
 		Map<Future<State>, Long> map = new HashMap<>();
 		for (Channel ch : chans.findAll()) {
 			
-			SimSet s = SimSet.get(ch);
-			System.out.println(s.toString());
+//			SimSet s = SimSet.get(ch);
+//			System.out.println(s.toString());
 //			Callable<State> check = new Callable<State>() {
 //				public GsmState call() throws Exception {
 //					return GsmState.get(ch);

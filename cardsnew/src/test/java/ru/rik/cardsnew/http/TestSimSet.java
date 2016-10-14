@@ -1,6 +1,8 @@
 package ru.rik.cardsnew.http;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,16 +28,31 @@ public class TestSimSet {
 
 	@Test
 	@Transactional
-	public void t1changeCard() throws IOException {
+	public void t1changeCard() {
 
 		TypedQuery<Channel> q = em.createQuery("SELECT c FROM Channel c", Channel.class)
 				.setHint("org.hibernate.cacheable", true);
-		
+		Set<Channel> simSetJobs = new HashSet<>();
 		
 		for (Channel ch : q.getResultList()) {
-			System.out.println("going for chanel " + ch.getName());
-			SimSet s = SimSet.get(ch);
-			System.out.println(s.toString());
+			if (simSetJobs.contains(ch)) {
+				simSetJobs.remove(ch);
+				continue;
+			}	
+			try {
+				Channel pair = ch.getPair();
+				simSetJobs.add(pair);
+				SimSet s = SimSet.get(ch, pair);
+				
+				SimSet pairS = s.getPairData();
+				
+				System.out.println("!!! me: " + s.getCh().getName() + " " + s.toString());
+				if(pair != null)
+					System.out.println("!!! Pair: " + pairS.getCh().getName() + " " + pairS.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		System.out.println("set: " + simSetJobs.size());
 	}	
 }

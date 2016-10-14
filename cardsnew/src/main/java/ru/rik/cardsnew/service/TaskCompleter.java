@@ -13,13 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.Assert;
 
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.http.GsmState;
+import ru.rik.cardsnew.service.http.SimSet;
 
 public class TaskCompleter implements Runnable{
 	private static final Logger logger = LoggerFactory.getLogger(TaskCompleter.class);		
@@ -27,6 +28,7 @@ public class TaskCompleter implements Runnable{
 	private final CompletionService<State> completionServ;
 	private final ThreadPoolTaskExecutor executor;
 	private final ConcurrentMap<Future<State>, State> map;
+	@Autowired private ChannelRepo chans;
 
 
 	@Autowired
@@ -57,18 +59,23 @@ public class TaskCompleter implements Runnable{
 				f = completionServ.take();
 				State result = f.get();
 				map.remove(f);
-				
+
 				if (result.getClazz() == GsmState.class)				
 					applyGsmState((GsmState) result);
-				
+				else if (result.getClazz() == SimSet.class) {
+					applySimSet(result);
+				}
 			} catch (InterruptedException e) {
 				logger.info("interrupted");
 				Thread.currentThread().interrupt();
 			} catch (ExecutionException e) {
 				execExceptionHandler(f, e);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}
+
 
 
 	/**
@@ -91,11 +98,24 @@ public class TaskCompleter implements Runnable{
 	private void applyGsmState(GsmState g) {
 		logger.debug(g.toString());
 		
-		ChannelRepo repo = ChannelRepoImpl.get();
-		ChannelState st = repo.findStateById(g.getId());
+		ChannelState st = chans.findStateById(g.getId());
 		st.applyGsmStatu(g);
 	}
 	
+
+	private void applySimSet(State result) {
+		SimSet ss = (SimSet) result;
+		ChannelState st = chans.findStateById(ss.getId());
+		Assert.notNull(st, "SimSet applying. Can not find ChanelState " + ss.getName());
+		st.applySimSet(ss);
+		
+		SimSet ssPair = ss.getPairData();
+		if (ssPair != null) {
+			ChannelState stPair = chans.findStateById(ssPair.getId());
+			Assert.notNull(stPair, "SimSet applying. Can not find ChanelState " + ssPair.getName());
+			stPair.applySimSet(ssPair);
+		}
+	}
 
 	
 }

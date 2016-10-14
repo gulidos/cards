@@ -3,7 +3,7 @@ package ru.rik.cardsnew.domain;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class TrunkState extends MyState {
+public class TrunkState implements MyState {
 	private long id;
 	private String name;
 	private AtomicInteger next;

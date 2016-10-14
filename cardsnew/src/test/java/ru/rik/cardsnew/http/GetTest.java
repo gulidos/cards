@@ -72,11 +72,21 @@ public class GetTest {
 
 			System.out.println("======== SIMSet=========");
 			
-//			 doc =  Jsoup.connect("http://192.168.200.45:8080/SimSet.htm")
-			doc =  Jsoup.connect("http://172.17.1.38:8280/SimSet.htm")	
+			doc =  Jsoup.connect("http://192.168.200.45:8080/login.cgi")
+					.data("cookieexists", "false")
+					.data("user", "voip")
+					.data("pass", "1234")
+					.header("Authorization", "Basic " + encodedString)
+					.followRedirects(true)
+					.post();
+			System.out.println(doc.toString());
+
+			doc =  Jsoup.connect("http://192.168.200.45:8080/SimSet.htm")	
 			.header("Authorization", "Basic " + encodedString)
 			.followRedirects(true)
 			.get();
+			
+			System.out.println(doc.toString());
 			 
 			 imob  = doc.select("input[name=mIDA]").first();	
 			 System.out.println("A Mobile: " + (imob != null ?  imob.attributes().get("value") : "-"));

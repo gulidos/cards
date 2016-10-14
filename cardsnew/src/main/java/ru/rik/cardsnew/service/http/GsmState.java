@@ -14,7 +14,7 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyState;
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GsmState extends MyState {
+public class GsmState implements MyState {
 	private final long id;
 	private final String name;
 	private final Date update;
@@ -120,4 +120,8 @@ public class GsmState extends MyState {
 			}	
 		}
 	}
+
+	@Override	public void setId(long id) {	}
+
+	@Override 	public void setName(String name) {	}
 }
