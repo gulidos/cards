@@ -3,6 +3,8 @@ package ru.rik.cardsnew.service.http;
 import java.io.IOException;
 
 import org.jsoup.Connection;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.util.Assert;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyState;
 
@@ -83,16 +86,30 @@ public class SimSet implements MyState{
 		return me;
 	}
 
-	@Override
-	public Class<?> getClazz() {return SimSet.class;}
-
-	@Override
-	public void setId(long id) {	
+	public static int post(Channel ch, Card c) throws IOException {
+		Assert.notNull(ch);
+		Assert.notNull(c);
+		Connection con = HttpHelper.getCon(ch, "SimSet.cgi");
+		con.timeout(1000)
+		.followRedirects(true)
+        .method(Method.POST);
+		
+		if (ch.getLine().getNport() == 0) 
+			con.data("cIDA", c.getPlace().name()).data("BnkA", c.getBank().getIp());
+		else 
+			con.data("cIDB", c.getPlace().name()).data("BnkB", c.getBank().getIp());
+		
+		Response resp = con.execute();
+		return resp.statusCode();
+		
 	}
+	
+	
+	@Override public Class<?> getClazz() {return SimSet.class;}
 
-	@Override
-	public void setName(String name) {		
-	}
+	@Override public void setId(long id) {}
+
+	@Override public void setName(String name) {}
 
 	@Override
 	public String toString() {

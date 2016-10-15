@@ -84,6 +84,10 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 				.getResultList();
 	}	
 
+	/** Transactional.
+	 * Fixes changing card in channel into database
+	 * @throws ConcurrentModificationException 
+	 */
 	@Transactional
 	public void switchCard(Channel chan, Card c) {
 		Assert.notNull(chan);

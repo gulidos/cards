@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.db;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import ru.rik.cardsnew.domain.Box;
@@ -19,6 +20,10 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 
 	List<Channel> findBoxChans(Box box);
 
+	/** Transactional.
+	 * Fixes changing card in channel into database
+	 * @throws ConcurrentModificationException 
+	 */
 	void switchCard(Channel chan, Card c);
 
 }

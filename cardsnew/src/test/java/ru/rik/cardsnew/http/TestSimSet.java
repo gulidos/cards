@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.rik.cardsnew.ConfigJpaLite;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -27,6 +28,23 @@ public class TestSimSet {
 	public TestSimSet() {}
 
 	@Test
+	@Transactional
+	public void switchCard() throws IOException {
+		TypedQuery<Channel> q = em.createQuery("SELECT c FROM Channel c WHERE c.name = :name", Channel.class)
+				.setParameter("name","mgf92" );
+		Channel ch = q.getSingleResult();
+		
+		TypedQuery<Card> qcard = em.createQuery("SELECT c FROM Card c WHERE c.name = :name", Card.class)
+				.setParameter("name","mgf102" );
+		Card c = qcard.getSingleResult();
+		SimSet.post(ch, c);
+		
+		System.out.println(ch.toString());
+		System.out.println(c.toString());
+				
+	}
+	
+//	@Test
 	@Transactional
 	public void t1changeCard() {
 

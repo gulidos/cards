@@ -36,6 +36,7 @@ import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Trunk;
 import ru.rik.cardsnew.service.http.GsmState;
+import ru.rik.cardsnew.service.http.SimSet;
 
 @Controller
 @RequestMapping("/channels")
@@ -224,7 +225,7 @@ public class ChannController {
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
-logger.debug("State: {}", state.toString());
+			logger.debug("State: {}", state.toString());
 				if (action.equals("cancel")) {
 //					String message = chan.toString() + " edit cancelled";
 //					redirectAttrs.addFlashAttribute("message", message);
@@ -249,7 +250,7 @@ logger.debug("State: {}", state.toString());
 			
 	
 	@RequestMapping(value = "/chanstats/switch", method = RequestMethod.POST)
-	public String switchCard(
+	public String switchCardWeb(
 			@ModelAttribute Channel chan,
 			Model model, RedirectAttributes redirectAttrs,
 			@RequestParam(value = "action", required = true) String action) {
@@ -257,9 +258,11 @@ logger.debug("State: {}", state.toString());
 		logger.debug("Channel: {} ", chan.toString() );
 
 		if (action.equals("install")) {
-			Card newCard = chan.getCard(); //has to be free
-			newCard.engage();
-			chans.switchCard(chan, chan.getCard());
+			Channel persCh = chans.findById(chan.getId());
+			Card newCard = chan.getCard(); 
+			switchCard(persCh, newCard);
+//			newCard.engage();
+//			chans.switchCard(chan, chan.getCard());
 		} else if (action.equals("clear")) {
 			
 			chans.switchCard(chan, null);
@@ -269,6 +272,30 @@ logger.debug("State: {}", state.toString());
 
 		return "redirect:/channels/chanstats";
 
+	}
+	
+	public void switchCard (Channel ch, Card c) {
+		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
+		try {
+			c.engage();
+			SimSet.get(ch, null);
+			try {
+				chans.switchCard(ch, c);
+			} catch (Exception e) {
+				logger.error(e.toString(), e);
+				c.getStat().setFree(false, true);
+			}
+			try {
+				SimSet.post(ch, c);
+			} catch (Exception e) {
+				logger.error(e.toString(), e);
+				c.getStat().setFree(false, true);
+				// TODO bring back the old card in place
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.toString(), e);		
+		}
 	}
 
 
