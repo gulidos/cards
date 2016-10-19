@@ -43,9 +43,10 @@ public class RestTrunks {
 	}
 
 	@Transactional
-	@RequestMapping(value = "/trunk/{id}", method = RequestMethod.GET)
-	public RestTrunk get(@PathVariable("id") long id) {
-		Trunk t = trunks.findById(id);
+	@RequestMapping(value = "/trunk/{name}", method = RequestMethod.GET)
+	public RestTrunk get(@PathVariable("name") String name) {
+
+		Trunk t = trunks.findByName(name);
 		if (t!= null) 
 			return new RestTrunk(t);
 		else return null;

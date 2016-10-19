@@ -18,7 +18,8 @@ public class GsmState implements MyState {
 	private final long id;
 	private final String name;
 	private final Date update;
-	private final GsmApp status;
+	// TODO if Inited too long, it should be rebooted
+	private final GsmApp status;  
 	private final String operator;
 	private final String sernum;
 	private final int sigquality;

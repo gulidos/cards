@@ -275,7 +275,7 @@ public class ChannController {
 	}
 	
 	public void switchCard (Channel ch, Card c) {
-		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
+//		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
 		try {
 			c.engage();
 			SimSet.get(ch, null);

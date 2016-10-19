@@ -55,7 +55,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	}
 		
 	
-	public List<Channel> getSorted(Trunk t) throws NullPointerException {
+	public List<Channel> getSorted(Trunk t)  {
 		if (t == null)	throw new NullPointerException("trunk can not be null");
 		
 		List<Channel> result = t.getChannels().stream()
