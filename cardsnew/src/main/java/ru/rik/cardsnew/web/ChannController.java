@@ -236,6 +236,8 @@ public class ChannController {
 						GsmState gstate = GsmState.get(ch);
 						ChannelState st = ch.getState();
 						st.applyGsmStatu(gstate);
+						SimSet simset = SimSet.get(ch, ch.getPair());
+						st.applySimSet(simset);
 					} catch (IllegalAccessException | IOException e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -260,9 +262,8 @@ public class ChannController {
 		if (action.equals("install")) {
 			Channel persCh = chans.findById(chan.getId());
 			Card newCard = chan.getCard(); 
-			switchCard(persCh, newCard);
-//			newCard.engage();
-//			chans.switchCard(chan, chan.getCard());
+			Card persCard = cards.findById(newCard.getId());
+			switchCard(persCh, persCard);
 		} else if (action.equals("clear")) {
 			
 			chans.switchCard(chan, null);
@@ -270,26 +271,29 @@ public class ChannController {
 		if (!filter.getUrl().isEmpty())
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
 
-		return "redirect:/channels/chanstats";
+		 return "redirect:/channels/stat" + "?id=" + chan.getId();
 
 	}
 	
 	public void switchCard (Channel ch, Card c) {
 //		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
 		try {
-			c.engage();
+			if (c!= null)
+				c.engage();
 			SimSet.get(ch, null);
 			try {
 				chans.switchCard(ch, c);
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
-				c.getStat().setFree(false, true);
+				if (c!= null)
+					c.getStat().setFree(false, true);
 			}
 			try {
 				SimSet.post(ch, c);
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
-				c.getStat().setFree(false, true);
+				if (c!= null)
+					c.getStat().setFree(false, true);
 				// TODO bring back the old card in place
 			}
 			
