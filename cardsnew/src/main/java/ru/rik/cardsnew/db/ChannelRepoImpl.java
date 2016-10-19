@@ -59,7 +59,8 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		if (t == null)	throw new NullPointerException("trunk can not be null");
 		
 		List<Channel> result = t.getChannels().stream()
-				.filter(ch -> ch.getCard() != null && ch.isEnabled())
+//				.filter(ch -> ch.getCard() != null && ch.isEnabled())
+				.filter(ch ->  ch.isEnabled())
 				.sorted((ch1, ch2) -> Integer.compare(ch1.getState().getPriority(), 
 						ch2.getState().getPriority()))
 				.collect(Collectors.toList());

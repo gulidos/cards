@@ -22,12 +22,17 @@
 		<div class="panel-heading">card</div>
 		<form class="form-horizontal" th:object="${card}" th:action="@{/cards/edit}" th:method="post" >
 			<div class="form-group" >
-				<label class="col-sm-4 col-xs-8 control-label" >name</label>
-				<div class="col-sm-2">
+				<label class="col-md-4 col-lg-4 control-label" >name</label>
+				<div class="col-md-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
 					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
 				</div>
+				<label class="col-md-1 col-lg-1 control-label">active</label>
+				<div class="col-md-1 col-lg-1"  > 
+					<input type="checkbox" th:field="*{active}" />
+				</div>
+				
 			</div>
 			<div class="form-group">
 				<label class="col-sm-4 col-xs-8 control-label">number</label>
@@ -67,13 +72,23 @@
 					<input type="text" class="form-control" th:value="*{sernumber}" th:field="*{sernumber}"
 					th:readonly="${action}=='delete'"></input>
 				</div>
-			</div>			
-			<div class="form-group ">
+			</div>	
+			<div class="form-group">
+				<label class="col-md-2 col-lg-2 control-label">day </label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{dlimit}" th:field="*{dlimit}"></input>
+				</div>
+				<label class="col-md-2 col-lg-2 control-label">month </label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{mlimit}" th:field="*{mlimit}"></input>
+				</div>
+			</div>		
+		<!-- 	<div class="form-group ">
 				<label class="col-sm-4 col-xs-8 control-label">active</label>
 				<div class="col-sm-2"  > 
 				<input type="checkbox" th:field="*{active}" />
 				</div>
-			</div>	
+			</div> -->	
 	<!-- 		<div class="form-group "> 
 				<label class="col-sm-4 col-xs-8 control-label">channel</label>
 				<div class="col-sm-2"  > 

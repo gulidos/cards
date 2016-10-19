@@ -31,7 +31,7 @@ public class PeriodicTasks {
 
 	}
 	
-	@Scheduled(fixedRate = 30000)
+	@Scheduled(fixedRate = 300000)
 	public void checkChannels() {
 		logger.debug("Start checkChannels ...");
 		Set<Channel> simSetJobs = new HashSet<>();

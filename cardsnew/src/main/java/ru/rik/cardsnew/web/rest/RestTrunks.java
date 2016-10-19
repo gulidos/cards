@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
@@ -61,21 +62,37 @@ public class RestTrunks {
 
 	@Data
 	public class RestTrunk {
-		long id;
 		String name;
-		int n;
-		long version;
-		List<String> channels = new ArrayList<>();
+		List<RestChannel> channels = new ArrayList<>();
 
 		public RestTrunk(Trunk t) {
-			id = t.getId();
 			name = t.getName(); 
-			version = t.getVersion();
-			n = t.getChannels().size();
-			for (Channel ch : chanRepo.getSorted(t)) 
-				channels.add(ch.toString());
-			
+			int i = 0;
+			for (Channel ch : chanRepo.getSorted(t)) {
+				RestChannel r = new RestChannel(i, ch.getName(), "P", 
+						ch.getCard() != null ? ch.getCard().getName() : "", 
+						ch.getCard() != null ? ch.getCard().getNumber() : "",
+						ch.getBox().getIp(), 
+						ch.getCard() != null ? ch.getCard().getDlimit() : 0,
+						ch.getCard() != null ? ch.getCard().getMlimit() : 0, 
+						ch.getCard() != null ? ch.getCard().getBank().getIp() : "");
+				channels.add(r);
+				i++;
+			}
 		}
+	}
+	
+	@Data @AllArgsConstructor 
+	public class RestChannel {
+		int id;
+		String name;
+		String type;
+		String cardName;
+		String cardNumber;
+		String boxIp;
+		int dayLimit;
+		int monthLimit;
+		String bankIp;
 	}
 
 }
