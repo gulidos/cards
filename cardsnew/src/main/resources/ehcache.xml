@@ -10,14 +10,14 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
     /> 
-  <cache name="cardsCache"
+<!--   <cache name="cardsCache"
           maxBytesLocalHeap="5m"
           timeToLiveSeconds="10000">
   </cache>
    <cache name="trunkCache"
           maxBytesLocalHeap="5m"
           timeToLiveSeconds="10000">
-  </cache>
+  </cache> -->
   
   <cache name="org.hibernate.cache.internal.StandardQueryCache"
        maxElementsInMemory="500"

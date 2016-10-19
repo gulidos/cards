@@ -2,6 +2,7 @@ package ru.rik.cardsnew.domain;
 
 
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,24 +73,30 @@ public class Card implements MyEntity {
 	@NotEmpty(message = "{error.card.im.empty}")
 	@Size(min = 3, max = 20, message = "sernumber has to be more than 3 and less 10 digits")
     @Column(unique=true, nullable = false)
-	@Getter @Setter
-	private String sernumber;
+	@Getter @Setter private String sernumber;
     
     @ManyToOne //Default- Eager
-    @Getter @Setter
-	private Grp group;
+    @Getter @Setter private Grp group;
     
     @ManyToOne
-    @Getter @Setter
-	private Bank bank;
+    @Getter @Setter	private Bank bank;
     
-//    try this: http://stackoverflow.com/questions/6068374/hibernate-cache-for-mappedby-object
-    @Getter @Setter
-//	@OneToOne(mappedBy="card", fetch = FetchType.LAZY)
-	private long channelId;
+    @Getter @Setter	private long channelId;
 	
-    @Getter @Setter
-  	private boolean active;
+    @Getter @Setter private boolean active;
+    
+    @Getter @Setter private int dlimit;
+    
+    @Getter @Setter private int mlimit;
+    
+    @Getter @Setter private String descr;
+    
+    @Getter @Setter private Date activation;
+        
+    @Getter @Setter private boolean blocked;
+
+    @Getter @Setter private Date blockdate;
+
     
     public CardStat getStat () {
     	CardRepo cards = CardRepoImpl.get();

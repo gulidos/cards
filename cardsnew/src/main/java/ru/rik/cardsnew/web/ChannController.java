@@ -234,9 +234,10 @@ public class ChannController {
 					try {
 						Channel ch = chans.findById(state.getId());
 						GsmState gstate = GsmState.get(ch);
-						SimSet simset = SimSet.get(ch, null);
 						ChannelState st = ch.getState();
 						st.applyGsmStatu(gstate);
+						st.applySimSet(simset);
+						SimSet simset = SimSet.get(ch, ch.getPair());
 						st.applySimSet(simset);
 					} catch (IllegalAccessException | IOException e) {
 						logger.error(e.getMessage(), e);
@@ -260,41 +261,39 @@ public class ChannController {
 		logger.debug("Channel: {} ", chan.toString() );
 
 		if (action.equals("install")) {
-			switchCard(chan, chan.getCard());
+			Channel persCh = chans.findById(chan.getId());
+			Card newCard = chan.getCard(); 
+			Card persCard = cards.findById(newCard.getId());
+			switchCard(persCh, persCard);
 		} else if (action.equals("clear")) {
-			switchCard(chan, chan.getCard()); //TODO how to check errors?
+			switchCard(chan, null); //TODO how to check errors?
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
 
-		return "redirect:/channels/stat" + "?id=" + chan.getId();
+		 return "redirect:/channels/stat" + "?id=" + chan.getId();
+
 	}
 	
 	public void switchCard (Channel chan, Card card) {
-		Channel ch = chans.findById(chan.getId());
-		Card c = null;
-		if (card != null)
-			c = cards.findById(card.getId());
-		else {
-//			Bank fake = new Bank
-//			c = new Card();
-//			c.se
-		} // TODO make a fake card and install it
-	
+		//		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
 		try {
-			c.engage();
+			if (c!= null)
+				c.engage();
 			SimSet.get(ch, null);
 			try {
 				chans.switchCard(ch, c);
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
-				c.getStat().setFree(false, true);
+				if (c!= null)
+					c.getStat().setFree(false, true);
 			}
 			try {
 				SimSet.post(ch, c);
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
-				c.getStat().setFree(false, true);
+				if (c!= null)
+					c.getStat().setFree(false, true);
 				// TODO bring back the old card in place
 			}
 			

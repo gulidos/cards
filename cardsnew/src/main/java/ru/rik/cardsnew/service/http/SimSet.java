@@ -39,7 +39,12 @@ public class SimSet implements MyState{
 	@Override 	public long getId() {return ch.getId(); }
 	@Override 	public String getName() {return ch.getName(); }
 	
-	
+	 /**
+     * Gets a SimSet data from channel 
+     * @param ch the channel we are interested in 
+     * @param chPair the pair channel
+     * @return SimSet object
+     */
 	public static SimSet get(final Channel ch, Channel chPair) throws IOException {
 		Assert.notNull(ch);
 		if (chPair != null ) logger.debug("chId: {} chName: {}", chPair.getId(), chPair.getName());
