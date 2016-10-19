@@ -234,8 +234,10 @@ public class ChannController {
 					try {
 						Channel ch = chans.findById(state.getId());
 						GsmState gstate = GsmState.get(ch);
+						SimSet simset = SimSet.get(ch, null);
 						ChannelState st = ch.getState();
 						st.applyGsmStatu(gstate);
+						st.applySimSet(simset);
 					} catch (IllegalAccessException | IOException e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -258,24 +260,27 @@ public class ChannController {
 		logger.debug("Channel: {} ", chan.toString() );
 
 		if (action.equals("install")) {
-			Channel persCh = chans.findById(chan.getId());
-			Card newCard = chan.getCard(); 
-			switchCard(persCh, newCard);
-//			newCard.engage();
-//			chans.switchCard(chan, chan.getCard());
+			switchCard(chan, chan.getCard());
 		} else if (action.equals("clear")) {
-			
-			chans.switchCard(chan, null);
+			switchCard(chan, chan.getCard()); //TODO how to check errors?
 		}
-		if (!filter.getUrl().isEmpty())
+		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
 
-		return "redirect:/channels/chanstats";
-
+		return "redirect:/channels/stat" + "?id=" + chan.getId();
 	}
 	
-	public void switchCard (Channel ch, Card c) {
-		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
+	public void switchCard (Channel chan, Card card) {
+		Channel ch = chans.findById(chan.getId());
+		Card c = null;
+		if (card != null)
+			c = cards.findById(card.getId());
+		else {
+//			Bank fake = new Bank
+//			c = new Card();
+//			c.se
+		} // TODO make a fake card and install it
+	
 		try {
 			c.engage();
 			SimSet.get(ch, null);
