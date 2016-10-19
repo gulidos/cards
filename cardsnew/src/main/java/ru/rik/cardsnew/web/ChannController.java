@@ -236,7 +236,6 @@ public class ChannController {
 						GsmState gstate = GsmState.get(ch);
 						ChannelState st = ch.getState();
 						st.applyGsmStatu(gstate);
-						st.applySimSet(simset);
 						SimSet simset = SimSet.get(ch, ch.getPair());
 						st.applySimSet(simset);
 					} catch (IllegalAccessException | IOException e) {
@@ -275,7 +274,7 @@ public class ChannController {
 
 	}
 	
-	public void switchCard (Channel chan, Card card) {
+	public void switchCard (Channel ch, Card c) {
 		//		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
 		try {
 			if (c!= null)
@@ -288,7 +287,7 @@ public class ChannController {
 				if (c!= null)
 					c.getStat().setFree(false, true);
 			}
-			try {
+			try { // TODO what to do if card = null
 				SimSet.post(ch, c);
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
