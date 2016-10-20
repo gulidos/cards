@@ -1,6 +1,7 @@
 package ru.rik.cardsnew.web;
 
-import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
+import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
@@ -231,16 +233,20 @@ public class ChannController {
 //					redirectAttrs.addFlashAttribute("message", message);
 					
 				} else if (action.equals("gsmreq") && state != null) {
+					Channel ch = chans.findById(state.getId());
+					ChannelState st = ch.getState();
 					try {
-						Channel ch = chans.findById(state.getId());
 						GsmState gstate = GsmState.get(ch);
-						ChannelState st = ch.getState();
-						st.applyGsmStatu(gstate);
+						st.applyGsmStatus(gstate);
 						SimSet simset = SimSet.get(ch, ch.getPair());
 						st.applySimSet(simset);
-					} catch (IllegalAccessException | IOException e) {
+					} catch (SocketTimeoutException | ConnectException e) {
+						st.setStatus(Status.Unreach);
+						logger.debug("channel {} is unreachable", st.getName());
+					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
-					}
+					}	
+					
 					return "redirect:/channels/stat" + "?id=" + state.getId();
 				} 
 				
@@ -258,14 +264,13 @@ public class ChannController {
 			@RequestParam(value = "action", required = true) String action) {
 		Assert.notNull(chan);
 		logger.debug("Channel: {} ", chan.toString() );
-
+		Channel persCh = chans.findById(chan.getId());
 		if (action.equals("install")) {
-			Channel persCh = chans.findById(chan.getId());
 			Card newCard = chan.getCard(); 
 			Card persCard = cards.findById(newCard.getId());
 			switchCard(persCh, persCard);
 		} else if (action.equals("clear")) {
-			switchCard(chan, null); //TODO how to check errors?
+			switchCard(persCh, null); //TODO how to check errors?
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
@@ -275,7 +280,6 @@ public class ChannController {
 	}
 	
 	public void switchCard (Channel ch, Card c) {
-		//		logger.debug("ch {}, c {} ", ch.toString(), c.toString() );
 		try {
 			if (c!= null)
 				c.engage();
@@ -287,17 +291,21 @@ public class ChannController {
 				if (c!= null)
 					c.getStat().setFree(false, true);
 			}
-			try { // TODO what to do if card = null
-				SimSet.post(ch, c);
+			try { // if card = null will be fake ip and card place
+				SimSet.post(ch, c); 
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
 				if (c!= null)
 					c.getStat().setFree(false, true);
 				// TODO bring back the old card in place
 			}
-			
+			ch.getState().setStatus(Status.Inchange);
+			Channel pair = ch.getPair();
+			if (pair != null)
+				pair.getState().setStatus(Status.PeerInchange);	
 		} catch (Exception e) {
 			logger.error(e.toString(), e);		
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

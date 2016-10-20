@@ -77,7 +77,6 @@ public class TaskCompleter implements Runnable{
 	}
 
 
-
 	/**
      * Handles all the exceptions during the task's execution
      */
@@ -99,7 +98,7 @@ public class TaskCompleter implements Runnable{
 		logger.debug(g.toString());
 		
 		ChannelState st = chans.findStateById(g.getId());
-		st.applyGsmStatu(g);
+		st.applyGsmStatus(g);
 	}
 	
 

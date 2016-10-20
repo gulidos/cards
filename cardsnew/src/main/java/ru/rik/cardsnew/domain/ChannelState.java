@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -29,21 +30,22 @@ public class ChannelState implements MyState {
 	private volatile SimSet simset;
 	private volatile Date lastSimSetUpdate = new Date(0);
 	private volatile Date nextSimSetUpdate = new Date(0);
-	
+	@Getter
 	private volatile Status status = Status.Failed;
-	private static final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+	private volatile Date lastStatusChange = new Date();
+	
+	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-	public void applyGsmStatu(GsmState gs) {
+	public void applyGsmStatus(GsmState gs) {
 		if (gs.isReady()) {
 			nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
-			status = Status.Ready;
-		} else { 
-			nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
-			status = Status.Failed;
-		}	
-		this.gsmstatus = gs; 
+			setStatus(Status.Ready);
+		} else {
+			setStatus(Status.Failed);
+		}
+		this.gsmstatus = gs;
 		this.lastGsmUpdate = gs.getUpdate();
-	}	
+	}
 	
 	public void applySimSet(SimSet s) {
 		logger.debug("apply to {} SimStatus {}" ,name ,s.toString());
@@ -53,6 +55,80 @@ public class ChannelState implements MyState {
 	}
 	
 	
+	public void setStatus(Status s) {
+		switch (s) {
+		case Failed:	setFailedStatus(s);break;
+		case Ready:		setReadyStatus(s); break;
+		case Unreach:	setUnreachStatus(s); break;
+		case Inchange: 
+		case PeerInchange: setChangeStatus(s); break;
+		case Smsfetch: 
+		case UssdRec:	setMantainStatus(s); break;
+		default:
+			throw new IllegalArgumentException("Unknown channel's status: " + s.toString());
+		}
+	}
+
+	private void setFailedStatus(Status s) {
+		switch (status) {
+		case Inchange:	case PeerInchange:
+			if (!isStillHasToBeIniting()) {
+				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);					
+				this.status = s; //Become Failed
+				lastStatusChange = new Date();
+			} else 
+				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+			break;
+		case Failed:
+			if (isStillHasToBeIniting())
+				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+			else 
+				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+			break;
+		case Ready:	case UssdRec: case Smsfetch: case Unreach:	 // has been Unreachable, become Failed
+			this.status = s; //Become Failed
+			lastStatusChange = new Date();
+			nextSimSetUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void setReadyStatus(Status s) {
+		this.status = s;
+		nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+		lastStatusChange = new Date();
+	}
+	
+	
+	private void setChangeStatus(Status s) {
+		this.status = s;
+		nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+		lastStatusChange = new Date();
+	}
+	
+	private void setUnreachStatus(Status s) {
+		if (status == Status.Unreach || status == Status.Failed) {
+			if(isStillHasToBeIniting()) 
+				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+			else
+				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+		} else {
+			lastStatusChange = new Date();
+			nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+		}
+		this.status = s;
+	}
+	
+	private void setMantainStatus(Status s) {
+		if (status == Status.Ready) {
+			this.status = s;
+			lastStatusChange = new Date();
+			nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+		}
+	}
+	
 	public boolean isGsmDateFresh() {
 		return isDateFresh(nextGsmUpdate);
 	}
@@ -60,6 +136,12 @@ public class ChannelState implements MyState {
 	public boolean isSimSetDateFresh() {
 		return isDateFresh(nextSimSetUpdate);
 	}
+	
+	public boolean isStillHasToBeIniting() {
+		long maxTimeOfReady = lastStatusChange.getTime() + Settings.TIME_FOR_SWITCH;
+		return isDateFresh(new Date(maxTimeOfReady));
+	}
+	
 	private boolean isDateFresh(Date nextdate) {
 		long now = new Date().getTime();
 		return now - nextdate.getTime() < 0;
@@ -72,10 +154,11 @@ public class ChannelState implements MyState {
 	
 	public String toWeb() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(String.format("%1$s = %2$s%n", "lastGsmUpdate", df.format(lastGsmUpdate)));
 		sb.append(String.format("%1$s = %2$s%n", "name", getName()));
+		sb.append(String.format("%1$s = %2$s%n", "lastGsmUpdate", df.format(lastGsmUpdate)));
+		sb.append(String.format("%1$s = %2$s%n", "nextGsmUpdate", df.format(nextGsmUpdate)));
 		sb.append(String.format("%1$s = %2$s%n", "priority", priority.get()));
-		sb.append(String.format("%1$s = %2$s%n", "status", status));
+		sb.append(String.format("%1$s = %2$s %3$s %4$s%n", "status", status, "since", df.format(lastStatusChange)));
 		sb.append(" \n");
 		if (gsmstatus != null) {
 			sb.append(String.format("%1$s = %2$s%n", "operator", gsmstatus.getOperator()));

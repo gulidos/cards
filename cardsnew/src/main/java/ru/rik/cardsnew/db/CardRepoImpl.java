@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
@@ -56,6 +58,12 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 				result.add(c);
 		return result;
     }
+
+	@Override
+	public List<Card> findBankCards(Bank bank) {
+		
+		return null;
+	}
 
 	
 }

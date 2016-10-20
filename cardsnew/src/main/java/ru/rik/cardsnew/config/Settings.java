@@ -14,11 +14,14 @@ public class Settings {
 //    @Setting(description = "Максимальное коли-во свежих event в очереди при удалении")
     public static volatile int STOP_NUMBER = 5;
 // "Interval between normal checking Channel's GSM Status. Sec")
-    public static volatile int NORMAL_CHECK_GSM_INTERVAL = 90;
+    public static volatile int NORMAL_CHECK_GSM_INTERVAL = 190;
     
-    public static volatile int FAILED_CHECK_GSM_INTERVAL = 29;
+    public static volatile int FAILED_CHECK_GSM_INTERVAL = 20;
 
-    
+    public static volatile String FAKE_BANK_IP = "192.168.99.99";
+    public static volatile String FAKE_CARD_PLACE = "b0000099";
+    // max time for changing card and rebooting
+    public static volatile int TIME_FOR_SWITCH = 60 * 1000 * 5;
     
     public static final DecimalFormat df = new DecimalFormat("###.##");
     public static final DecimalFormat d_int = new DecimalFormat("##");

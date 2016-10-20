@@ -31,14 +31,13 @@ public class PeriodicTasks {
 
 	}
 	
-	@Scheduled(fixedRate = 300000)
+	@Scheduled(fixedRate = 15000)
 	public void checkChannels() {
 		logger.debug("Start checkChannels ...");
 		Set<Channel> simSetJobs = new HashSet<>();
 		
-		for (Channel ch : chanRepo.findAll()) { //TODO fetch only active channels
+		for (Channel ch : chanRepo.findAll()) { 
 			if (!ch.isEnabled()) continue;
-			
 			
 			ChannelState st = chanRepo.findStateById(ch.getId());
 			if (!st.isGsmDateFresh()) {

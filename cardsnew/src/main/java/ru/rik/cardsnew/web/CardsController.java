@@ -1,5 +1,8 @@
 package ru.rik.cardsnew.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
+import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
@@ -40,28 +44,35 @@ public class CardsController {
 	
 	public CardsController() {
 	}
-
+	
+	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String getList(
 			@RequestParam(value = "id", defaultValue = "0") long id, 
 			@RequestParam(value = "url", defaultValue = "") String url,
 			Model model) {
-		
 		if (url.isEmpty()) {
 			filter.setUrl("");
 			filter.setId(0);
 			model.addAttribute("cards", cards.findAll());
-		}	
-		else if ("group".equals(url)) {
+		} else if ("group".equals(url)) {
 			Grp grp = groups.findById(id);
 			filter.setUrl("group");
 			filter.setId(id);
 			if (grp != null)
 				model.addAttribute("cards", cards.findGroupCards(grp));
+		} else if ("bank".equals(url)) {
+			Bank bank = banks.findById(id);
+			filter.setUrl("bank");
+			filter.setId(id);
+			if (bank != null) {
+				List<Card> list = new ArrayList<Card>(bank.getCards());
+				for (Card card : list) 
+					card.hashCode();
+				model.addAttribute("cards", list);
+			}	
 		} 		
-		
 		model.addAttribute("filter", filter);
-		
 		
 		if (!model.containsAttribute("card")) {
 			Card card = new Card();

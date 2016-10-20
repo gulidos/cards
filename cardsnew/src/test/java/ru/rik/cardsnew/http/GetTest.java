@@ -8,7 +8,6 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.junit.Test;
 
 public class GetTest {
 	
@@ -16,7 +15,7 @@ public class GetTest {
 		
 	}
 
-	@Test
+	
 	public void t1test() {
 		String hostname = "192.168.200.45";
 		String username = "voip";

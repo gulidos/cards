@@ -51,13 +51,13 @@ public class AsteriskEvents implements ManagerEventListener {
 		if (event instanceof CdrEvent) {
 			CdrEvent cdrevent = (CdrEvent) event;
 			if (cdrevent.getUserField() != null) {
-				logger.debug("AnswerTime: " + cdrevent.getAnswerTime() + " AnswerTimeAsDate: "
-						+ cdrevent.getAnswerTimeAsDate() + " StartTime: " + cdrevent.getStartTime()
-						+ " StartTimeAsDate: " + cdrevent.getStartTimeAsDate() + " Src: " + cdrevent.getSrc()
-						+ " Destination: " + cdrevent.getDestination() + " Disposition: " + cdrevent.getDisposition()
-						+ " BillableSeconds: " + cdrevent.getBillableSeconds() + " Duration: " + cdrevent.getDuration()
-						+ " UserField: " + cdrevent.getUserField() + " Trunk: " + cdrevent.getTrunk() + " gateip: "
-						+ cdrevent.getGateip() + " Regcode: " + cdrevent.getRegcode());
+//				logger.debug("AnswerTime: " + cdrevent.getAnswerTime() + " AnswerTimeAsDate: "
+//						+ cdrevent.getAnswerTimeAsDate() + " StartTime: " + cdrevent.getStartTime()
+//						+ " StartTimeAsDate: " + cdrevent.getStartTimeAsDate() + " Src: " + cdrevent.getSrc()
+//						+ " Destination: " + cdrevent.getDestination() + " Disposition: " + cdrevent.getDisposition()
+//						+ " BillableSeconds: " + cdrevent.getBillableSeconds() + " Duration: " + cdrevent.getDuration()
+//						+ " UserField: " + cdrevent.getUserField() + " Trunk: " + cdrevent.getTrunk() + " gateip: "
+//						+ cdrevent.getGateip() + " Regcode: " + cdrevent.getRegcode());
 				addCdr(cdrevent);
 			}
 		}
@@ -74,7 +74,7 @@ public class AsteriskEvents implements ManagerEventListener {
 		Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 		
 		if (card == null && chan != null) { 
-			logger.debug("The card with name " + cardname + " does not exist");
+//			logger.debug("The card with name " + cardname + " does not exist");
 			return;
 		}
 		try {

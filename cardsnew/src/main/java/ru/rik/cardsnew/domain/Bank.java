@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -51,9 +53,9 @@ public class Bank implements MyEntity {
     private String ip;
     
     @Getter @Setter
-//   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bank")
- @OneToMany(mappedBy = "bank")
-    Set<Card> cards = new HashSet<>();
+    @OneToMany(mappedBy = "bank", fetch=FetchType.LAZY)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Card> cards = new HashSet<>();
     
     @Override public String getName() {return getIp();}
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>Title</title>
+
+<!-- Include the plugin's CSS and JS: -->
+
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+
+</head>
+<body>
+	<div class="container">
+	<div class="panel panel-default" >
+		<div class="panel-heading">Bank</div>
+		<form class="form-horizontal" th:object="${bank}" th:action="@{/banks/edit}" th:method="post" >
+			<div class="form-group" >
+				<label class="col-md-4 col-xs-8 control-label" >ip</label>
+				<div class="col-sm-2">
+					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
+					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
+					 <input class="form-control" type="text" th:value="*{ip}" th:field="*{ip}"></input>
+				</div>
+				<a th:href="@{/cards(url=bank,id=*{id})}">
+					<button type="button" class="btn btn-link"> cards</button>
+				</a>
+				<a th:href="@{/cards(url=bank,id=*{id})}">
+					<button type="button" class="btn btn-link">cards stat</button>
+				</a>
+				
+			</div>
+			
+			<div class="form-group" >
+				<label class="col-sm-4 col-xs-8 control-label" >location</label>
+				<div class="col-sm-2">					 
+					 <input class="form-control" type="text" th:value="*{location}" th:field="*{location}" ></input>
+				</div>
+			</div>		
+			
+	
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	th:value="save" th:text="save">	</button>
+					<button type="submit" class="btn btn-default active" name="action" 	th:value="cancel" th:text="cancel"></button>
+					
+				</div>
+			</div>
+			
+		</form>
+		</div>
+		</div>
+		<div class="col-sm-3"></div>
+
+</body>
+
+</html>
+

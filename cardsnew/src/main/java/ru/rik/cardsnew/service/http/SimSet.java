@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyState;
@@ -93,16 +94,18 @@ public class SimSet implements MyState{
 
 	public static int post(Channel ch, Card c) throws IOException {
 		Assert.notNull(ch);
-		Assert.notNull(c);
+		
 		Connection con = HttpHelper.getCon(ch, "SimSet.cgi");
 		con.timeout(1000)
 		.followRedirects(true)
         .method(Method.POST);
 		
 		if (ch.getLine().getNport() == 0) 
-			con.data("cIDA", c.getPlace().name()).data("BnkA", c.getBank().getIp());
+			con.data("cIDA", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
+			   .data("BnkA", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
 		else 
-			con.data("cIDB", c.getPlace().name()).data("BnkB", c.getBank().getIp());
+			con.data("cIDB", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
+			   .data("BnkB", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
 		
 		Response resp = con.execute();
 		return resp.statusCode();
