@@ -24,18 +24,32 @@ public class ChannelState implements MyState {
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
-	private volatile Date lastGsmUpdate = new Date(0); // set date the most old when create State 
-	private volatile Date nextGsmUpdate = new Date(0);
-	
+	private volatile Date lastGsmUpdate, nextGsmUpdate, lastSimSetUpdate, nextSimSetUpdate; 
 	private volatile SimSet simset;
-	private volatile Date lastSimSetUpdate = new Date(0);
-	private volatile Date nextSimSetUpdate = new Date(0);
 	@Getter
-	private volatile Status status = Status.Failed;
-	private volatile Date lastStatusChange = new Date();
+	private volatile Status status;
+	private volatile Date lastStatusChange;
 	
 	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
+	public ChannelState () {
+		this.status = Status.Failed;
+		this.lastStatusChange = new Date();
+		this.lastGsmUpdate = new Date(0); // set date the oldest when create State 
+		this.nextGsmUpdate = new Date(0);  
+		this.nextSimSetUpdate = new Date(0);
+		this.lastSimSetUpdate = new Date(0);	
+	}
+	
+	public ChannelState (Status s, Date lastStatusChange ) {
+		this.status = s;
+		this.lastStatusChange = lastStatusChange;
+		this.lastGsmUpdate = new Date(0); // set date the oldest when create State 
+		this.nextGsmUpdate = new Date(0);  
+		this.nextSimSetUpdate = new Date(0);
+		this.lastSimSetUpdate = new Date(0);
+	}
+	
 	public void applyGsmStatus(GsmState gs) {
 		if (gs.isReady()) {
 			nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
@@ -138,7 +152,7 @@ public class ChannelState implements MyState {
 	}
 	
 	public boolean isStillHasToBeIniting() {
-		long maxTimeOfReady = lastStatusChange.getTime() + Settings.TIME_FOR_SWITCH;
+		long maxTimeOfReady = lastStatusChange.getTime() + Settings.TIME_FOR_SWITCH * 1000;
 		return isDateFresh(new Date(maxTimeOfReady));
 	}
 	
@@ -171,6 +185,9 @@ public class ChannelState implements MyState {
 			sb.append(String.format("%1$s = %2$s%n", "bank", simset.getBankIp()));
 			sb.append(String.format("%1$s = %2$s%n", "cardPos", simset.getCardPos()));
 		}
+//		Place place = Place.valueOf(simset.getCardPos());
+//		
+//		CardRepoImpl.get().findCardsByPlace(place, bank);
 			
 		return sb.toString();
 	}

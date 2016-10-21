@@ -6,6 +6,7 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Place;
 
 public interface CardRepo extends GenericRepo<Card, CardStat> {
 
@@ -13,5 +14,7 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	List<Card> findFreeCardsInGroup(Grp grp);
 	List<Card> findBankCards(Bank bank);
+
+	Card findCardsByPlace(Place place, Bank bank);
 
 }

@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -25,14 +23,12 @@ import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Box;
-import ru.rik.cardsnew.domain.Grp;
 
 @Controller
 @RequestMapping("/box")
 @SessionAttributes("filter") 
 @EnableTransactionManagement
 public class BoxController {
-	private static final Logger logger = LoggerFactory.getLogger(BoxController.class);		
 	
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepo boxes;
@@ -110,14 +106,14 @@ public class BoxController {
 			@RequestParam(value = "id", required = true) long id,
 			@RequestParam(value="phase", required=true) String phase) {
 		
-		Grp group = groups.findById(id);
+		Box box = boxes.findById(id);
 		String view = null;
 		
 		if (phase.equals("confirm")) {
-			view ="redirect:/groups";
-			groups.makeTransient(group);
+			view ="redirect:/box";
+			boxes.makeTransient(box);
 			
-			String message = "Channel " + group.getName() + " was successfully deleted";
+			String message = "box " + box.getName() + " was successfully deleted";
 			redirectAttrs.addFlashAttribute("message", message);
 		}
 		

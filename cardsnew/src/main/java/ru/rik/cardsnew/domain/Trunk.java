@@ -61,23 +61,7 @@ public class Trunk implements MyEntity {
 		return trunksStats.findStateById(getId());
 	}
 	
-	
-	public int getFirst() {
-		int first = 0;
-		TrunkState ts = getState();
-		if (ts == null) 
-			throw new NullPointerException("TrunkState is null for Trunk " + getName());
-		
-		int n = getChannels().size();
-		if (n == 0) return first;
-		
-		int next = ts.getNext();
-		if (next < n) 
-			return next;
-		else 
-			ts.setNext(0);
-		return first;
-	}
+
 	
 	public String toStringAll() {
 		StringBuilder sb = new StringBuilder("");
@@ -88,13 +72,5 @@ public class Trunk implements MyEntity {
 	}
 	
 	
-	public Set<Channel> getChannelsSorted() {
-//		int start = getFirst();
-//		List<Channel> sorted = new ArrayList<>();
-//		for (int i = start; i <= getChannels().size()-1; i++) 
-//			sorted.add(channels.get(i));
-//		for (int i = 0; i < start; i++)
-//			sorted.add(channels.get(i));
-		return channels;
-	}
+
 }

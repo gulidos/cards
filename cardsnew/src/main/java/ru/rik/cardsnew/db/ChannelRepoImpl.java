@@ -20,6 +20,7 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
+import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Trunk;
 
@@ -33,15 +34,15 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	public ChannelRepoImpl() {
 		super(Channel.class, ChannelState.class);
 	}
-	@PostConstruct
-	protected void init() {
+	@PostConstruct 
+	public void init() {
 		logger.debug("initializing static variable");
 		repo = this;
 	}
 
 	public static ChannelRepoImpl get() {return repo;	}
 	
-	
+	@Override
 	public Channel findPair(Channel ch) {
 		try {
 			return em.createNamedQuery("findPair", Channel.class)
@@ -55,22 +56,20 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		
 	}
 		
-	
+	@Override
 	public List<Channel> getSorted(Trunk t)  {
-		if (t == null)	throw new NullPointerException("trunk can not be null");
-		
-		List<Channel> result = t.getChannels().stream()
-//				.filter(ch -> ch.getCard() != null && ch.isEnabled())
-				.filter(ch ->  ch.isEnabled())
-				.sorted((ch1, ch2) -> Integer.compare(ch1.getState().getPriority(), 
-						ch2.getState().getPriority()))
-				.collect(Collectors.toList());
-		if (result.size() > 0)
-			result.get(0).getState().incPriority();
-		return result;
+			List<Channel> result = t.getChannels().stream()
+					.filter(ch -> ch.getCard() != null && ch.isEnabled() && ch.getState().getStatus() == Status.Ready)
+					.sorted((ch1, ch2) -> Long.compare(ch1.getId(), ch2.getId()))					
+					.sorted((ch1, ch2) -> 
+						Integer.compare(ch1.getState().getPriority(), ch2.getState().getPriority()))
+					.collect(Collectors.toList());
+			if (result.size() > 0)
+				result.get(0).getState().incPriority();
+			return result;	
 	}
 	
-
+	@Override
 	public List<Channel> findGroupChans(Grp grp) {
 		return em.createNamedQuery("findByGrp", Channel.class)
 				.setParameter("grp", grp)
@@ -78,7 +77,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 				.getResultList();
 	}
     	
-	
+	@Override
 	public List<Channel> findBoxChans(Box box) {
 		return em.createNamedQuery("findByBox", Channel.class)
 				.setParameter("box", box)
@@ -90,7 +89,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	 * Fixes changing card in channel into database
 	 * @throws ConcurrentModificationException 
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Override @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void switchCard(Channel chan, Card c) {
 		Assert.notNull(chan);
 		

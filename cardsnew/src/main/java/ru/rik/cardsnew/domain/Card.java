@@ -35,7 +35,9 @@ import ru.rik.cardsnew.db.CardRepoImpl;
 @NamedQueries({ 
 	@NamedQuery(name = "findAllCardsInGrp", query = "SELECT c FROM Card c WHERE c.group = :g"), 
 	@NamedQuery(name = "findActiveCardsInGrp", query = "SELECT c FROM Card c "
-			+ "WHERE c.group = :g and c.active = true")
+			+ "WHERE c.group = :g and c.active = true"),
+	@NamedQuery(name = "findCardByPlace", query = "SELECT c FROM Card c "
+			+ "WHERE c.place = :place and c.bank = :bank")
 	}
 )
 @NoArgsConstructor @AllArgsConstructor @Builder 

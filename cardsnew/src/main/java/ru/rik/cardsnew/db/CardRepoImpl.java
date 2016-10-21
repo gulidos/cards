@@ -13,6 +13,7 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Place;
 
 @Repository
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
@@ -60,10 +61,18 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
     }
 
 	@Override
+	public Card findCardsByPlace(Place place, Bank bank) {
+		return em.createNamedQuery("findCardByPlace", Card.class)
+				.setParameter("place", place)
+				.setParameter("bank", bank)
+				.setHint("org.hibernate.cacheable", true)
+				.getSingleResult();
+    }
+
+	@Override
 	public List<Card> findBankCards(Bank bank) {
-		
+		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 }

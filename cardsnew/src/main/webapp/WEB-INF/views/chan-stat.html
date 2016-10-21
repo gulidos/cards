@@ -34,9 +34,13 @@
 			<div class="col-lg-6 col-sm-6 ">
 				<pre  th:text="${state.toWeb()}">
 				</pre>
+				<p th:text="${chan.name} + ' fdsdf sdf sd'" ></p>
+				<h2 th:text="${chan.name} + ' fdsdf sdf sd'" ></h2>
+				<!-- <label class="col-md-4" th:text="${state.toWeb()}" ></label> -->
+				
 			</div>
 			<div class="col-lg-6 col-sm-6 ">
-				<pre  th:text="${state.toWeb()}">
+				<pre  th:text="${chan.pair.state.toWeb()}">
 				</pre>
 			</div>
 		</div>

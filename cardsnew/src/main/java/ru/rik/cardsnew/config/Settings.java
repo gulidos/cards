@@ -20,8 +20,8 @@ public class Settings {
 
     public static volatile String FAKE_BANK_IP = "192.168.99.99";
     public static volatile String FAKE_CARD_PLACE = "b0000099";
-    // max time for changing card and rebooting
-    public static volatile int TIME_FOR_SWITCH = 60 * 1000 * 5;
+    // max time for changing card and rebooting Sec
+    public static volatile int TIME_FOR_SWITCH = 300;
     
     public static final DecimalFormat df = new DecimalFormat("###.##");
     public static final DecimalFormat d_int = new DecimalFormat("##");

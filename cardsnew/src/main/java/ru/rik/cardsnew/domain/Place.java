@@ -38,7 +38,7 @@ public enum Place {
 	private final int id;
 	
 	Place(int id) {this.id = id;}
-	
+	 
 	public static Place getInstance(int id) {
 		switch(id) {
 			case 0: return Place.b0000000;

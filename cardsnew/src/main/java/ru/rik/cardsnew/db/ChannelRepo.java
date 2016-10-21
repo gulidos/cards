@@ -11,10 +11,10 @@ import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Trunk;
 
 public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
-
+	void init();
 	Channel findPair(Channel ch);
 
-	List<Channel> getSorted(Trunk t) throws NullPointerException;
+	List<Channel> getSorted(Trunk t);
 
 	List<Channel> findGroupChans(Grp grp);
 
