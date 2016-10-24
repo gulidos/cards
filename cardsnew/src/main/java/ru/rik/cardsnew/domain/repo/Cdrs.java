@@ -14,22 +14,37 @@ public class Cdrs {
 	static final Logger logger = Logger.getLogger(Cdrs.class);
 	private final Deque<Cdr> cdrsList;
 	private final NavigableMap<String, Cdr> cdrsByCard;
-	
+	private static Cdrs cdrs;
 	
 	public Cdrs() {
 		this.cdrsList = new ConcurrentLinkedDeque<>();
 		this.cdrsByCard = new ConcurrentSkipListMap<>();
 	}
 	
+
+	public void init() {
+		logger.debug("initializing ");
+		cdrs = this;
+	}
+	
 	public boolean  addCdr(Cdr cdr) {
-		cdrsByCard.put(cdr.getCardId() + "_" + cdr.getUniqueid(), cdr);
+		cdrsByCard.put(cdr.getCardId() + "_" + cdr.getDate().getTime(), cdr);
 		return cdrsList.offerFirst(cdr);
 	}
 	
-	public SortedMap <String, Cdr> findCdrByCards(long id) {
+	  /**
+     * Returns the map which represents all calls via Card with this id
+     * If descending is true returns descending order
+     */
+	public SortedMap <String, Cdr> findCdrByCards(long id, boolean descending) {
 		String keyFrom = String.valueOf(id) + "_" + "0";
 		String keyTo = String.valueOf(id) + "_" + "A";
-		return cdrsByCard.subMap(keyFrom, keyTo);
+		if (descending)
+			return cdrsByCard.descendingMap().subMap(keyTo, keyFrom);
+		else 
+			return cdrsByCard.subMap(keyFrom, keyTo);
 	}
+	
+	public static Cdrs get() {return cdrs;	}
 
 }

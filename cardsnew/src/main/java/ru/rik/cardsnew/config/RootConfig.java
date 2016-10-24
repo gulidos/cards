@@ -72,7 +72,7 @@ public class RootConfig implements SchedulingConfigurer {
 		return new AsyncTasks();
 	}
 
-	@Bean(initMethod = "start")
+	@Bean(initMethod = "init")
 	public Cdrs cdrs() {
 		return new Cdrs();
 	}

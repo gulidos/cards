@@ -1,12 +1,16 @@
 package ru.rik.cardsnew.domain;
 
+import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.events.Cdr;
+import ru.rik.cardsnew.domain.events.Disposition;
+import ru.rik.cardsnew.domain.repo.Cdrs;
 
 
 @EqualsAndHashCode(of={"id", "name"})
@@ -34,9 +38,59 @@ public class CardStat implements State {
 	public void applyCdr(Cdr cdr) {
 		todaySecTotal +=cdr.getBillsec();
 		todayCalls++;
+		Cdrs.get().addCdr(cdr);
+		SortedMap<String, Cdr>  lastCdrs= Cdrs.get().findCdrByCards(cdr.getCardId(), true);
 		
+		calcAsr(lastCdrs);
+		calcAcd(lastCdrs);
+//		for (String k: lastCdrs.keySet()) System.out.println(k + " " + lastCdrs.get(k));
+//		System.out.println("asr: " + asr + " acd: " + acd);
 	}
 
+	private void calcAsr(SortedMap<String, Cdr>  lastCdrs) {
+		if (lastCdrs.size() == 0) {
+			asr = 0;
+			return;
+		}	
+		double total = 0;
+		double answered = 0;
+		for (String k : lastCdrs.keySet()) {
+			Cdr cdr = lastCdrs.get(k);
+			if (cdr.getDisposition() == Disposition.ANSWERED)
+				answered++;
+			total++;
+			if (total == Settings.ASR_AFFECTED) 
+				break;
+		}
+		asr =  (int) (answered/total * 100);
+	}
+	
+	
+	/** calculates Acd in minutes
+	 * @param lastCdrs - map of cdrs via Card
+	 */
+	private void calcAcd(SortedMap<String, Cdr>  lastCdrs) {
+		if (lastCdrs.size() == 0) {
+			acd = 0;
+			return;
+		}	
+
+		int answered = 0;
+		double sum = 0;
+		for (String k : lastCdrs.keySet()) {
+			Cdr cdr = lastCdrs.get(k);
+			if (cdr.getDisposition() == Disposition.ANSWERED) {
+				answered++;
+				sum +=cdr.getBillsec();
+			}	
+			
+			if (answered == Settings.ACD_AFFECTED) 
+				break;
+		}
+		acd =  sum / answered / 60; // return minutes
+	} 
+		
+	
 	public boolean isFree() {return free.get();	}
 	
 	/** true if successful     

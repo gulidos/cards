@@ -11,9 +11,11 @@ import org.apache.log4j.Logger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Builder;
 @Data
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper=true)
 public class Cdr extends Event {
 	static Logger log = Logger.getLogger(Cdr.class);

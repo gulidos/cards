@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 public class Settings {
 	public static volatile String MSK_REGCODE = "77";
     public static volatile int ASR_AFFECTED = 10;
+    public static volatile int ACD_AFFECTED = 10;
 //    @Setting(description = "MTS statistics window (minutes)")
     public static volatile int MTS_WINDOW = 3840;
 //    @Setting(description = "Beeline statistics window (minutes)")

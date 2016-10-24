@@ -18,12 +18,13 @@ public class CdrTests {
 	@Before
 	public void loadData() throws ParseException {
 		cdrs = TestUtils.loadCdrs();
+		cdrs.init();
 	}
 
 	
 	@Test 
 	public void findCdrsofCard() {
-		SortedMap<String, Cdr> subMap = cdrs.findCdrByCards(1);
+		SortedMap<String, Cdr> subMap = cdrs.findCdrByCards(1, false);
 		Assert.assertTrue(subMap.size() == 4);		
 	}
 
