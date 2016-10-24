@@ -7,9 +7,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.domain.events.Cdr;
 
 public class Cdrs {
@@ -17,7 +15,6 @@ public class Cdrs {
 	private final Deque<Cdr> cdrsList;
 	private final NavigableMap<String, Cdr> cdrsByCard;
 	
-	@Autowired CardRepo cardRepo;
 	
 	public Cdrs() {
 		this.cdrsList = new ConcurrentLinkedDeque<>();

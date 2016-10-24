@@ -36,7 +36,7 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 @EnableScheduling
 @EnableTransactionManagement
 
-//@Import(ru.rik.cardsnew.db.JpaConfig.class)
+// @Import(ru.rik.cardsnew.db.JpaConfig.class)
 @ComponentScan(basePackages = { "ru.rik.cardsnew.db" })
 
 public class RootConfig implements SchedulingConfigurer {
@@ -47,46 +47,68 @@ public class RootConfig implements SchedulingConfigurer {
 		}
 	}
 
-	@Bean public AppInitializer appInitializer()  { return new AppInitializer();	}
+	@Bean
+	public AppInitializer appInitializer() {
+		return new AppInitializer();
+	}
 
-	@Bean public CardsStates cardsStates()  {return new CardsStates();}
-	
-	@Bean public HttpHelper httpHelper()  { return new HttpHelper();}
-	@Bean public PeriodicTasks periodicTasks()  { return new PeriodicTasks();}
-	@Bean public AsyncTasks asyncTasks()  { return new AsyncTasks();}
-	@Bean public Cdrs cdrs() {return new Cdrs();}
-	
-//	@Bean (initMethod="init") 
-//	public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
-	
-	
-	@Bean(initMethod="start", destroyMethod="stop")
+	@Bean
+	public CardsStates cardsStates() {
+		return new CardsStates();
+	}
+
+	@Bean
+	public HttpHelper httpHelper() {
+		return new HttpHelper();
+	}
+
+	@Bean
+	public PeriodicTasks periodicTasks() {
+		return new PeriodicTasks();
+	}
+
+	@Bean
+	public AsyncTasks asyncTasks() {
+		return new AsyncTasks();
+	}
+
+	@Bean(initMethod = "start")
+	public Cdrs cdrs() {
+		return new Cdrs();
+	}
+
+	// @Bean (initMethod="init")
+	// public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+
+	@Bean(initMethod = "start", destroyMethod = "stop")
 	public AsteriskEvents asteriskEvents() {
 		return new AsteriskEvents();
 	}
-	
 
-	@Bean MyThreadFactory threadFactory() { return new MyThreadFactory();}
-	
 	@Bean
-    public ThreadPoolTaskExecutor taskExecutor() {
+	MyThreadFactory threadFactory() {
+		return new MyThreadFactory();
+	}
+
+	@Bean
+	public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(3);
-        executor.setMaxPoolSize(30);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("MyExecutor-");
-        executor.setThreadFactory(threadFactory());
-        executor.initialize(); 
-        return executor;
-    }
-	
-	@Bean(destroyMethod="shutdown")
-    public TaskExecutor taskSheduleExecutor() {
+		executor.setMaxPoolSize(30);
+		executor.setQueueCapacity(100);
+		executor.setThreadNamePrefix("MyExecutor-");
+		executor.setThreadFactory(threadFactory());
+		executor.initialize();
+		return executor;
+	}
+
+	@Bean(destroyMethod = "shutdown")
+	public TaskExecutor taskSheduleExecutor() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setThreadNamePrefix("MyScheduler-");
 		scheduler.setPoolSize(5);
-        return scheduler;
-    }
+		return scheduler;
+	}
 
 	@Bean
 	public CompletionService<State> completionService() {
@@ -98,17 +120,16 @@ public class RootConfig implements SchedulingConfigurer {
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		taskRegistrar.setScheduler(taskSheduleExecutor());
 	}
-	
-	@Bean (initMethod="start")
-	public TaskCompleter taskCompleter () {
+
+	@Bean(initMethod = "start")
+	public TaskCompleter taskCompleter() {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}
 
-	
-	// =================== Uncaught Exceptions Handler  =====================
-	
+	// =================== Uncaught Exceptions Handler =====================
+
 	public static class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-		private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);		
+		private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);
 		private List<String> errors = new LinkedList<>();
 
 		@Override
@@ -130,4 +151,3 @@ public class RootConfig implements SchedulingConfigurer {
 		}
 	}
 }
-

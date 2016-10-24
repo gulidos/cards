@@ -2,6 +2,7 @@ package ru.rik.cardsnew.domain.events;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +30,7 @@ public class Cdr extends Event {
 	private long channelId;
 	
 	@Builder
-	private Cdr(String date, String src, String dst, long cardId, int billsec, String trunk, 
+	private Cdr(Date date, String src, String dst, long cardId, int billsec, String trunk, 
 			String disp, String regcode, String uniqueid, long channelId)
 			throws ParseException {
 		super(date, cardId);

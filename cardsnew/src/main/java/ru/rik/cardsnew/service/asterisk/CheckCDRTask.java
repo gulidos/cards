@@ -16,6 +16,7 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
@@ -62,7 +63,7 @@ public class CheckCDRTask {
 //						logger.debug("== our card: " + card.toString());
 
 						Cdr cdr = Cdr.builder()
-								.date(rs.getString("calldate"))
+								.date(Util.parseDate(rs.getString("calldate"), "yyyy-MM-dd HH:mm:ss"))
 								.src(rs.getString("src"))
 								.dst(rs.getString("dst"))
 								.cardId(card.getId())

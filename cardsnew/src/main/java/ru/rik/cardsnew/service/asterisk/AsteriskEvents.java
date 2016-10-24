@@ -18,6 +18,7 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 
@@ -79,7 +80,7 @@ public class AsteriskEvents implements ManagerEventListener {
 		}
 		try {
 			Cdr cdr = Cdr.builder()
-				.date(ce.getStartTime())
+				.date(Util.parseDate(ce.getStartTime(), "yyyy-MM-dd HH:mm:ss"))
 				.src(ce.getSrc())
 				.dst(ce.getDestination())
 				.cardId(card.getId())

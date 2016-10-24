@@ -18,16 +18,9 @@ public class CardsStates  {
 		cards = new ConcurrentHashMap<>();
 	}
 	
-	/**  Returns:	the previous value associated with the specified key, 
-	 * or null if there was no mapping for the key*/
-	public CardStat add(CardStat c) {
-		return cards.putIfAbsent(c.getId(), c);
-	}
 	
 	
-	public CardStat findById (long id) {
-		return cards.get(id);
-	}
+
 	public Map<Long, CardStat> findAll(){
 		return cards;
 	}
@@ -52,8 +45,8 @@ public class CardsStates  {
 		 class RefreshStatsCommand implements Executable {
 				@Override
 				public void execute(CardStat cardStat) {
-					cardStat.calcAcd();
-					cardStat.calcAsr();
+//					cardStat.calcAcd();
+//					cardStat.calcAsr();
 				}
 			}
 		 

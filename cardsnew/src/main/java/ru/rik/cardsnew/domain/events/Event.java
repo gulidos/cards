@@ -1,32 +1,25 @@
 package ru.rik.cardsnew.domain.events;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.rik.cardsnew.domain.CardStat;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public  class Event {
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private Date date;
 	private long cardId;
 	
-	public Event(String date, long card) throws ParseException {
-		this.date = sdf.parse(date); 
+	public Event(Date date, long card) throws ParseException {
+		this.date = date;
 		this.cardId = card;
 	}
 	
-	public String getDate() {
-		return sdf.format(date);
-	}
-	
+
 	public boolean isToday() {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.HOUR_OF_DAY, 0);
