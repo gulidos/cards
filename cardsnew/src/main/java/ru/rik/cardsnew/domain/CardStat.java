@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.domain;
 
+import java.text.DecimalFormat;
 import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -7,7 +8,9 @@ import org.apache.log4j.Logger;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import ru.rik.cardsnew.config.Settings;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.events.Disposition;
 import ru.rik.cardsnew.domain.repo.Cdrs;
@@ -16,29 +19,41 @@ import ru.rik.cardsnew.domain.repo.Cdrs;
 @EqualsAndHashCode(of={"id", "name"})
 public class CardStat implements State {
 	static Logger log = Logger.getLogger(CardStat.class);
+    public final DecimalFormat df = new DecimalFormat("###.#");
+
 	private long id;
+	@Getter @Setter private CardRepo repo;
 	private String name;
 	private AtomicBoolean free = new AtomicBoolean(true);
+	
 	@Getter	private int asr;
 	@Getter private double acd;
-	@Getter private int todaySecTotal;
+	@Getter private int todayMinTotal;
+	@Getter private int todayMinOper;
 	@Getter private int todayCalls;
 	
 
+	public CardStat() {} //needed !! 
 	
 	public CardStat(Card card) {
+		setCard(card);
+	}
+	
+	public void setCard(Card card) {
 		this.id = card.getId();
 		this.name = card.getName();
-		this.todaySecTotal = this.todayCalls = 0;
+		this.todayMinTotal = this.todayCalls  = this.todayMinOper = 0;
 		this.acd  = this.asr = 0;
-		
-
 	}
 
 	public void applyCdr(Cdr cdr) {
-		todaySecTotal +=cdr.getBillsec();
+		if (cdr.isToday()) {
+		todayMinTotal +=cdr.getMin();
 		todayCalls++;
+		todayMinOper +=cdr.getMinOper();
+		}
 		Cdrs.get().addCdr(cdr);
+		
 		SortedMap<String, Cdr>  lastCdrs= Cdrs.get().findCdrByCards(cdr.getCardId(), true);
 		
 		calcAsr(lastCdrs);
@@ -105,13 +120,20 @@ public class CardStat implements State {
 
 	
 	public void resetDaylyCounters() {
-		this.todaySecTotal = 0;
-		this.todayCalls = 0;
+		todayMinTotal = todayMinOper = todayCalls= 0;
 	}
 
-	
+	public Card getCard() {
+		return repo.findById(getId());
+	}
 
+	public int getMinRemains() {
+		return getCard().getDlimit() - todayMinOper;
+	}
 	
+	public String getAcdFormatted() {
+		return df.format(acd);
+	}
 
 	
 	@Override public long getId() {return id;}

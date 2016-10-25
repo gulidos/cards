@@ -153,7 +153,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 				newState.setName(entity.getName());
 				
 				if (statsById.putIfAbsent(id, newState) != null)
-					throw new IllegalStateException("statsById anready has the Entity with name" 
+					throw new IllegalStateException("statsById already has the Entity with name" 
 							+ newState.getName() + " class:" +	newState.getClazz());
 				
 				if (statsByName.putIfAbsent(entity.getName(), newState) != null)

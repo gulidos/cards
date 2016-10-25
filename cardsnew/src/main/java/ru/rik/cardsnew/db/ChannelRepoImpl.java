@@ -59,7 +59,8 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	@Override
 	public List<Channel> getSorted(Trunk t)  {
 			List<Channel> result = t.getChannels().stream()
-					.filter(ch -> ch.getCard() != null && ch.isEnabled() && ch.getState().getStatus() == Status.Ready)
+					.filter(ch -> ch.isEnabled() && ch.getState().getStatus() == Status.Ready 
+						&&  ch.getCard() != null  && ch.getCard().getStat().getMinRemains() > 0)
 					.sorted((ch1, ch2) -> Long.compare(ch1.getId(), ch2.getId()))					
 					.sorted((ch1, ch2) -> 
 						Integer.compare(ch1.getState().getPriority(), ch2.getState().getPriority()))

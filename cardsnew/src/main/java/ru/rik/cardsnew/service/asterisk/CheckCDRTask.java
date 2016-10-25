@@ -63,7 +63,7 @@ public class CheckCDRTask {
 //						logger.debug("== our card: " + card.toString());
 
 						Cdr cdr = Cdr.builder()
-								.date(Util.parseDate(rs.getString("calldate"), "yyyy-MM-dd HH:mm:ss"))
+								.date(Util.parseDate(rs.getString("calldate"), "yyyy-MM-dd HH:mm:ss.S"))
 								.src(rs.getString("src"))
 								.dst(rs.getString("dst"))
 								.cardId(card.getId())
@@ -74,7 +74,8 @@ public class CheckCDRTask {
 								.uniqueid(rs.getString("uniqueid"))
 								.channelId(chan != null ? chan.getId() : 0)
 								.build();
-						cdrs.addCdr(cdr);
+						card.getStat().applyCdr(cdr);
+
 						
 						n++;
 					} catch (ParseException pe) {
@@ -84,7 +85,7 @@ public class CheckCDRTask {
 					}
 					
 				} else {
-					//log.error("can not find a Card with name " + cardname);
+//					logger.error("can not find a Card with name " + cardname);
 				}
 			}
 		} catch (SQLException e) {

@@ -4,9 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,7 +13,7 @@ import ru.rik.cardsnew.service.http.SimSet;
 @Data
 @EqualsAndHashCode
 public class ChannelState implements MyState {
-	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
+//	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
 
 	private long id;
 	private String name;
@@ -62,7 +59,7 @@ public class ChannelState implements MyState {
 	}
 	
 	public void applySimSet(SimSet s) {
-		logger.debug("apply to {} SimStatus {}" ,name ,s.toString());
+//		logger.debug("apply to {} SimStatus {}" ,name ,s.toString());
 		simset = s;
 		nextSimSetUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
 		lastSimSetUpdate = new Date();

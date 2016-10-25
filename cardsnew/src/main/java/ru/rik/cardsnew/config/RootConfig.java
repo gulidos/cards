@@ -29,6 +29,7 @@ import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
 @Configuration
@@ -77,8 +78,8 @@ public class RootConfig implements SchedulingConfigurer {
 		return new Cdrs();
 	}
 
-	// @Bean (initMethod="init")
-	// public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+	 @Bean (initMethod="init")
+	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public AsteriskEvents asteriskEvents() {

@@ -64,7 +64,7 @@ public class Cdr extends Event {
 		return (int) Math.ceil(billsecd / 60);
 	}
 	
-	public double getMin() {
+	public  double getMin() {
 		double billsecd = (double) billsec;
 		return billsecd / 60;
 	}

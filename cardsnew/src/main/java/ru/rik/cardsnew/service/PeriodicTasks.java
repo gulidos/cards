@@ -19,7 +19,7 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 import ru.rik.cardsnew.service.http.SimSet;
 @Service
 public class PeriodicTasks {
-	private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);		
+	private static final Logger logger = LoggerFactory.getLogger(PeriodicTasks.class);		
 	
 	@Autowired AsyncTasks asyncTasks;
 	@Autowired ChannelRepo chanRepo;
@@ -64,13 +64,14 @@ public class PeriodicTasks {
 					taskCompleter.addTask(checkSimSet, st);
 				}
 			}
-
-		}
-			
-
+		}	
 	}
 	
-
+	@Scheduled(cron = "0 0 0 * * *") 
+	public void midnight() {
+		logger.debug("Midnight procedures calling");
+		
+	}
 	
 
 }

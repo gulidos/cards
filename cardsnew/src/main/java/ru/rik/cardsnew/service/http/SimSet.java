@@ -48,7 +48,7 @@ public class SimSet implements MyState{
      */
 	public static SimSet get(final Channel ch, Channel chPair) throws IOException {
 		Assert.notNull(ch);
-		if (chPair != null ) logger.debug("chId: {} chName: {}", chPair.getId(), chPair.getName());
+//		if (chPair != null ) logger.debug("chId: {} chName: {}", chPair.getId(), chPair.getName());
 		HttpHelper.getCon(ch, "login.cgi")
 		.timeout(500)
 		.data("cookieexists", "false")

@@ -29,7 +29,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	
 	@PostConstruct
 	@Override
-	protected void Init() {
+	public void Init() {
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
 		this.cb = em.getCriteriaBuilder();
 		repo = this;
@@ -73,6 +73,13 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public List<Card> findBankCards(Bank bank) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public CardStat addStateIfAbsent(Card entity) {
+		CardStat cs= super.addStateIfAbsent(entity);
+		cs.setRepo(this);
+		return cs;
 	}
 	
 }

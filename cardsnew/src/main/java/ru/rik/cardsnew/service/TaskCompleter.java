@@ -95,7 +95,7 @@ public class TaskCompleter implements Runnable{
 	
 	
 	private void applyGsmState(GsmState g) {
-		logger.debug(g.toString());
+//		logger.debug(g.toString());
 		
 		ChannelState st = chans.findStateById(g.getId());
 		st.applyGsmStatus(g);
