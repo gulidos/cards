@@ -107,6 +107,7 @@ public class SimSet implements MyState{
 			con.data("cIDB", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
 			   .data("BnkB", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
 		
+		ScomGsn.cgi !!!
 		Response resp = con.execute();
 		return resp.statusCode();
 		
