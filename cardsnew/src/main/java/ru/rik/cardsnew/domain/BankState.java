@@ -14,9 +14,6 @@ public class BankState implements State {
 
 	@Override public String getName() {return name;}
 	@Override public void setName(String name) {this.name = name;}
-	@Override
-	public Class<?> getClazz() {
-		return BankState.class;
-	}
+	@Override public Class<?> getClazz() {return BankState.class;	}
 	
 }

@@ -44,7 +44,8 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	}
 
 	public static ChannelRepoImpl get() {return repo;	}
-	
+	public static void set(ChannelRepo repo2) {repo = (ChannelRepoImpl) repo2;}
+
 	@Override
 	public Channel findPair(Channel ch) {
 		try {

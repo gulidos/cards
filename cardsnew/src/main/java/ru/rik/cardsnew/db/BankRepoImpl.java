@@ -12,6 +12,7 @@ public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements Ba
 	private static final long serialVersionUID = 1L;
 	private static BankRepoImpl repo;
 
+
 	public BankRepoImpl() {
 		super(Bank.class, BankState.class);		
 	}
@@ -24,5 +25,6 @@ public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements Ba
 	}
 	
 	public static BankRepoImpl get() {return repo;	}
+	public static void setRepo(BankRepoImpl repo) {	BankRepoImpl.repo = repo;}
 
 }

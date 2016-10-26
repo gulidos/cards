@@ -24,10 +24,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Builder;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
 @Entity
 @ToString(exclude={"cards"})
 @EqualsAndHashCode(exclude={"cards"})
@@ -45,12 +44,13 @@ public class Bank implements MyEntity {
 	 protected long version;
 	 
     @Column (unique=true, nullable=false)
-    @Getter @Setter
-	String location;
+    @Getter @Setter	String location;
     
     @Column (unique=true)
-    @Getter @Setter
-    private String ip;
+    @Getter @Setter private String ip;
+    
+    @Getter @Setter private boolean available;
+    
     
     @Getter @Setter
     @OneToMany(mappedBy = "bank", fetch=FetchType.LAZY)

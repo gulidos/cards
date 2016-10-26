@@ -17,4 +17,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	Card findCardsByPlace(Place place, Bank bank);
 
+	List<Card> findAllAvailableForChannel(Grp g);
+
 }

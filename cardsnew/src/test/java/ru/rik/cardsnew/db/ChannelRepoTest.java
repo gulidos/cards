@@ -1,9 +1,11 @@
 package ru.rik.cardsnew.db;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +34,10 @@ public class ChannelRepoTest {
 	
 	@Before
 	public void loadData() {
-		repo = spy(ChannelRepoImpl.class);
-//		repo.init();
+		repo = spy(new ChannelRepoImpl());
+		ChannelRepoImpl.set(repo);
 		initData();
+		doReturn(new ArrayList<Channel>(t.getChannels())).when(repo).findAll();
 	}
 	
 	@Test
@@ -138,6 +141,7 @@ public class ChannelRepoTest {
 		
 		ch = new Channel(4, 1, "ch4", Line.L4, box, null, new HashSet<Trunk>(Arrays.asList(t)), c, true);
 		s.add(ch);
+		System.out.println(ch.getId() + " "  +ch.getName());
 		st = repo.addStateIfAbsent(ch);
 		st.setStatus(Status.Ready);
 		

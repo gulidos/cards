@@ -2,6 +2,7 @@ package ru.rik.cardsnew.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -32,7 +33,6 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public void init() {
 		super.init();
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
-		this.cb = em.getCriteriaBuilder();
 		repo = this;
 		for (Card c : findAll()) {
 			CardStat s = addStateIfAbsent(c);
@@ -42,7 +42,8 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	}
 	
 	public static CardRepoImpl get() {return repo;	}
-
+	public static void set(CardRepo r) {repo = (CardRepoImpl) r;}
+	
 	@Override
 	public List<Card> findGroupCards(Grp grp) {
 		return em.createNamedQuery("findAllCardsInGrp", Card.class)
@@ -81,6 +82,17 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		CardStat cs= super.addStateIfAbsent(entity);
 		cs.setRepo(this);
 		return cs;
+	}
+	
+	@Override
+	public List<Card> findAllAvailableForChannel(Grp g) {
+		return g.getCards().stream()
+		.filter(c->c.getStat().isFree() 
+				&& c.isActive()  
+				&& c.getBank().isAvailable() 
+				&& c.getStat().getMinRemains() > 1)
+		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
+		.collect(Collectors.toList());
 	}
 	
 }

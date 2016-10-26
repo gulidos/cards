@@ -34,7 +34,6 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 
 	protected final Class<T> entityClass;
 	protected final Class<S> entityStateClass;
-	protected CriteriaBuilder cb;
 	protected final ConcurrentMap<Long, S> statsById;
 	protected final ConcurrentMap<String, S> statsByName;
 
@@ -48,8 +47,6 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	@PostConstruct
 	protected void init() {
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
-		this.cb = em.getCriteriaBuilder();
-
 		for (T entity : findAll())
 			addStateIfAbsent(entity);
 	}
@@ -78,6 +75,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 
 	@Override
 	public List<T> findAll() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = cb.createQuery(entityClass);
 		Root<T> c = criteria.from(entityClass);
 		TypedQuery<T> query = em.createQuery(criteria.select(c)).setHint("org.hibernate.cacheable", true);
@@ -87,6 +85,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 
 	@Override
 	public List<T> findAllRestr(Expression<Boolean> restriction) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = cb.createQuery(entityClass);
 		Root<T> c = criteria.from(entityClass);
 		TypedQuery<T> query = em.createQuery(criteria.select(c).where(restriction)).setHint("org.hibernate.cacheable",
@@ -157,7 +156,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 							+ newState.getName() + " class:" +	newState.getClazz());
 				
 				if (statsByName.putIfAbsent(entity.getName(), newState) != null)
-					throw new IllegalStateException("statsByName anready has the Entity with name" 
+					throw new IllegalStateException("statsByName already has the Entity with name" 
 							+ newState.getName() + " class:" +	newState.getClazz());
 				state = newState;
 			} catch (Exception e) {
@@ -166,7 +165,6 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 		} else 
 			if (!entity.getName().equals(state.getName())) 
 				state.setName(entity.getName());
-		
 		return state;
 	}
 
