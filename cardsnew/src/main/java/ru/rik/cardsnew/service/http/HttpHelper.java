@@ -27,15 +27,12 @@ public class HttpHelper {
 		System.out.println("connect to: " + ch.getName() +  " http://" + host + ":" + port +"/" + link);
 		return Jsoup.connect("http://" + host + ":" + port +"/" + link)
 				.header("Authorization", "Basic " + authString)
-				.timeout(500)
+				.timeout(10000)
 				.followRedirects(true);
 	}
 	
 	
-	
-	
-	public static void rebootChannel(Channel ch) throws IOException {
-		
+	public static int rebootChannel(Channel ch) throws IOException {
 		Connection con = HttpHelper.getCon(ch, "rebootsys.cgi");
 		con.timeout(10000)
 		.followRedirects(true)
@@ -43,9 +40,7 @@ public class HttpHelper {
         .data("submit", "Reboot");
 		
 		Response resp = con.execute();
-		System.out.println(con.toString());
-		System.out.println(resp.body());
-		
+		return resp.statusCode();
 	}
 	
 	

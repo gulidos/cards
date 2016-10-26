@@ -34,8 +34,11 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	public ChannelRepoImpl() {
 		super(Channel.class, ChannelState.class);
 	}
+	
 	@PostConstruct 
+	@Override
 	public void init() {
+		super.init();
 		logger.debug("initializing static variable");
 		repo = this;
 	}
@@ -53,7 +56,6 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		} catch (NoResultException e) {
 			return null;
 		}
-		
 	}
 		
 	@Override
@@ -87,18 +89,21 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	}	
 
 	/** Transactional.
-	 * Fixes changing card in channel into database
+	 * Fixes changing card in channel into database, set the channel's Status Inchange and peer's - PeerInchange
 	 * @throws ConcurrentModificationException 
 	 */
 	@Override @Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void switchCard(Channel chan, Card c) {
-		Assert.notNull(chan);
+	public void switchCard(Channel ch, Card c) {
+		Assert.notNull(ch);
 		
-		Channel persChan = findById(chan.getId());
-		if (persChan.getVersion() != chan.getVersion())
-			throw new ConcurrentModificationException("Channel " + persChan.getName() + " was modified");	
+		Channel chan = findById(ch.getId());
+		if (chan.getVersion() != ch.getVersion())
+			throw new ConcurrentModificationException("Channel " + chan.getName() + " was modified");	
+		Channel peer = chan.getPair();
+		chan.getState().setStatus(Status.Inchange);
+		peer.getState().setStatus(Status.PeerInchange);
 		
-		Card oldCard = persChan.getCard();
+		Card oldCard = chan.getCard();
 		if (oldCard != null) {
 			oldCard.setChannelId(0); // set to null channel Id
 			CardStat st = oldCard.getStat();
@@ -110,11 +115,11 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			if (newCard.getVersion() != c.getVersion())
 				throw new ConcurrentModificationException("Card " + newCard.getName() + " was modified");	
 
-			newCard.setChannelId(persChan.getId());
-			persChan.setCard(newCard);
+			newCard.setChannelId(chan.getId());
+			chan.setCard(newCard);
 		} else 
-			persChan.setCard(c);
+			chan.setCard(c);
 
-		makePersistent(persChan);
+		makePersistent(chan);
 	}
 }

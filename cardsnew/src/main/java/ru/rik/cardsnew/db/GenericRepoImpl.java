@@ -46,7 +46,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	}
 
 	@PostConstruct
-	protected void Init() {
+	protected void init() {
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
 		this.cb = em.getCriteriaBuilder();
 

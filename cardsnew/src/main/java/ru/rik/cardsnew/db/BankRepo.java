@@ -5,4 +5,6 @@ import ru.rik.cardsnew.domain.BankState;
 
 public interface BankRepo extends GenericRepo<Bank, BankState>{
 
+	void init();
+
 }

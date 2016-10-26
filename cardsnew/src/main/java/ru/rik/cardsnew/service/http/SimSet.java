@@ -28,6 +28,7 @@ public class SimSet implements MyState{
 	@Getter private final String cardPos;
 	@Getter private final String bankIp;
 	@Getter @Setter private SimSet pairData;
+//	@Getter private final String serialnumber;
 	
 	@Builder
 	public SimSet(Channel ch, String cardPos, String bankIp, SimSet pairData) {
@@ -35,6 +36,7 @@ public class SimSet implements MyState{
 		this.cardPos = cardPos;
 		this.bankIp = bankIp;
 		this.pairData = pairData;
+//		this.serialnumber = snumber;
 	}
 	
 	@Override 	public long getId() {return ch.getId(); }
@@ -91,26 +93,48 @@ public class SimSet implements MyState{
 			me.setPairData(bPair.build());
 		return me;
 	}
+	
+	
+	public static String getScomGsn (Channel ch) throws IOException {
+		Connection con = HttpHelper.getCon(ch, "ScomGsn.cgi")
+				.method(Method.POST)
+				.data("nPortNum", String.valueOf(ch.getLine().getNport()))
+				.data("submit", "Submit");
+		
+		Document doc = con.post();
+		Element imob = doc.select("input[name=CURR]").first();
+		String r = imob.attributes().get("value");
+		System.out.println(r);
+		return r;
+	}
 
+	
 	public static int post(Channel ch, Card c) throws IOException {
 		Assert.notNull(ch);
 		
-		Connection con = HttpHelper.getCon(ch, "SimSet.cgi");
-		con.timeout(1000)
-		.followRedirects(true)
-        .method(Method.POST);
-		
+		Connection con = HttpHelper.getCon(ch, "SimSet.cgi") .method(Method.POST);
 		if (ch.getLine().getNport() == 0) 
 			con.data("cIDA", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
 			   .data("BnkA", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
 		else 
 			con.data("cIDB", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
 			   .data("BnkB", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
-		
-		ScomGsn.cgi !!!
 		Response resp = con.execute();
-		return resp.statusCode();
 		
+		resp =  HttpHelper.getCon(ch, "ScomGsn.cgi").method(Method.POST)
+				.data("nPortNum", String.valueOf(ch.getLine().getNport()))
+				.data("NEW", c.getSernumber())
+				.data("submit", "Submit")
+				.execute();
+		if (resp.statusCode() != 200) throw new RuntimeException("Can not change IMEI in channel " + ch.getName());
+		
+		// TODO check out whether the peer is Standby (not Listening)
+		
+		resp =  HttpHelper.getCon(ch, "save.cgi").method(Method.POST)
+				.data("submit", "Save")
+				.execute();
+	
+		return resp.statusCode();
 	}
 	
 	

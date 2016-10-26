@@ -59,5 +59,5 @@ public class Bank implements MyEntity {
     
     @Override public String getName() {return getIp();}
 
-	@Override public void setName(String name) {	}
+	@Override public void setName(String name) {setIp(name);	}
 }

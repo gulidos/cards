@@ -33,7 +33,7 @@ public class ChannelRepoTest {
 	@Before
 	public void loadData() {
 		repo = spy(ChannelRepoImpl.class);
-		repo.init();
+//		repo.init();
 		initData();
 	}
 	

@@ -29,7 +29,8 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	
 	@PostConstruct
 	@Override
-	public void Init() {
+	public void init() {
+		super.init();
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
 		this.cb = em.getCriteriaBuilder();
 		repo = this;
