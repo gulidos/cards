@@ -65,11 +65,16 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 
 	@Override
 	public Card findCardsByPlace(Place place, Bank bank) {
-		return em.createNamedQuery("findCardByPlace", Card.class)
-				.setParameter("place", place)
-				.setParameter("bank", bank)
-				.setHint("org.hibernate.cacheable", true)
-				.getSingleResult();
+		try {
+			return em.createNamedQuery("findCardByPlace", Card.class)
+					.setParameter("place", place)
+					.setParameter("bank", bank)
+					.setHint("org.hibernate.cacheable", true)
+					.getSingleResult();
+			
+		} catch (Exception e) {
+			return null;
+		}
     }
 
 	@Override

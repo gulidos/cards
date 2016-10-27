@@ -70,7 +70,7 @@ public class CardRepoTest {
 		cdrs.init();
 		repo = spy(new CardRepoImpl());
 		CardRepoImpl.set(repo);
-		b = Bank.builder().id(1).ip("9.9.9.9").build();
+		b = Bank.builder().id(1).name("9.9.9.9").build();
 		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
 		Set<Card> set = new HashSet<>();
 		g.setCards(set);

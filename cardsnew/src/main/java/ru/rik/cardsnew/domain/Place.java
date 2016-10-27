@@ -39,43 +39,42 @@ public enum Place {
 	
 	Place(int id) {this.id = id;}
 	 
-	public static Place getInstance(int id) {
-		switch(id) {
-			case 0: return Place.b0000000;
-			case 1: return Place.b0000001;
-			case 2: return Place.b0000002;
-			case 3: return Place.b0000003;
-			case 4: return Place.b0000004;
-			case 5: return Place.b0000005;
-			case 6: return Place.b0000006;
-			case 7: return Place.b0000007;
-			case 8: return Place.b0000008;
-			case 9: return Place.b0000009;
-			case 10: return Place.b000000a;
-			case 11: return Place.b000000b;
-			case 12: return Place.b000000c;
-			case 13: return Place.b000000d;
-			case 14: return Place.b000000e;
-			case 15: return Place.b000000f;
-			case 16: return Place.b0000010;
-			case 17: return Place.b0000011;
-			case 18: return Place.b0000012;
-			case 19: return Place.b0000013;
-			case 20: return Place.b0000014;
-			case 21: return Place.b0000015;
-			case 22: return Place.b0000016;
-			case 23: return Place.b0000017;
-			case 24: return Place.b0000018;
-			case 25: return Place.b0000019;
-			case 26: return Place.b000001a;
-			case 27: return Place.b000001b;
-			case 28: return Place.b000001c;
-			case 29: return Place.b000001d;
-			case 30: return Place.b000001e;
-			case 31: return Place.b000001f;
-			case 32: return Place.b0000020;
-	
-			default: return null;				
+	public static Place getInstance(String s) {
+		switch(s) {
+		case "b0000000": return Place.b0000000;
+		case "b0000001": return Place.b0000001;
+		case "b0000002": return Place.b0000002;
+		case "b0000003": return Place.b0000003;
+		case "b0000004": return Place.b0000004;
+		case "b0000005": return Place.b0000005;
+		case "b0000006": return Place.b0000006;
+		case "b0000007": return Place.b0000007;
+		case "b0000008": return Place.b0000008;
+		case "b0000009": return Place.b0000009;
+		case "b000000a": return Place.b000000a;
+		case "b000000b": return Place.b000000b;
+		case "b000000c": return Place.b000000c;
+		case "b000000d": return Place.b000000d;
+		case "b000000e": return Place.b000000e;
+		case "b000000f": return Place.b000000f;
+		case "b0000010": return Place.b0000010;
+		case "b0000011": return Place.b0000011;
+		case "b0000012": return Place.b0000012;
+		case "b0000013": return Place.b0000013;
+		case "b0000014": return Place.b0000014;
+		case "b0000015": return Place.b0000015;
+		case "b0000016": return Place.b0000016;
+		case "b0000017": return Place.b0000017;
+		case "b0000018": return Place.b0000018;
+		case "b0000019": return Place.b0000019;
+		case "b000001a": return Place.b000001a;
+		case "b000001b": return Place.b000001b;
+		case "b000001c": return Place.b000001c;
+		case "b000001d": return Place.b000001d;
+		case "b000001e": return Place.b000001e;
+		case "b000001f": return Place.b000001f;
+		case "b0000020": return Place.b0000020;
+		default: return null;				
 		}
 	}
 

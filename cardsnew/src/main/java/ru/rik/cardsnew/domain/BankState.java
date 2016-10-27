@@ -11,6 +11,12 @@ public class BankState implements State {
 	@Getter @Setter private boolean available = true;
 	
 	public BankState() {}
+	
+	public BankState(Bank b) {
+		id = b.getId();
+		name = b.getName();
+		available = true;
+	}
 
 	@Override public long getId() {return id;	}
 	@Override public void setId(long id) { this.id = id;	}

@@ -115,7 +115,7 @@ public class Card implements MyEntity {
 	public String toStringAll() {
 		return toString() 
 				+ " group: " + ( group != null ? group.getId() : "none") 
-				+ " bank: "  + (bank != null ? bank.getIp() : "none"); 
+				+ " bank: "  + (bank != null ? bank.getName() : "none"); 
 //				+ " ch: "    + (channel != null ? channel.getName() : "none");
 	}
 	

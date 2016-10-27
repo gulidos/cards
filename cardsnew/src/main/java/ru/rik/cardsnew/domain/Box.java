@@ -68,11 +68,6 @@ public class Box implements MyEntity {
   	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Channel> channels = new HashSet<>();
   	
-  	@Override
-	public String getName() {
-		return getIp();
-	}
-	
-	
-	@Override public void setName(String name) {}
+  	@Override public String getName() {return getIp();}
+	@Override public void setName(String name) {this.ip = name;}
 }

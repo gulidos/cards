@@ -25,6 +25,10 @@ public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements Ba
 	}
 	
 	public static BankRepoImpl get() {return repo;	}
-	public static void setRepo(BankRepoImpl repo) {	BankRepoImpl.repo = repo;}
+	public static void set(BankRepo repo) {	repo = (BankRepoImpl) repo;}
+	
+//	public Bank findBankByIp(String ip) {
+//		
+//	}
 
 }

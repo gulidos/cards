@@ -23,7 +23,7 @@
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="bank : ${banks}"> 
-					<td th:text="${bank.ip}"></td>
+					<td th:text="${bank.name}"></td>
 					<td th:text="${bank.location}"></td>
 					<td style="text-align: center;">
 					<a th:href="@{/banks/edit(id=${bank.id})}">

@@ -48,7 +48,7 @@
 				<label class="col-md-1 col-lg-1 control-label">b</label>
 				<div class="col-md-2 col-lg-2"  >  
 				<select	class="form-control" th:value="*{bank}?*{bank.id}:0" th:field="*{bank.id}" >
-					<option th:each="bank: ${banklst}" th:value="${bank.id}" th:text="${bank.ip}"></option>
+					<option th:each="bank: ${banklst}" th:value="${bank.id}" th:text="${bank.name}"></option>
 				</select> 
 				</div>
 				<label class="col-md-2 col-lg-2 control-label">place</label>

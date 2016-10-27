@@ -115,10 +115,10 @@ public class SimSet implements MyState{
 		Connection con = HttpHelper.getCon(ch, "SimSet.cgi") .method(Method.POST);
 		if (ch.getLine().getNport() == 0) 
 			con.data("cIDA", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
-			   .data("BnkA", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
+			   .data("BnkA", c != null ? c.getBank().getName() : Settings.FAKE_BANK_IP);
 		else 
 			con.data("cIDB", c != null ? c.getPlace().name() : Settings.FAKE_CARD_PLACE)
-			   .data("BnkB", c != null ? c.getBank().getIp() : Settings.FAKE_BANK_IP);
+			   .data("BnkB", c != null ? c.getBank().getName() : Settings.FAKE_BANK_IP);
 		Response resp = con.execute();
 		
 		resp =  HttpHelper.getCon(ch, "ScomGsn.cgi").method(Method.POST)

@@ -75,7 +75,7 @@ public class RestTrunks {
 						ch.getBox().getIp(), 
 						ch.getCard() != null ? ch.getCard().getDlimit() : 0,
 						ch.getCard() != null ? ch.getCard().getMlimit() : 0, 
-						ch.getCard() != null ? ch.getCard().getBank().getIp() : "");
+						ch.getCard() != null ? ch.getCard().getBank().getName() : "");
 				channels.add(r);
 				i++;
 			}

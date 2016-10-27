@@ -49,8 +49,7 @@ public class Bank implements MyEntity {
     @Getter @Setter	String location;
     
     @Column (unique=true)
-    @Getter @Setter private String ip;
-        
+    @Getter @Setter private String name;
     
     @Getter @Setter
     @OneToMany(mappedBy = "bank", fetch=FetchType.LAZY)
@@ -61,7 +60,7 @@ public class Bank implements MyEntity {
     	BankRepo banks = BankRepoImpl.get();
     	return banks.findStateById(id);
     }
-    @Override public String getName() {return getIp();}
-
-	@Override public void setName(String name) {setIp(name);	}
+    
+//    @Override public String getName() {return getIp();}
+//	@Override public void setName(String name) {this.ip = name;}
 }
