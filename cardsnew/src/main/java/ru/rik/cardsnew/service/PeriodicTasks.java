@@ -33,7 +33,7 @@ public class PeriodicTasks {
 	
 	@Scheduled(fixedRate = 15000)
 	public void checkChannels() {
-		logger.debug("Start checkChannels ...");
+//		logger.debug("Start checkChannels ...");
 		Set<Channel> simSetJobs = new HashSet<>();
 		
 		for (Channel ch : chanRepo.findAll()) { 

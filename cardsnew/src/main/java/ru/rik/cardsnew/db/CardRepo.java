@@ -19,4 +19,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	List<Card> findAllAvailableForChannel(Grp g);
 
+	Card findTheBestInGroupForInsert(Grp g);
+
 }

@@ -50,12 +50,27 @@ public class CardRepoTest {
 			System.out.println(c.getName() + " " + c.getStat().getMinRemains());
 	}
 	
+	@Test
+	public void getTheBestForSwitching() {
+		Card c = repo.findTheBestInGroupForInsert(g);
+		Assert.assertTrue(c.getId() == 2);		
+	}
+	
+	
+	@Test
+	public void getTheBestForSwitchingNull() {
+		for (Card c: g.getCards())
+			c.setActive(false);
+		Card c = repo.findTheBestInGroupForInsert(g);
+		Assert.assertTrue(c == null);		
+	}
+	
 	private void initData() throws ParseException {
 		cdrs = new Cdrs();
 		cdrs.init();
 		repo = spy(new CardRepoImpl());
 		CardRepoImpl.set(repo);
-		b = Bank.builder().id(1).ip("9.9.9.9").available(true).build();
+		b = Bank.builder().id(1).ip("9.9.9.9").build();
 		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
 		Set<Card> set = new HashSet<>();
 		g.setCards(set);

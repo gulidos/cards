@@ -24,7 +24,7 @@ public class HttpHelper {
 		String password = Box.DEF_PASSWORD;
 		String login = user + ":" + password;
 		String authString = new String(Base64.encodeBase64(login.getBytes()));
-		System.out.println("connect to: " + ch.getName() +  " http://" + host + ":" + port +"/" + link);
+//		System.out.println("connect to: " + ch.getName() +  " http://" + host + ":" + port +"/" + link);
 		return Jsoup.connect("http://" + host + ":" + port +"/" + link)
 				.header("Authorization", "Basic " + authString)
 				.timeout(10000)

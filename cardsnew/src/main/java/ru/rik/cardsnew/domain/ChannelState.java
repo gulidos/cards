@@ -11,8 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.rik.cardsnew.config.Settings;
-import ru.rik.cardsnew.db.BankRepoImpl;
-import ru.rik.cardsnew.db.CardRepoImpl;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 @Data
@@ -181,20 +179,21 @@ public class ChannelState implements MyState {
 			sb.append(String.format("%1$s = %2$s%n", "sigquality", gsmstatus.getSigquality()));
 			sb.append(String.format("%1$s = %2$s%n", "status", gsmstatus.getStatus()));
 		} 
-		Place place = Place.valueOf(simset.getCardPos());
-		Bank bank = BankRepoImpl.get().findByName(simset.getBankIp());
-		for (Bank b : BankRepoImpl.get().findAll()) {
-			logger.debug("bank {}, state {}", b.toString(), BankRepoImpl.get().findStateById(b.getId()));
-		}
+//		Place place = Place.valueOf(simset.getCardPos());
+//		Bank bank = BankRepoImpl.get().findByName(simset.getBankIp());
+//		for (Bank b : BankRepoImpl.get().findAll()) {
+//			logger.debug("bank {}, state {}", b.toString(), BankRepoImpl.get().findStateById(b.getId()));
+//		}
 //		logger.debug("place {} bank {}", place, bank.getId());
-		Card c = CardRepoImpl.get().findCardsByPlace(place, bank);
+//		Card c = CardRepoImpl.get().findCardsByPlace(place, bank);
 		
 		if (simset != null) {
 			sb.append(" \n");
 			sb.append(String.format("%1$s = %2$s%n", "lastSimSetUpdate", df.format(lastSimSetUpdate)));
 			sb.append(String.format("%1$s = %2$s%n", "bank", simset.getBankIp()));
 			sb.append(String.format("%1$s = %2$s%n", "cardPos", simset.getCardPos()));
-			sb.append(String.format("%1$s = %2$s%n", "Approoved card", c.getName()));		}
+//			sb.append(String.format("%1$s = %2$s%n", "Approoved card", c.getName()));		
+			}
 		
 			
 		return sb.toString();

@@ -23,7 +23,7 @@ public class RebootTest {
 		Card c = Card.builder()
 				.place(Place.b0000010)
 				.sernumber("1111111")
-				.bank(new Bank(1, 1, "123", "2.1.1.1", true, null))
+				.bank(new Bank(1, 1, "123", "2.1.1.1",  null))
 				.build();
 		SimSet.post(ch, c);
 //		HttpHelper.rebootChannel(ch);

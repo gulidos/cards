@@ -2,6 +2,7 @@ package ru.rik.cardsnew.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -89,10 +90,26 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		return g.getCards().stream()
 		.filter(c->c.getStat().isFree() 
 				&& c.isActive()  
-				&& c.getBank().isAvailable() 
+//				&& c.getBank().isAvailable() 
 				&& c.getStat().getMinRemains() > 1)
+		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
 		.collect(Collectors.toList());
+	}
+	
+	@Override
+	public Card findTheBestInGroupForInsert(Grp g) {
+		Optional<Card> oc = g.getCards().stream()
+		.filter(c->c.getStat().isFree() 
+				&& c.isActive()  
+//				&& c.getBank().getisAvailable() 
+				&& c.getStat().getMinRemains() > 1)
+		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
+		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
+		.findFirst();
+		if (oc.isPresent())
+			return oc.get();
+		else return null;
 	}
 	
 }

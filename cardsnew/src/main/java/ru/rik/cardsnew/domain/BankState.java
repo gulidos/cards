@@ -1,11 +1,14 @@
 package ru.rik.cardsnew.domain;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @EqualsAndHashCode(of={"id", "name"})
 public class BankState implements State {
 	private long id;
 	private String name;
+	@Getter @Setter private boolean available = true;
 	
 	public BankState() {}
 

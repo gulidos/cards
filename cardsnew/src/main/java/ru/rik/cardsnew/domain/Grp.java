@@ -51,6 +51,7 @@ public class Grp implements MyEntity {
 	
 	@Getter @Setter
     @OneToMany(mappedBy = "group")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     Set<Card> cards;
 
 	@Getter @Setter

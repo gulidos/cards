@@ -1,9 +1,7 @@
 package ru.rik.cardsnew.web.rest;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -18,8 +16,6 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Card;
-import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
 
@@ -75,62 +71,4 @@ public class RestCards {
 	}
 	
 	
-	
-	@Transactional
-	@RequestMapping(value = "/groups", method=RequestMethod.GET) public List<RstGrp> groups() {
-		List<RstGrp> lst = new ArrayList<>();
-		for (Grp c: groups.findAll()) {
-			if (c == null) 	break;
-			
-			RstGrp rc = new RstGrp(c);
-			lst.add(rc);
-		}
-		return lst; 
 	}
-	
-	@Data
-	public class RstGrp {
-		long id;
-		String name;
-		Set<String> cards = new HashSet<>();
-		Set<String> channels = new HashSet<>();
-		
-		public RstGrp(Grp g) {
-			id = g.getId();
-			name = g.getName();
-			for (Card c : g.getCards()) 
-				if (c != null) 
-					cards.add(c.getName());
-			for (Channel c : g.getChannels()) 
-				if (c != null) 
-					channels.add(c.getName());
-		}
-	}
-	
-
-	@Transactional
-	@RequestMapping(value = "/chan/{id}", method = RequestMethod.GET)
-	public RestChan getChan(@PathVariable("id") long id) {
-		Channel t = channels.findById(id);
-		if (t!= null) 
-			return new RestChan(t);
-		else return null;
-	}
-	
-	@Data
-	public class RestChan {
-		long id;
-		String name, number, sernumber, bank, group, card;
-		
-		public RestChan(Channel c) {
-			id = c.getId();
-			name = c.getName();
-			card = (c.getCard() != null ? c.getCard().getName() : "" );
-//			bank = (c.getBank() != null ? c.getBank().getName() : "");
-//			group = (c.getGroup() != null ? c.getGroup().getName() : "");
-//			place = c.getPlace();
-//			oper = c.getOper();	
-		}
-	}
-	
-}

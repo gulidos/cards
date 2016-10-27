@@ -25,6 +25,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.BankRepoImpl;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 @Entity
@@ -48,15 +50,17 @@ public class Bank implements MyEntity {
     
     @Column (unique=true)
     @Getter @Setter private String ip;
-    
-    @Getter @Setter private boolean available;
-    
+        
     
     @Getter @Setter
     @OneToMany(mappedBy = "bank", fetch=FetchType.LAZY)
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Card> cards = new HashSet<>();
     
+    public BankState getStat () {
+    	BankRepo banks = BankRepoImpl.get();
+    	return banks.findStateById(id);
+    }
     @Override public String getName() {return getIp();}
 
 	@Override public void setName(String name) {setIp(name);	}

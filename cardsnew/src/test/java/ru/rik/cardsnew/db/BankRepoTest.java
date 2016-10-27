@@ -18,11 +18,11 @@ public class BankRepoTest {
 	public void loadData() {
 		repo = mock(BankRepoImpl.class);
 		List<Bank> list =  new ArrayList<>();
-		list.add(new Bank(1, 1, "1", "1.1.1.1", true, null));
-		list.add(new Bank(2, 1, "2", "1.1.1.2", true, null));
-		list.add(new Bank(3, 1, "3", "1.1.1.3", true, null));
-		list.add(new Bank(4, 1, "4", "1.1.1.4", true, null));
-		list.add(new Bank(5, 1, "5", "1.1.1.5", true, null));
+		list.add(new Bank(1, 1, "1", "1.1.1.1", null));
+		list.add(new Bank(2, 1, "2", "1.1.1.2",  null));
+		list.add(new Bank(3, 1, "3", "1.1.1.3",  null));
+		list.add(new Bank(4, 1, "4", "1.1.1.4",  null));
+		list.add(new Bank(5, 1, "5", "1.1.1.5",  null));
 		when(repo.findAll()).thenReturn(list);
 	}
 	
