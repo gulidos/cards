@@ -71,7 +71,6 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 					.setParameter("bank", bank)
 					.setHint("org.hibernate.cacheable", true)
 					.getSingleResult();
-			
 		} catch (Exception e) {
 			return null;
 		}

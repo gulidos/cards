@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
@@ -36,6 +37,8 @@ import ru.rik.cardsnew.db.BankRepoImpl;
 @org.hibernate.annotations.Cache( usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="_BANK")
 public class Bank implements MyEntity {
+	@Transient public static final String DEF_USER = "voip";
+	@Transient public static final String DEF_PASSWORD = "1234";
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter
