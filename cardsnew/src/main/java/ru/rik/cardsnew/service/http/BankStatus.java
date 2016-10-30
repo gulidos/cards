@@ -1,9 +1,9 @@
 package ru.rik.cardsnew.service.http;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,64 +17,67 @@ import ru.rik.cardsnew.domain.State;
 public class BankStatus implements State {
 	private long id;
 	private String name;
-	private int cardcount;
+	private int activecards;
 	
 	@Builder
 	public BankStatus(long id, String name, int cardcount) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.cardcount = cardcount;
+		this.activecards = cardcount;
 	}
 
-	public static void get(final Bank b) throws IOException {
+	public static BankStatus get(final Bank b) throws IOException, InterruptedException {
 		if (b == null) throw new NullPointerException("Bank must not be null!");
-		
+		BankStatus.BankStatusBuilder bld  = BankStatus.builder(); 
+		bld.id(b.getId());
+		bld.name(b.getName());
 		String host = b.getName();
 		String port = Integer.toString(80);
 		String login = Bank.DEF_USER + ":" + Bank.DEF_PASSWORD;
 		String authString = new String(Base64.encodeBase64(login.getBytes()));
-		Connection con = Jsoup.connect("http://" + host + ":" + port + "/" + "SimStatus.cgi")
-				.header("Authorization", "Basic " + authString).timeout(10000).followRedirects(true)
-				.data("PageNum", String.valueOf(0))
-				.data("submit", "Submit");
-		
-		Document doc = con.post();
-		System.out.println(doc.body());
+//		http://stackoverflow.com/questions/24772828/how-to-parse-html-table-using-jsoup
+		int totalAct = 0;
+		for (int i = 0; i <= 3; i++) {
+			Document doc = Jsoup.connect("http://" + host + ":" + port + "/" + "SimStatus.cgi")
+					.header("Authorization", "Basic " + authString)
+					.timeout(10000).followRedirects(true)
+					.data("PageNum", String.valueOf(i))
+					.data("cookieexists", "false")
+					.data("submit", "Submit")
+					.post();
+			
+			totalAct += getBankPage(doc);
+			TimeUnit.SECONDS.sleep(1);
+		}	
+		bld.cardcount(totalAct);
+		return bld.build();
+	}
+
+	private static int getBankPage(Document doc) throws IOException {
+		int activeCards = 0;
 		Element table = doc.select("table").get(0); // select the first table.
 		Elements rows = table.select("tr");
 		for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
 			 Element row = rows.get(i);
-			 System.out.println(row.toString());
-//		     Elements cols = row.select("td");
-		     
+			Elements cols = row.select("td");
+			if (cols.size() > 4) {
+				Element gsmID = cols.get(3);
+				if (!"-".equals(gsmID.text()) )
+					activeCards++;
+			}  
 		}
-//		Element imob = doc.select("input[name=CURR]").first();
-//		String r = imob.attributes().get("value");
-		
+		return activeCards;
 	}
 	
-//    <tr id="Item" bgcolor="#ddffff" style="color:000000"> 
-//    <!-- <td><input type=checkbox name=ON value=6 ssssssss> --> 
-//    <td id="Num">7 </td>
-//    <td id="CoS">3/2 </td>
-//    <td id="SimID">b0000007 </td>
-//    <td id="GsmID">- </td>
-//    <td id="remote">- </td>
-//   </tr>
-//   <tr id="Item" bgcolor="#ccffff" style="color:0000FF"> 
-//    <!-- <td><input type=checkbox name=ON value=7 ssssssss> --> 
-//    <td id="Num">8 </td>
-//    <td id="CoS">4/2 </td>
-//    <td id="SimID">b0000008 </td>
-//    <td id="GsmID">a0000001 </td>
-//    <td id="remote">172.17.1.36:1204 
+	
 	@Override
 	public Class<?> getClazz() {return BankStatus.class;}
 	
-	public static void main(String[] args) throws IOException {
-		Bank b = Bank.builder().name("72.0.202.4").id(1).build();
-		get(b);
+	public static void main(String[] args) throws IOException, InterruptedException {
+		Bank b = Bank.builder().name("72.0.202.21").id(1).build();
+		BankStatus bs = BankStatus.get(b);
+		System.out.println(bs.toString());
 	}
 
 

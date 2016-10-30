@@ -15,10 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
+import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.domain.BankState;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -29,6 +32,7 @@ public class TaskCompleter implements Runnable{
 	private final ThreadPoolTaskExecutor executor;
 	private final ConcurrentMap<Future<State>, State> map;
 	@Autowired private ChannelRepo chans;
+	@Autowired private BankRepo banks;
 
 
 	@Autowired
@@ -59,11 +63,18 @@ public class TaskCompleter implements Runnable{
 				f = completionServ.take();
 				State result = f.get();
 				map.remove(f);
-
+				
 				if (result.getClazz() == GsmState.class)				
 					applyGsmState((GsmState) result);
 				else if (result.getClazz() == SimSet.class) {
 					applySimSet(result);
+				} 
+				else if (result.getClazz() == BankStatus.class) {
+					applyBankStatus((BankStatus) result);
+				} 
+				else if (result.getClazz() == Switcher.class) {
+					Switcher sw = (Switcher) result;
+					logger.debug("installing in channel {} card {}", sw.getName(), sw.getCardName());
 				}
 			} catch (InterruptedException e) {
 				logger.info("interrupted");
@@ -88,7 +99,11 @@ public class TaskCompleter implements Runnable{
 				ChannelState chState = (ChannelState) st;
 				chState.setStatus(Status.Unreach);
 				logger.debug("channel {} is unreachable", chState.getName());
-			}	
+			} else if (st.getClazz() == BankState.class) {
+				BankState bState = (BankState) st;
+				bState.setAvailable(false);
+				logger.debug("bank {} is unreachable", bState.getName());
+			}
 		} else 
 			logger.error(e.getMessage(), e);
 	}
@@ -115,6 +130,14 @@ public class TaskCompleter implements Runnable{
 			stPair.applySimSet(ssPair);
 		}
 	}
+	
+	private void applyBankStatus(BankStatus g) {
+		logger.debug(g.toString());
+		
+		BankState st = banks.findStateById(g.getId());
+		st.applyBankStatus(g);
+	}
+	
 
 	
 }

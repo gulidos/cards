@@ -8,8 +8,10 @@ import org.asteriskjava.manager.ManagerConnection;
 import org.asteriskjava.manager.ManagerConnectionFactory;
 import org.asteriskjava.manager.ManagerEventListener;
 import org.asteriskjava.manager.TimeoutException;
+import org.asteriskjava.manager.action.GetVarAction;
 import org.asteriskjava.manager.event.CdrEvent;
 import org.asteriskjava.manager.event.ManagerEvent;
+import org.asteriskjava.manager.response.ManagerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +26,29 @@ import ru.rik.cardsnew.domain.events.Cdr;
 public class AsteriskEvents implements ManagerEventListener {
 	static final Logger logger = LoggerFactory.getLogger(AsteriskEvents.class);
 
-	private ManagerConnection managerConnection;
+	private ManagerConnection connection;
 	
 	@Autowired private CardRepo cardRepo;
 	@Autowired private ChannelRepo chanRepo;
-
+	private static AsteriskEvents asterisk;
 
 	public AsteriskEvents() {
 		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "myasterisk", "mycode");
-		this.managerConnection = factory.createManagerConnection();
+		this.connection = factory.createManagerConnection();
 	}
 
 	public void start() throws IOException, AuthenticationFailedException, TimeoutException, InterruptedException {
 		logger.info("Asterisk managerConnection log in ");
-
-		managerConnection.addEventListener(this);
-		managerConnection.login();
+		asterisk = this;
+		connection.addEventListener(this);
+		connection.login();
 	}
+	
+	public static AsteriskEvents get() {return asterisk;}
 
 	public void stop() throws IllegalStateException {
 		logger.info("Asterisk managerConnection is logging off ");
-		managerConnection.logoff();
+		connection.logoff();
 	}
 
 	public void onManagerEvent(ManagerEvent event) {
@@ -96,5 +100,12 @@ public class AsteriskEvents implements ManagerEventListener {
 		} catch (ParseException pe) {
 			logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
 		}			
+	}
+	
+	public String getDeviceState(String dev) throws IllegalArgumentException, IllegalStateException, IOException, TimeoutException {
+		 GetVarAction getVarAction = new GetVarAction("DEVICE_STATE(SIP/" + dev + ")");
+		  ManagerResponse response = connection.sendAction(getVarAction);
+		  String value = response.getAttribute("Value");
+		return value;
 	}
 }

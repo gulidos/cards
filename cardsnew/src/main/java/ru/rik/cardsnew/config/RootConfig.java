@@ -27,6 +27,7 @@ import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
+import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
@@ -85,6 +86,7 @@ public class RootConfig implements SchedulingConfigurer {
 	public AsteriskEvents asteriskEvents() {
 		return new AsteriskEvents();
 	}
+	@Bean public Switcher switcher() {return new Switcher();}
 
 	@Bean
 	MyThreadFactory threadFactory() {
@@ -95,7 +97,7 @@ public class RootConfig implements SchedulingConfigurer {
 	public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(3);
-		executor.setMaxPoolSize(30);
+//		executor.setMaxPoolSize(30);
 		executor.setQueueCapacity(100);
 		executor.setThreadNamePrefix("MyExecutor-");
 		executor.setThreadFactory(threadFactory());
