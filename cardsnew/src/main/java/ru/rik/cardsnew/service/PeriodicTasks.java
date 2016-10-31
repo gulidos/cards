@@ -11,9 +11,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.State;
@@ -27,6 +29,7 @@ public class PeriodicTasks {
 	
 	@Autowired AsyncTasks asyncTasks;
 	@Autowired ChannelRepo chanRepo;
+	@Autowired CardRepo cardRepo;
 	@Autowired BankRepo bankRepo;
 	@Autowired HttpHelper httpHelper;
 	@Autowired TaskCompleter taskCompleter;
@@ -83,9 +86,12 @@ public class PeriodicTasks {
 	}
 	
 	@Scheduled(cron = "0 0 0 * * *") 
-	public void midnight() {
-		logger.debug("Midnight procedures calling");
+	public void midnightReset() {
+		logger.debug("Midnight resetting");
 		
+		for (Card c: cardRepo.findAll()) {
+			c.getStat().resetDaylyCounters();
+		}
 	}
 	
 	

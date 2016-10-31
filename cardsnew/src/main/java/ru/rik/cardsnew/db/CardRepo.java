@@ -21,4 +21,8 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	Card findTheBestInGroupForInsert(Grp g);
 
+	List<Card> findAllAndBlocked();
+
+	void updateDayLimit();
+
 }

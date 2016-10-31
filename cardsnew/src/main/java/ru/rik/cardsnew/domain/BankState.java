@@ -2,6 +2,9 @@ package ru.rik.cardsnew.domain;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +12,8 @@ import ru.rik.cardsnew.service.http.BankStatus;
 
 @EqualsAndHashCode(of={"id", "name"})
 public class BankState implements State {
+	private static final Logger logger = LoggerFactory.getLogger(BankState.class);		
+
 	private long id;
 	private String name;
 	@Getter @Setter private volatile BankStatus bankstatus;
@@ -37,8 +42,13 @@ public class BankState implements State {
 	}
 	
 	public void setAvailable(boolean a) {
-		if (!this.available == a)
+		if (!this.available == a) {
 			lastStatusChange = new Date();
+			if (a == true) 
+				logger.info("bank {} is avaliable", getName());
+			else 
+				logger.info("bank {} is Unavaliable", getName());
+		}	
 		available = a;
 	}
 	

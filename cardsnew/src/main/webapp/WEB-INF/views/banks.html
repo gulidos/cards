@@ -30,9 +30,9 @@
 					<td th:text="${bank.name}"></td>
 					<td th:text="${bank.location}"></td>
 					<td th:text="${bank.stat.available}"></td>
-					<td th:text="${#dates.format(bank.stat.lastUpdate, 'MMM/dd HH:mm')}"></td>
+					<td th:text="${bank.stat.lastUpdate != null} ? ${#dates.format(bank.stat.lastUpdate, 'MMM/dd HH:mm')} : '-' "></td>
 					<td th:text="${#dates.format(bank.stat.lastStatusChange, 'MMM/dd HH:mm')}"></td>
-					<td th:text="${bank.stat.bankstatus.activecards}"></td>
+					<td th:text="${bank.stat.lastUpdate != null} ? ${bank.stat.bankstatus.activecards} : '-'"></td>
 					
 					<td style="text-align: center;">
 					<a th:href="@{/banks/edit(id=${bank.id})}">

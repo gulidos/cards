@@ -102,8 +102,10 @@ public class ChannelState implements MyState {
 		case Failed:
 			if (isStillHasToBeIniting())
 				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
-			else 
+			else {
 				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+				logger.info("channel {} is failed", getName());
+			}	
 			break;
 		case Ready:	case UssdRec: case Smsfetch: case Unreach:	 // has been Unreachable, become Failed
 			this.status = s; //Become Failed
@@ -116,8 +118,11 @@ public class ChannelState implements MyState {
 	}
 	
 	private void setReadyStatus(Status s) {
-		if (s != this.status)
+		if (s != this.status) {
 			lastStatusChange = new Date();
+			if (this.status == Status.Failed || this.status == Status.Unreach)
+				logger.info("channel {} is available", getName());
+		}
 		nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
 		this.status = s;
 		
@@ -135,17 +140,21 @@ public class ChannelState implements MyState {
 		if (status == Status.Unreach || status == Status.Failed) {
 			if(isStillHasToBeIniting()) 
 				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
-			else
+			else {
 				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+				logger.info("channel {} is unreachable", getName());
+			}	
 		} else if ( status == Status.Inchange || status == Status.PeerInchange) {
 			if(isStillHasToBeIniting()) 
 				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
 			else {
+				logger.info("channel {} is unreachable", getName());
 				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
 				this.status = s;
 				lastStatusChange = new Date();
 			}
 		} else {
+			logger.info("channel {} is unreachable", getName());
 			lastStatusChange = new Date();
 			this.status = s;
 			nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
