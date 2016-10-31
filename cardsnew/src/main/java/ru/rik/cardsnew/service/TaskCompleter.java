@@ -98,11 +98,9 @@ public class TaskCompleter implements Runnable{
 			if (st.getClazz() == ChannelState.class) {
 				ChannelState chState = (ChannelState) st;
 				chState.setStatus(Status.Unreach);
-				logger.debug("channel {} is unreachable", chState.getName());
 			} else if (st.getClazz() == BankState.class) {
 				BankState bState = (BankState) st;
 				bState.setAvailable(false);
-				logger.debug("bank {} is unreachable", bState.getName());
 			}
 		} else 
 			logger.error(e.getMessage(), e);
@@ -132,7 +130,7 @@ public class TaskCompleter implements Runnable{
 	}
 	
 	private void applyBankStatus(BankStatus g) {
-		logger.debug(g.toString());
+//		logger.debug(g.toString());
 		
 		BankState st = banks.findStateById(g.getId());
 		st.applyBankStatus(g);

@@ -3,6 +3,7 @@ package ru.rik.cardsnew.db;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -94,7 +95,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		return g.getCards().stream()
 		.filter(c->c.getStat().isFree() 
 				&& c.isActive()  
-//				&& c.getBank().isAvailable() 
+				&& c.getBank().getStat().isAvailable() 
 				&& c.getStat().getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
@@ -106,7 +107,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		Optional<Card> oc = g.getCards().stream()
 		.filter(c->c.getStat().isFree() 
 				&& c.isActive()  
-//				&& c.getBank().getisAvailable() 
+				&& c.getBank().getStat().isAvailable()  
 				&& c.getStat().getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
@@ -116,4 +117,26 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		else return null;
 	}
 	
+	
+	@Override
+	public List<Card> findAll() {
+		return super.findAll().stream()
+				.filter(c-> !c.isBlocked())
+				.collect(Collectors.toList());
+
+	}
+	
+	@Override
+	public List<Card> findAllAndBlocked() {
+		return super.findAll();
+
+	}
+	
+	@Override
+	public void updateDayLimit() {
+		Random rnd = new Random();
+		int range = rnd.nextInt();
+
+		
+	}
 }

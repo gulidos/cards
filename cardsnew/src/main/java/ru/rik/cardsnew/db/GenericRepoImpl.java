@@ -88,8 +88,8 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = cb.createQuery(entityClass);
 		Root<T> c = criteria.from(entityClass);
-		TypedQuery<T> query = em.createQuery(criteria.select(c).where(restriction)).setHint("org.hibernate.cacheable",
-				true);
+		TypedQuery<T> query = em.createQuery(criteria.select(c).where(restriction))
+				.setHint("org.hibernate.cacheable", true);
 
 		return query.getResultList();
 
