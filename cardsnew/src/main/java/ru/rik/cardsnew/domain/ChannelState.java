@@ -1,9 +1,11 @@
 package ru.rik.cardsnew.domain;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.asteriskjava.manager.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import lombok.Getter;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 @Data
@@ -74,6 +77,7 @@ public class ChannelState implements MyState {
 	public void setStatus(Status s) {
 		switch (s) {
 		case Failed:	setFailedStatus(s);break;
+		case AwaitForPeer:
 		case Ready:		setReadyStatus(s); break;
 		case Unreach:	setUnreachStatus(s); break;
 		case Inchange: 
@@ -112,16 +116,19 @@ public class ChannelState implements MyState {
 	}
 	
 	private void setReadyStatus(Status s) {
-		this.status = s;
+		if (s != this.status)
+			lastStatusChange = new Date();
 		nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
-		lastStatusChange = new Date();
+		this.status = s;
+		
 	}
 	
 	
 	private void setChangeStatus(Status s) {
+		if (s != this.status)
+			lastStatusChange = new Date();
 		this.status = s;
 		nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
-		lastStatusChange = new Date();
 	}
 	
 	private void setUnreachStatus(Status s) {
@@ -130,11 +137,19 @@ public class ChannelState implements MyState {
 				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
 			else
 				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+		} else if ( status == Status.Inchange || status == Status.PeerInchange) {
+			if(isStillHasToBeIniting()) 
+				nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
+			else {
+				nextGsmUpdate = Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL);
+				this.status = s;
+				lastStatusChange = new Date();
+			}
 		} else {
 			lastStatusChange = new Date();
+			this.status = s;
 			nextGsmUpdate = Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL);
 		}
-		this.status = s;
 	}
 	
 	private void setMantainStatus(Status s) {
@@ -163,7 +178,19 @@ public class ChannelState implements MyState {
 		return now - nextdate.getTime() < 0;
 	}
 	
-
+	public boolean isInUse() {
+		try {
+			String state = AsteriskEvents.get().getDeviceState(getName());
+			if ("NOT_INUSE".equals(state))
+				return false;
+			else 
+				return true;
+		} catch (IllegalArgumentException | IllegalStateException | IOException | TimeoutException e) {
+			logger.error(e.getMessage(), e);
+			return true;
+		}
+	}
+	
 	
 	public void incPriority() {priority.incrementAndGet();	}
 	public int getPriority() {	return priority.get();	}
@@ -199,6 +226,11 @@ public class ChannelState implements MyState {
 					c != null ? c.getName() : "unknown"));		
 			}
 		
+		try {
+			sb.append(String.format("%1$s = %2$s%n", "Asterisk status", AsteriskEvents.get().getDeviceState(getName())));
+		} catch (IllegalArgumentException | IllegalStateException | IOException | TimeoutException e) {
+			logger.error(e.getMessage(), e);
+		}
 			
 		return sb.toString();
 	}
@@ -208,7 +240,7 @@ public class ChannelState implements MyState {
 	public Class<?> getClazz() {return ChannelState.class;	}
 	
 	public enum Status {
-		Ready, Failed, Unreach, Inchange, PeerInchange, Smsfetch, UssdRec;
+		Ready, Failed, Unreach, AwaitForPeer, Inchange, PeerInchange, Smsfetch, UssdRec;
 	}
 
 }

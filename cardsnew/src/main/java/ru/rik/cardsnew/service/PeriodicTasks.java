@@ -10,10 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.domain.Bank;
+import ru.rik.cardsnew.domain.BankState;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -23,6 +27,7 @@ public class PeriodicTasks {
 	
 	@Autowired AsyncTasks asyncTasks;
 	@Autowired ChannelRepo chanRepo;
+	@Autowired BankRepo bankRepo;
 	@Autowired HttpHelper httpHelper;
 	@Autowired TaskCompleter taskCompleter;
 
@@ -65,6 +70,16 @@ public class PeriodicTasks {
 				}
 			}
 		}	
+		
+	}
+	
+	@Scheduled(fixedRate = 600000)
+	public void checkBanks() {
+		for (Bank b: bankRepo.findAll()) {
+			BankState st = bankRepo.findStateById(b.getId());
+			Callable<State> checkBank = () -> BankStatus.get(b);
+			taskCompleter.addTask(checkBank, st);
+		}
 	}
 	
 	@Scheduled(cron = "0 0 0 * * *") 
@@ -72,6 +87,7 @@ public class PeriodicTasks {
 		logger.debug("Midnight procedures calling");
 		
 	}
+	
 	
 
 }

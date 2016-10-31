@@ -1,23 +1,47 @@
 package ru.rik.cardsnew.domain;
 
+import java.util.Date;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import ru.rik.cardsnew.service.http.BankStatus;
 
 @EqualsAndHashCode(of={"id", "name"})
 public class BankState implements State {
 	private long id;
 	private String name;
-	@Getter @Setter private boolean available = true;
+	@Getter @Setter private volatile BankStatus bankstatus;
+	@Getter @Setter private volatile Date lastUpdate;
+	@Getter @Setter private volatile Date nextUpdate;
+
+	@Getter  private boolean available = true;
+	@Getter @Setter private volatile Date lastStatusChange;
 	
-	public BankState() {}
+	public BankState() {
+		available = true;
+		this.lastStatusChange = new Date();
+	}
 	
 	public BankState(Bank b) {
 		id = b.getId();
 		name = b.getName();
 		available = true;
+		this.lastStatusChange = new Date();
 	}
 
+	public void applyBankStatus(BankStatus s) {
+		bankstatus = s;
+		setAvailable(true);
+		lastUpdate = new Date();
+	}
+	
+	public void setAvailable(boolean a) {
+		if (!this.available == a)
+			lastStatusChange = new Date();
+		available = a;
+	}
+	
 	@Override public long getId() {return id;	}
 	@Override public void setId(long id) { this.id = id;	}
 

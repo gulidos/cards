@@ -128,8 +128,6 @@ public class SimSet implements MyState{
 				.execute();
 		if (resp.statusCode() != 200) throw new RuntimeException("Can not change IMEI in channel " + ch.getName());
 		
-		// TODO check out whether the peer is Standby (not Listening)
-		
 		resp =  HttpHelper.getCon(ch, "save.cgi").method(Method.POST)
 				.data("submit", "Save")
 				.execute();

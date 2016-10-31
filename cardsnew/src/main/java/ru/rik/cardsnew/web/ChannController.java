@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.validation.Valid;
 
@@ -36,7 +37,10 @@ import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
+import ru.rik.cardsnew.service.Switcher;
+import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -53,7 +57,8 @@ public class ChannController {
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
 	@Autowired Filter filter;
-
+	@Autowired Switcher switcher;
+	@Autowired TaskCompleter taskCompleter;
 	
 	public ChannController() { 	super();}
 	
@@ -265,12 +270,17 @@ public class ChannController {
 		Assert.notNull(chan);
 		logger.debug("Channel: {} ", chan.toString() );
 		Channel persCh = chans.findById(chan.getId());
+		ChannelState st = chans.findStateById(persCh.getId());
+
 		if (action.equals("install")) {
 			Card newCard = chan.getCard(); 
 			Card persCard = cards.findById(newCard.getId());
-			switchCard(persCh, persCard);
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard);
+			taskCompleter.addTask(switchCard, st);
+			
 		} else if (action.equals("clear")) {
-			switchCard(persCh, null); //TODO how to check errors?
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null);
+			taskCompleter.addTask(switchCard, st);
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
@@ -279,35 +289,6 @@ public class ChannController {
 
 	}
 	
-	public void switchCard (Channel ch, Card c) {
-		try {
-			if (c!= null)
-				c.engage();
-			SimSet.get(ch, null);
-			try {
-				chans.switchCard(ch, c);
-			} catch (Exception e) {
-				logger.error(e.toString(), e);
-				if (c!= null)
-					c.getStat().setFree(false, true);
-			}
-			try { // if card = null will be fake ip and card place
-				SimSet.post(ch, c); 
-			} catch (Exception e) {
-				logger.error(e.toString(), e);
-				if (c!= null)
-					c.getStat().setFree(false, true);
-				// TODO bring back the old card in place
-			}
-			ch.getState().setStatus(Status.Inchange);
-			Channel pair = ch.getPair();
-			if (pair != null)
-				pair.getState().setStatus(Status.PeerInchange);	
-		} catch (Exception e) {
-			logger.error(e.toString(), e);		
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
-
+	
 
 }

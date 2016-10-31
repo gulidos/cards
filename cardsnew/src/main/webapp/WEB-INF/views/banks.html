@@ -19,12 +19,21 @@
 			<table class="table table-striped table-condensed table-hover">
 				<tr>
 					<th class="col-sm-1">ip</th>
-					<th class="col-sm-2">location</th>
+					<th class="col-sm-1">location</th>
+					<th class="col-sm-1">available</th>
+					<th class="col-sm-1">last check</th>
+					<th class="col-sm-1">last change</th>
+					<th class="col-sm-1">in use</th>
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="bank : ${banks}"> 
 					<td th:text="${bank.name}"></td>
 					<td th:text="${bank.location}"></td>
+					<td th:text="${bank.stat.available}"></td>
+					<td th:text="${#dates.format(bank.stat.lastUpdate, 'MMM/dd HH:mm')}"></td>
+					<td th:text="${#dates.format(bank.stat.lastStatusChange, 'MMM/dd HH:mm')}"></td>
+					<td th:text="${bank.stat.bankstatus.activecards}"></td>
+					
 					<td style="text-align: center;">
 					<a th:href="@{/banks/edit(id=${bank.id})}">
 							<button type="button" class="btn btn-default btn-xs">
