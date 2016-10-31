@@ -45,30 +45,13 @@ public class BankStatus implements State {
 		Elements rows = table.select("tr");
 		for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
 			 Element row = rows.get(i);
-			 System.out.println(row.toString());
-//		     Elements cols = row.select("td");
-		     
+			 System.out.println(row.toString());    
 		}
-//		Element imob = doc.select("input[name=CURR]").first();
-//		String r = imob.attributes().get("value");
 		
 	}
 	
-//    <tr id="Item" bgcolor="#ddffff" style="color:000000"> 
-//    <!-- <td><input type=checkbox name=ON value=6 ssssssss> --> 
-//    <td id="Num">7 </td>
-//    <td id="CoS">3/2 </td>
-//    <td id="SimID">b0000007 </td>
-//    <td id="GsmID">- </td>
-//    <td id="remote">- </td>
-//   </tr>
-//   <tr id="Item" bgcolor="#ccffff" style="color:0000FF"> 
-//    <!-- <td><input type=checkbox name=ON value=7 ssssssss> --> 
-//    <td id="Num">8 </td>
-//    <td id="CoS">4/2 </td>
-//    <td id="SimID">b0000008 </td>
-//    <td id="GsmID">a0000001 </td>
-//    <td id="remote">172.17.1.36:1204 
+	
+//	http://stackoverflow.com/questions/24772828/how-to-parse-html-table-using-jsoup
 	@Override
 	public Class<?> getClazz() {return BankStatus.class;}
 	
