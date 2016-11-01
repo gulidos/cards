@@ -57,6 +57,7 @@ public class ConfigJpaLite {
 
 	private Map<String, ?> jpaProperties() {
 		Map<String, String> jpaPropertiesMap = new HashMap<String, String>();
+		jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
 		jpaPropertiesMap.put("hibernate.cache.use_second_level_cache", "true");
 		jpaPropertiesMap.put("hibernate.cache.use_query_cache", "true");
 		jpaPropertiesMap.put("hibernate.cache.region.factory_class",

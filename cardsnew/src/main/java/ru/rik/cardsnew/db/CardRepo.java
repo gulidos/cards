@@ -6,6 +6,7 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
 
 public interface CardRepo extends GenericRepo<Card, CardStat> {
@@ -24,5 +25,7 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 	List<Card> findAllAndBlocked();
 
 	void updateDayLimit();
+
+	List<Limit> getLimits();
 
 }

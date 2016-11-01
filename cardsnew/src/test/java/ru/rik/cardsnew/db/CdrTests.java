@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
+import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.Cdrs;
@@ -49,7 +50,7 @@ public class CdrTests {
 	}
 
 	public  Cdrs loadCdrs() throws ParseException {
-		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null);
+		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit());
 		CardRepo repo = mock(CardRepoImpl.class);
 		when(repo.findById(1)).thenReturn(c);
 		

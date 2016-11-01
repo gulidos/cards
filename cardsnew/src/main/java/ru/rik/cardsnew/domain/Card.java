@@ -98,6 +98,10 @@ public class Card implements MyEntity {
     @Getter @Setter private boolean blocked;
 
     @Getter @Setter private Date blockdate;
+    
+//    @NotNull(message = "{error.card.name.null}")
+    @ManyToOne
+    @Getter @Setter private Limit mylimit;
 
     
     public CardStat getStat () {

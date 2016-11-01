@@ -16,6 +16,7 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
 
 @Repository
@@ -130,6 +131,13 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public List<Card> findAllAndBlocked() {
 		return super.findAll();
 
+	}
+	
+	@Override
+	public List<Limit> getLimits() {
+		return em.createNamedQuery("findAllLimits", Limit.class)
+				.setHint("org.hibernate.cacheable", true)
+				.getResultList();
 	}
 	
 	@Override

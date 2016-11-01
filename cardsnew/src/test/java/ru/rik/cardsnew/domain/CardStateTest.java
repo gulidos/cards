@@ -28,7 +28,7 @@ public class CardStateTest {
 	
 	@Test
 	public void newCardCreation() {
-		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null);
+		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit());
 		cs = new CardStat(c);
 		Assert.assertTrue(cs.isFree());
 		Assert.assertTrue(cs.getAcd() == 0);
@@ -94,7 +94,7 @@ public class CardStateTest {
 	
 	
 	public  Cdrs loadCdrs() throws ParseException {
-		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null);
+		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit());
 		CardRepo repo = mock(CardRepoImpl.class);
 		when(repo.findById(1)).thenReturn(c);
 		

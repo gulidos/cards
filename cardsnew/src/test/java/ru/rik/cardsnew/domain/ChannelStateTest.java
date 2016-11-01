@@ -29,7 +29,7 @@ public class ChannelStateTest {
 		Assert.assertEquals(s.getStatus(), Status.Ready);
 		Assert.assertTrue(isApproxEqual(now, s.getLastStatusChange()));
 		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  
-				Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL)));
+				Util.getNowPlusSec(Settings.NORM_INTERVAL)));
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class ChannelStateTest {
 		s.setStatus(Status.Unreach);
 		Assert.assertEquals(s.getStatus(), Status.Unreach);
 		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  
-				Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL)));
+				Util.getNowPlusSec(Settings.FAIL_INTERVAL)));
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class ChannelStateTest {
 		ChannelState s = new ChannelState(Status.Unreach,  Util.getNowMinusSec(Settings.TIME_FOR_SWITCH + 1));
 		s.setStatus(Status.Unreach);
 		Assert.assertEquals(s.getStatus(), Status.Unreach);
-		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL)));
+		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.NORM_INTERVAL)));
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class ChannelStateTest {
 		ChannelState s = new ChannelState(Status.Inchange,  Util.getNowMinusSec(Settings.TIME_FOR_SWITCH - 1));
 		s.setStatus(Status.Failed);
 		Assert.assertEquals(s.getStatus(), Status.Inchange);
-		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.FAILED_CHECK_GSM_INTERVAL)));
+		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.FAIL_INTERVAL)));
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class ChannelStateTest {
 		ChannelState s = new ChannelState(Status.Inchange,  Util.getNowMinusSec(Settings.TIME_FOR_SWITCH + 1));
 		s.setStatus(Status.Failed);
 		Assert.assertEquals(s.getStatus(), Status.Failed);
-		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.NORMAL_CHECK_GSM_INTERVAL)));
+		Assert.assertTrue(isApproxEqual(s.getNextGsmUpdate(),  Util.getNowPlusSec(Settings.NORM_INTERVAL)));
 	}
 	
 	@Test public void applyGsStateStandby() {
