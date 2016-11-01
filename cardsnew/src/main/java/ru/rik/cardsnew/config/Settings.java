@@ -14,16 +14,7 @@ public class Settings {
     // max time for changing card and rebooting Sec
     public static volatile int TIME_FOR_SWITCH = 300;
     
-    
-//  @Setting(description = "MTS statistics window (minutes)")
-//  public static volatile int MTS_WINDOW = 3840;
-//  @Setting(description = "Beeline statistics window (minutes)")
-//  public static volatile int BEELINE_WINDOW = 5760;
-//  @Setting(description = "Megafon statistics window (minutes)")
-//  public static volatile int MEGAFON_WINDOW = 5760;
-//  @Setting(description = "Максимальное коли-во свежих event в очереди при удалении")
-//  public static volatile int STOP_NUMBER = 5;
-//"Interval between normal checking Channel's GSM Status. Sec")
+   
 	
 	public Settings() {
 	}

@@ -3,6 +3,7 @@ package ru.rik.cardsnew.domain;
 
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -99,9 +100,9 @@ public class Card implements MyEntity {
 
     @Getter @Setter private Date blockdate;
     
-//    @NotNull(message = "{error.card.name.null}")
+    @NotNull(message = "{error.card.name.null}")
     @ManyToOne
-    @Getter @Setter private Limit mylimit;
+    @Getter @Setter private Limit limit;
 
     
     public CardStat getStat () {
@@ -115,6 +116,12 @@ public class Card implements MyEntity {
 		if (!st.setFree(true, false)) 
 			throw new ConcurrentModificationException("Card " + getName() + " is already engaged");
 	}
+    
+    
+    public void refreshDayLimit( ) {
+    	Random rnd = new Random();
+    	dlimit = limit.getF() + rnd.nextInt(limit.getT() - limit.getF());
+    }
     
 	public String toStringAll() {
 		return toString() 

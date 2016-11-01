@@ -28,4 +28,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	List<Limit> getLimits();
 
+	void refreshLimits();
+
 }

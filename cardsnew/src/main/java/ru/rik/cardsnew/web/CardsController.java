@@ -108,6 +108,7 @@ public class CardsController {
 		model.addAttribute("groups", groups.findAll());
 		model.addAttribute("banklst", banks.findAll());
 		model.addAttribute("channels", channels.findAll());
+		model.addAttribute("limits", cards.getLimits());
 	}
 
 	@Transactional
@@ -209,5 +210,11 @@ public class CardsController {
 		}
 
 		return "cardsstat";
+	}
+	
+	@RequestMapping(value = "/refreshlimits", method = RequestMethod.GET)
+	public String refreshLimits(Model model) {
+		cards.refreshLimits();
+		return "redirect:/cards/stats";
 	}
 }

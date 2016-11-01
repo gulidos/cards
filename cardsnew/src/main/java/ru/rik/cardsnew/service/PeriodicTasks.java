@@ -15,7 +15,6 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
-import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.State;
@@ -78,6 +77,7 @@ public class PeriodicTasks {
 	
 	@Scheduled(fixedRate = 600000)
 	public void checkBanks() {
+//		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
 			Callable<State> checkBank = () -> BankStatus.get(b);
@@ -88,10 +88,10 @@ public class PeriodicTasks {
 	@Scheduled(cron = "0 0 0 * * *") 
 	public void midnightReset() {
 		logger.debug("Midnight resetting");
-		
-		for (Card c: cardRepo.findAll()) {
-			c.getStat().resetDaylyCounters();
-		}
+		cardRepo.findAll().stream()
+		.peek((c-> c.getStat().resetDaylyCounters()))
+		.peek(c-> c.refreshDayLimit())
+		.forEach(c-> cardRepo.makePersistent(c));
 	}
 	
 	

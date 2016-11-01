@@ -27,7 +27,7 @@
 				<div class="col-sm-2">
 					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
 					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
-					 <input class="form-control" type="text" th:value="*{ip}" th:field="*{ip}"></input>
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
 				</div>
 				<a th:href="@{/cards(url=bank,id=*{id})}">
 					<button type="button" class="btn btn-link"> cards</button>

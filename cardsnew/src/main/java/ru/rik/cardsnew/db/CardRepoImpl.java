@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
@@ -96,7 +97,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		return g.getCards().stream()
 		.filter(c->c.getStat().isFree() 
 				&& c.isActive()  
-				&& c.getBank().getStat().isAvailable() 
+//				&& c.getBank().getStat().isAvailable() 
 				&& c.getStat().getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
@@ -108,7 +109,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		Optional<Card> oc = g.getCards().stream()
 		.filter(c->c.getStat().isFree() 
 				&& c.isActive()  
-				&& c.getBank().getStat().isAvailable()  
+//				&& c.getBank().getStat().isAvailable()  
 				&& c.getStat().getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
@@ -139,6 +140,18 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 				.setHint("org.hibernate.cacheable", true)
 				.getResultList();
 	}
+	
+	@Override @Transactional
+	public void refreshLimits() {
+		findAll().stream()
+		.peek(c-> c.refreshDayLimit())
+		.forEach(c-> makePersistent(c));
+//		for (Card c: findAll()) {
+//			c.refreshDayLimit();
+//			makePersistent(c);
+//		}	
+	}
+	
 	
 	@Override
 	public void updateDayLimit() {
