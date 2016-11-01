@@ -121,7 +121,8 @@ public class SimSet implements MyState{
 			   .data("BnkB", c != null ? c.getBank().getName() : Settings.FAKE_BANK_IP);
 		Response resp = con.execute();
 		
-		resp =  HttpHelper.getCon(ch, "ScomGsn.cgi").method(Method.POST)
+		if (c != null)
+			resp =  HttpHelper.getCon(ch, "ScomGsn.cgi").method(Method.POST)
 				.data("nPortNum", String.valueOf(ch.getLine().getNport()))
 				.data("NEW", c.getSernumber())
 				.data("submit", "Submit")

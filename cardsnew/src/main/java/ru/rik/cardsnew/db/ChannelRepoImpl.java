@@ -102,13 +102,15 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			throw new ConcurrentModificationException("Channel " + chan.getName() + " was modified");	
 		Channel peer = chan.getPair();
 		chan.getState().setStatus(Status.Inchange);
-		peer.getState().setStatus(Status.PeerInchange);
+		if (peer!=null)
+			peer.getState().setStatus(Status.PeerInchange);
 		
 		Card oldCard = chan.getCard();
 		if (oldCard != null) {
 			oldCard.setChannelId(0); // set to null channel Id
 			CardStat st = oldCard.getStat();
-			st.setFree(false, true);
+			if (!st.setFree(false, true))
+				logger.error("card {} was free, but expected not free");
 		}	
 		
 		if (c != null) {

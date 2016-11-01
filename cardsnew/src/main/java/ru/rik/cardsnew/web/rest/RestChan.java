@@ -16,7 +16,8 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.web.ChannController;
+import ru.rik.cardsnew.service.Switcher;
+import ru.rik.cardsnew.service.TaskCompleter;
 
 
 //brew install httpie 
@@ -27,21 +28,24 @@ import ru.rik.cardsnew.web.ChannController;
 public class RestChan {
 	@Autowired CardRepo cards;
 	@Autowired ChannelRepo chans;
-	@Autowired ChannController controller;
+	@Autowired Switcher switcher;
+	@Autowired TaskCompleter taskCompleter;
+
 	public RestChan() {	}
 	
 	@Transactional
 	@RequestMapping(value = "/chan/sw/{name}", method = RequestMethod.POST)
-	public RestCard get(@PathVariable("name") String name) {
+	public String get(@PathVariable("name") String name) {
 		Channel ch = chans.findByName(name);
 		if (ch == null) 
-			throw new IllegalArgumentException("Channel with the name " + name + " doesn't exist");
+			return "Channel with name " + name + " doesn't exist";
 		
 		Card c = cards.findTheBestInGroupForInsert(ch.getGroup());
 		if (c == null)
-			throw new RuntimeException("There aren't more cards for group " + ch.getGroup().getName() + " available");
-//		controller.switchCard(ch, c);
-		return new RestCard(c);
+			return "There aren't more cards for group " + ch.getGroup().getName() + " available";
+		
+		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), ch.getState());
+		return "Ok";
 	}
 
 	@Transactional

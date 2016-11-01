@@ -39,13 +39,13 @@ public class Switcher implements State{
 		try {
 			if (c!= null)
 				c.engage();
-			logger.debug("card {} engaged for channel {}", c.getName(), ch.getName());
+			logger.debug("card {} engaged for channel {}",  c!=null ? c.getName() : "-", ch.getName());
 			SimSet.get(ch, null);
 			logger.debug("channel {} available", ch.getName());
 
 			try {
 				chans.switchCard(ch, c);
-				logger.debug("write to db", c.getName(), ch.getName());
+				logger.debug("write to db",  c!=null ? c.getName() : "-", ch.getName());
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
 				if (c!= null)
@@ -75,9 +75,8 @@ public class Switcher implements State{
 			logger.error(e.toString(), e);		
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		return new Switcher(ch.getId(), ch.getName(), c.getId(), c.getName());
+		return new Switcher(ch.getId(), ch.getName(), c!= null? c.getId() : 0, c!= null?  c.getName() : "-");
 	}
-
 
 
 	@Override

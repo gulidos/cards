@@ -15,6 +15,7 @@ import lombok.Getter;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -118,6 +119,10 @@ public class ChannelState implements MyState {
 	}
 	
 	private void setReadyStatus(Status s) {
+		if (status == Status.AwaitForPeer) {
+			nextGsmUpdate = Util.getNowPlusSec(Settings.NORM_INTERVAL);
+			return;
+		}	
 		if (s != this.status) {
 			lastStatusChange = new Date();
 			if (this.status == Status.Failed || this.status == Status.Unreach)
@@ -207,6 +212,8 @@ public class ChannelState implements MyState {
 	public String toWeb() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%1$s = %2$s%n", "name", getName()));
+		Card c = ChannelRepoImpl.get().findById(getId()).getCard();
+		sb.append(String.format("%1$s = %2$s%n", "card", c != null ? c.getName() : "none"));
 		sb.append(String.format("%1$s = %2$s%n", "lastGsmUpdate", df.format(lastGsmUpdate)));
 		sb.append(String.format("%1$s = %2$s%n", "nextGsmUpdate", df.format(nextGsmUpdate)));
 		sb.append(String.format("%1$s = %2$s%n", "priority", priority.get()));
@@ -219,12 +226,9 @@ public class ChannelState implements MyState {
 		} 
 		
 		Place place = simset != null ? Place.getInstance(simset.getCardPos()) : null;
-//		logger.debug("!! Place {}", place);
 		Bank bank = simset != null ? BankRepoImpl.get().findByName(simset.getBankIp()) : null;
-//		logger.debug("!! Bank {}", bank.getName());
 
-//		logger.debug("place {} bank {}", place, bank.getId());
-		Card c = CardRepoImpl.get().findCardsByPlace(place, bank);
+		c = CardRepoImpl.get().findCardsByPlace(place, bank);
 		
 		if (simset != null) {
 			sb.append(" \n");
