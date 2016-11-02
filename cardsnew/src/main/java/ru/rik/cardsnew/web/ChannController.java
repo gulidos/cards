@@ -160,9 +160,6 @@ public class ChannController {
 				c.setChannelId(chan.getId());
 				cards.makePersistent(c);
 			}	
-			
-			for (Trunk t: persChan.getTrunks())	
-				t.getChannels().add(persChan);
 		} 
 		if (!filter.getUrl().isEmpty())
 			return "redirect:/channels/?url=" + filter.getUrl() + "&id=" + filter.getId();

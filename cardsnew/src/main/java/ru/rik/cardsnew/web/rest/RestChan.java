@@ -45,7 +45,7 @@ public class RestChan {
 			return "There aren't more cards for group " + ch.getGroup().getName() + " available";
 		
 		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), ch.getState());
-		return "Ok";
+		return "Installing " + c.getName() + " card in " + ch.getName() +"  channel";
 	}
 
 	@Transactional
