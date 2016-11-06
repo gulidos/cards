@@ -11,8 +11,8 @@ import ru.rik.cardsnew.domain.CardStat;
 @Data
 @NoArgsConstructor
 public  class Event {
-	private Date date;
-	private long cardId;
+	protected Date date;
+	protected long cardId;
 	
 	public Event(Date date, long card) throws ParseException {
 		this.date = date;

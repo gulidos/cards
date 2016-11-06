@@ -74,7 +74,7 @@ public class CheckCDRTask {
 								.uniqueid(rs.getString("uniqueid"))
 								.channelId(chan != null ? chan.getId() : 0)
 								.build();
-						card.getStat().applyCdr(cdr);
+						card.getStat().applyCdr(cdr, card);
 
 						
 						n++;

@@ -29,7 +29,9 @@ public class CardStat implements State {
 	@Getter	private int asr;
 	@Getter private double acd;
 	@Getter private int todayMinTotal;
-	@Getter private int todayMinOper;
+	@Getter private int todayMin;
+	@Getter private int todayOffnet;
+	@Getter private int todayMsk;
 	@Getter private int todayCalls;
 	
 
@@ -42,15 +44,19 @@ public class CardStat implements State {
 	public void setCard(Card card) {
 		this.id = card.getId();
 		this.name = card.getName();
-		this.todayMinTotal = this.todayCalls  = this.todayMinOper = 0;
+		this.todayMinTotal = this.todayCalls  = this.todayMin = 0;
 		this.acd  = this.asr = 0;
 	}
 
-	public void applyCdr(Cdr cdr) {
+	public void applyCdr(Cdr cdr, Card card) {
 		if (cdr.isToday()) {
-		todayMinTotal +=cdr.getMin();
-		todayCalls++;
-		todayMinOper +=cdr.getMinOper();
+			todayMinTotal += cdr.getMin();
+			todayCalls++;
+			todayMin += cdr.getMinOper();
+			if (Settings.MSK_REGCODE.equals(cdr.getRegcode()))
+				todayMsk += cdr.getMinOper();
+			if (cdr.isOffnet(card))
+				todayOffnet += cdr.getMinOper();
 		}
 		Cdrs.get().addCdr(cdr);
 		
@@ -58,8 +64,7 @@ public class CardStat implements State {
 		
 		calcAsr(lastCdrs);
 		calcAcd(lastCdrs);
-//		for (String k: lastCdrs.keySet()) System.out.println(k + " " + lastCdrs.get(k));
-//		System.out.println("asr: " + asr + " acd: " + acd);
+
 	}
 
 	private void calcAsr(SortedMap<String, Cdr>  lastCdrs) {
@@ -120,7 +125,7 @@ public class CardStat implements State {
 
 	
 	public void resetDaylyCounters() {
-		todayMinTotal = todayMinOper = todayCalls= 0;
+		todayMinTotal = todayMin = todayCalls= 0;
 	}
 
 	public Card getCard() {
@@ -128,7 +133,7 @@ public class CardStat implements State {
 	}
 
 	public int getMinRemains() {
-		return getCard().getDlimit() - todayMinOper;
+		return getCard().getDlimit() - todayMin;
 	}
 	
 	public String getAcdFormatted() {
@@ -136,19 +141,15 @@ public class CardStat implements State {
 	}
 
 	
+	
 	@Override public long getId() {return id;}
 	@Override public String getName() {return name;}
 
-	@Override
-	public Class<?> getClazz() {
-		return CardStat.class;
-	}
+	@Override public Class<?> getClazz() {return CardStat.class;}
 
-	@Override
-	public void setId(long id) {this.id = id;	}
+	@Override public void setId(long id) {this.id = id;	}
 
-	@Override
-	public void setName(String name) {this.name = name;}
+	@Override public void setName(String name) {this.name = name;}
 
 
 	@Override

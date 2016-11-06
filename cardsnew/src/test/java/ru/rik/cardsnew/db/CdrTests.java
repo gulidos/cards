@@ -62,19 +62,19 @@ public class CdrTests {
 		cdrs.init();
 		Cdr cdr = Cdr.builder().date(Util.getNowMinusSec(1000)).src("11111").dst("22222").cardId(1).billsec(0).trunk("trnk1")
 				.disp("BUSY").regcode("77").uniqueid("1234567891").channelId(2).build();
-		cs.applyCdr(cdr);
+		cs.applyCdr(cdr,c);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1200)).src("11112").dst("22222").cardId(1).billsec(60).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build();
-		cs.applyCdr(cdr);
+		cs.applyCdr(cdr, c);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1300)).src("11112").dst("22222").cardId(1).billsec(70).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567802").channelId(2).build();
-		cs.applyCdr(cdr);
+		cs.applyCdr(cdr, c);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1400)).src("11112").dst("22222").cardId(1).billsec(80).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567803").channelId(2).build();
-		cs.applyCdr(cdr);
+		cs.applyCdr(cdr, c);
 		
 		
 		return cdrs;

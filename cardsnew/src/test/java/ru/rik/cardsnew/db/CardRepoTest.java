@@ -79,7 +79,7 @@ public class CardRepoTest {
 		
 		Card c1 = Card.builder().id(1).name("c1").active(true).bank(b).group(g).place(Place.b0000000).dlimit(10).build();
 		CardStat cs = repo.addStateIfAbsent(c1);
-		cs.applyCdr(cdr);
+		cs.applyCdr(cdr, c1);
 		set.add(c1);
 		doReturn(c1).when(repo).findById(1);
 

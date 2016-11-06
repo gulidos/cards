@@ -96,7 +96,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.build();
 			logger.debug("applying {}", cdr);
 			
-		card.getStat().applyCdr(cdr);
+		card.getStat().applyCdr(cdr, card);
 		} catch (ParseException pe) {
 			logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
 		}			
