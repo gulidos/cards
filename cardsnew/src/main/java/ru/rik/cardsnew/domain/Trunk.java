@@ -61,7 +61,7 @@ public class Trunk implements MyEntity {
 		return trunksStats.findStateById(getId());
 	}
 	
-
+	private Oper oper;
 	
 	public String toStringAll() {
 		StringBuilder sb = new StringBuilder("");

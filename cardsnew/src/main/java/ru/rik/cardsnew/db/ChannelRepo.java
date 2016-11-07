@@ -14,8 +14,6 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	void init();
 	Channel findPair(Channel ch);
 
-	List<Channel> getSorted(Trunk t);
-
 	List<Channel> findGroupChans(Grp grp);
 
 	List<Channel> findBoxChans(Box box);
@@ -25,5 +23,6 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	 * @throws ConcurrentModificationException 
 	 */
 	void switchCard(Channel chan, Card c);
+	List<Channel> getSorted(Trunk t, String exten);
 
 }

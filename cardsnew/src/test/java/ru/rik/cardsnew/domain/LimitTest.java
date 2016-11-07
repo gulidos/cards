@@ -2,15 +2,11 @@ package ru.rik.cardsnew.domain;
 
 
 
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ru.rik.cardsnew.ConfigJpaLite;
 import ru.rik.cardsnew.db.CardRepo;
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ConfigJpaLite.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = ConfigJpaLite.class)
 public class LimitTest {
 	 @Autowired CardRepo cardRepo;	
 	

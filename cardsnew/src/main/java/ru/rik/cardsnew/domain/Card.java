@@ -78,7 +78,7 @@ public class Card implements MyEntity {
     @Column(unique=true, nullable = false)
 	@Getter @Setter private String sernumber;
     
-    @ManyToOne //Default- Eager
+    @ManyToOne(optional = false) //Default- Eager
     @Getter @Setter private Grp group;
     
     @ManyToOne
@@ -100,10 +100,12 @@ public class Card implements MyEntity {
 
     @Getter @Setter private Date blockdate;
     
-    @NotNull(message = "{error.card.name.null}")
-    @ManyToOne
+    @ManyToOne @NotNull(message = "Card's limit can not be null")
     @Getter @Setter private Limit limit;
 
+    @Getter @Setter private boolean offnetPos;
+    
+    @Getter @Setter private boolean mskSeparate;
     
     public CardStat getStat () {
     	CardRepo cards = CardRepoImpl.get();

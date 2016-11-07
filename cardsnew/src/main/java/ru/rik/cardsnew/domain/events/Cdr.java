@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Channel;
 @Data
 @AllArgsConstructor
 @ToString(callSuper = true)
@@ -71,11 +72,12 @@ public class Cdr extends Event {
 			return "";
 	}
 	
-	public boolean isOffnet(Card c)  {
-//		Card c = CardRepoImpl.get().findById(cardId);
-		String cardOper = c.getName().substring(0, 3);
-		String callOper = getTrunk().substring(0, 3);
-		return !cardOper.equals(callOper);
+	 /** Compare card's operator with channel's one */
+	public boolean isOffnet(Card c, Channel ch)  {
+		if (c == null) throw new IllegalArgumentException("Card can not be null");
+		if (ch == null) throw new IllegalArgumentException("Channel can not be null");
+
+		return c.getGroup().getOper() != ch.getGroup().getOper();
 	}
 	
 	static public void main(String[] args) {

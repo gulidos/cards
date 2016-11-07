@@ -19,6 +19,8 @@ import ru.rik.cardsnew.domain.repo.Cdrs;
 public class CardStateTest {
 	private Card c;
 	private CardStat cs;
+	private Channel ch;
+	private Grp g;
 	
 	@Before
 	public void loadData() {
@@ -28,8 +30,11 @@ public class CardStateTest {
 	
 	@Test
 	public void newCardCreation() {
-		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit());
+		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit(), true, true);
 		cs = new CardStat(c);
+		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build(); 
+		ch =  Channel.builder().group(g).id(2).name("ch2").build();
+
 		Assert.assertTrue(cs.isFree());
 		Assert.assertTrue(cs.getAcd() == 0);
 		Assert.assertTrue(cs.getAsr() == 0);
@@ -46,7 +51,7 @@ public class CardStateTest {
 
 		Cdr cdr = Cdr.builder().date(new Date()).src("11112").dst("9999").cardId(1).billsec(60).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build();
-		cs.applyCdr(cdr, c);
+		cs.applyCdr(cdr, c, ch);
 		System.out.println("TodayMinTotal " + cs.getTodayMinTotal() + " TodayMinOper " + cs.getTodayMin() + " TodayCalls " 
 		+ cs.getTodayCalls()  + " Acd " + cs.getAcd() + " Asr " + cs.getAsr() );
 		Assert.assertTrue(cs.getTodayMinTotal() == 4);
@@ -70,7 +75,7 @@ public class CardStateTest {
 		loadCdrs();
 		Assert.assertTrue(cs.getMinRemains() == 45);
 		cs.applyCdr(Cdr.builder().date(new Date()).src("11112").dst("9999").cardId(1).billsec(2700).trunk("trnk1")
-		.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c);
+		.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c, ch);
 		Assert.assertTrue(cs.getMinRemains() == 0);
 	}
 	
@@ -83,7 +88,7 @@ public class CardStateTest {
 		int minOper = cs.getTodayMin();
 		
 		cs.applyCdr(Cdr.builder().date(Util.getNowMinusSec(secsAgo)).src("11112").dst("9999").cardId(1).billsec(2700)
-				.trunk("trnk1").disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c);
+				.trunk("trnk1").disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c, ch);
 		Assert.assertTrue(cs.getTodayCalls() == todayCalls);
 		Assert.assertTrue(cs.getTodayMinTotal() == minTotal);
 		Assert.assertTrue(cs.getTodayMin() == minOper);
@@ -94,7 +99,9 @@ public class CardStateTest {
 	
 	
 	public  Cdrs loadCdrs() throws ParseException {
-		c = new Card(1, 1, "c1", "111", null, "", null, null, 1, true, 50, 1981, "test", null, false, null, new Limit());
+		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
+		c = new Card(1, 1, "c1", "111", null, "", g, null, 1, true, 50, 1981, "test", null, false, null, new Limit(), true, true); 
+		ch =  Channel.builder().group(g).id(2).name("ch2").build();
 		CardRepo repo = mock(CardRepoImpl.class);
 		when(repo.findById(1)).thenReturn(c);
 		
@@ -106,19 +113,19 @@ public class CardStateTest {
 		cdrs.init();
 		Cdr cdr = Cdr.builder().date(Util.getNowMinusSec(1000)).src("11111").dst("22222").cardId(1).billsec(0).trunk("trnk1")
 				.disp("BUSY").regcode("77").uniqueid("1234567891").channelId(2).build();
-		cs.applyCdr(cdr, c);
+		cs.applyCdr(cdr, c, ch);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1200)).src("11112").dst("22222").cardId(1).billsec(60).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build();
-		cs.applyCdr(cdr, c);
+		cs.applyCdr(cdr, c, ch);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1300)).src("11112").dst("22222").cardId(1).billsec(70).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567802").channelId(2).build();
-		cs.applyCdr(cdr, c);
+		cs.applyCdr(cdr, c, ch);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1400)).src("11112").dst("22222").cardId(1).billsec(80).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567803").channelId(2).build();
-		cs.applyCdr(cdr, c);
+		cs.applyCdr(cdr, c, ch);
 		
 		return cdrs;
 	}

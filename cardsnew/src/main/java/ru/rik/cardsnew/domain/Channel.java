@@ -68,7 +68,7 @@ public class Channel implements MyEntity{
 	private Box box;
 	
 	@Setter	@Getter  
-	@ManyToOne 
+	@ManyToOne(optional = false)
 	private Grp group;
 
 	@Getter	@Setter

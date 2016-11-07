@@ -48,14 +48,14 @@ public class CardStat implements State {
 		this.acd  = this.asr = 0;
 	}
 
-	public void applyCdr(Cdr cdr, Card card) {
+	public void applyCdr(Cdr cdr, Card card, Channel ch) {
 		if (cdr.isToday()) {
 			todayMinTotal += cdr.getMin();
 			todayCalls++;
 			todayMin += cdr.getMinOper();
 			if (Settings.MSK_REGCODE.equals(cdr.getRegcode()))
 				todayMsk += cdr.getMinOper();
-			if (cdr.isOffnet(card))
+			if (cdr.isOffnet(card, ch))
 				todayOffnet += cdr.getMinOper();
 		}
 		Cdrs.get().addCdr(cdr);
@@ -132,7 +132,7 @@ public class CardStat implements State {
 		return repo.findById(getId());
 	}
 
-	public int getMinRemains() {
+	public int getMinRemains(Route route) {
 		return getCard().getDlimit() - todayMin;
 	}
 	

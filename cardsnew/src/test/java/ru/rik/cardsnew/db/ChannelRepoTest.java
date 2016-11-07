@@ -42,49 +42,49 @@ public class ChannelRepoTest {
 	
 	@Test
 	public void allActiveAndRotating() {
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 8);
 		for (Channel c : list) 	System.out.print(c.getId());
 		Assert.assertTrue(list.get(0).getId() == 1);
 		
 		System.out.println();
-		list = repo.getSorted(t);
+		list = repo.getSorted(t, "111");
 		for (Channel c : list) 	System.out.print(c.getId());
 		Assert.assertTrue(list.get(0).getId() == 2);
 		
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 3);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 4);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 5);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 6);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 7);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 8);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 1);
-		Assert.assertTrue(repo.getSorted(t).get(0).getId() == 2);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 3);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 4);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 5);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 6);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 7);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 8);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 1);
+		Assert.assertTrue(repo.getSorted(t, "111").get(0).getId() == 2);
 	}
 	
 	@Test
 	public void notActiveNotRotating() {
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		list.get(0).setEnabled(false);
-		list = repo.getSorted(t);
+		list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 7);
 	}
 	
 	@Test
 	public void setAllNotActiveReturnEmpty() {
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		for (Channel ch : list) ch.setEnabled(false);
 		
-		list = repo.getSorted(t);
+		list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 0);
 	}
 	
 	@Test
 	public void ifCardIsNullNotTake() {
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		list.get(0).setCard(null);;
 		
-		list = repo.getSorted(t);
+		list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 7);
 	}
 	
@@ -93,13 +93,13 @@ public class ChannelRepoTest {
 		repo.findStateById(1).setStatus(Status.Failed);
 		repo.findStateById(2).setStatus(Status.Inchange);
 		repo.findStateById(3).setStatus(Status.Unreach);
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 5);
 	}
 	
 	@Test
 	public void ifTimeOfCardInChanIsOverSkip() {
-		List<Channel> list = repo.getSorted(t);
+		List<Channel> list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 8);
 		
 		Card c = mock(Card.class);
@@ -108,13 +108,13 @@ public class ChannelRepoTest {
 		when(cs.getMinRemains()).thenReturn(0);
 		ch.setCard(c);
 		
-		list = repo.getSorted(t);
+		list = repo.getSorted(t, "111");
 		Assert.assertTrue(list.size() == 7);
 	}
 	
 	
 	private void initData() {
-		t = new Trunk(1, 2, "t1", "t1", null);
+		t = new Trunk(1, 2, "t1", "t1", null, null);
 		box = new Box(1, 1, "ddd", "1.1.1.1", 8, "qweqwe", null);
 
 		Set<Channel> s = new HashSet<>();

@@ -16,6 +16,7 @@ import org.junit.Test;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
@@ -74,12 +75,13 @@ public class CardRepoTest {
 		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
 		Set<Card> set = new HashSet<>();
 		g.setCards(set);
+		Channel ch =  Channel.builder().group(g).id(2).name("ch2").build();
 		
 		Cdr cdr = Cdr.builder().cardId(1).billsec(300).disp("ANSWERED").date(Util.getNowMinusSec(1000)).build();
 		
 		Card c1 = Card.builder().id(1).name("c1").active(true).bank(b).group(g).place(Place.b0000000).dlimit(10).build();
 		CardStat cs = repo.addStateIfAbsent(c1);
-		cs.applyCdr(cdr, c1);
+		cs.applyCdr(cdr, c1, ch);
 		set.add(c1);
 		doReturn(c1).when(repo).findById(1);
 

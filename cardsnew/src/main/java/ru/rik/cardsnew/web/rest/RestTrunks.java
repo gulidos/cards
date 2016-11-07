@@ -33,23 +33,15 @@ public class RestTrunks {
 	public RestTrunks() {
 	}
 
+	
 	@Transactional
-	@RequestMapping(value = "/trunks", method = RequestMethod.GET)
-	public List<RestTrunk> trunks() {
-		List<RestTrunk> lst = new ArrayList<>();
-		for (Trunk t : trunks.findAll()) {
-			lst.add(new RestTrunk(t));
-		}
-		return lst;
-	}
-
-	@Transactional
-	@RequestMapping(value = "/trunk/{name}", method = RequestMethod.GET)
-	public RestTrunk get(@PathVariable("name") String name) {
+	@RequestMapping(value = "/trunk/{name}/{number}", method = RequestMethod.GET)
+	public RestTrunk get(@PathVariable("name") String name, 
+			@PathVariable("number") String number) {
 
 		Trunk t = trunks.findByName(name);
 		if (t!= null) 
-			return new RestTrunk(t);
+			return new RestTrunk(t, number);
 		else return null;
 	}
 	
@@ -63,12 +55,14 @@ public class RestTrunks {
 	@Data
 	public class RestTrunk {
 		String name;
+		String number;
 		List<RestChannel> channels = new ArrayList<>();
 
-		public RestTrunk(Trunk t) {
+		public RestTrunk(Trunk t, String n) {
 			name = t.getName(); 
+			number = n;
 			int i = 0;
-			for (Channel ch : chanRepo.getSorted(t)) {
+			for (Channel ch : chanRepo.getSorted(t, number)) {
 				RestChannel r = new RestChannel(i, ch.getName(), "P", 
 						ch.getCard() != null ? ch.getCard().getName() : "", 
 						ch.getCard() != null ? ch.getCard().getNumber() : "",
