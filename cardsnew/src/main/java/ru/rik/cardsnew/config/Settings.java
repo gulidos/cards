@@ -13,6 +13,8 @@ public class Settings {
     public static volatile String FAKE_CARD_PLACE = "b0000099";
     // max time for changing card and rebooting Sec
     public static volatile int TIME_FOR_SWITCH = 300;
+    public static volatile int PERCENT_MSK_PLUS = 30;
+    public static volatile int MAX_OFFNET_MIN = 2;
     
    
 	

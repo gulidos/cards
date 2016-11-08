@@ -132,8 +132,33 @@ public class CardStat implements State {
 		return repo.findById(getId());
 	}
 
+	public int getMinRemains() {
+		Card c = getCard();
+		if (c.isMskSeparate())
+			return (int) ((c.getDlimit() + c.getDlimit() /  100d * Settings.PERCENT_MSK_PLUS)  - todayMin);
+		else 	
+			return c.getDlimit() - todayMin;
+	}
+	
+	
 	public int getMinRemains(Route route) {
-		return getCard().getDlimit() - todayMin;
+		Card c = getCard();
+		if (route.getOper() == c.getGroup().getOper()) {
+			if (route.getRegcode() == 77) 
+				return getMinRemains();
+			else 
+				return c.getDlimit() - todayMin;
+		} else { 														//offnet
+			if (todayOffnet < Settings.MAX_OFFNET_MIN)
+				return Settings.MAX_OFFNET_MIN - todayOffnet;
+			else 
+				return 0;
+		}	
+	}
+	
+	
+	public int getMinRemains(Card c, Route route, Channel ch) {
+		return c.getDlimit() - todayMin;
 	}
 	
 	public String getAcdFormatted() {

@@ -73,8 +73,19 @@ public class CardStateTest {
 	@Test
 	public void subtractionMinutesTest() throws ParseException {
 		loadCdrs();
+		c.setMskSeparate(false);
 		Assert.assertTrue(cs.getMinRemains() == 45);
 		cs.applyCdr(Cdr.builder().date(new Date()).src("11112").dst("9999").cardId(1).billsec(2700).trunk("trnk1")
+		.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c, ch);
+		Assert.assertTrue(cs.getMinRemains() == 0);
+	}
+	
+	@Test
+	public void subtractionMinutesMskSeparateTest() throws ParseException {
+		loadCdrs();
+		c.setMskSeparate(true);
+		Assert.assertTrue(cs.getMinRemains() == 60);
+		cs.applyCdr(Cdr.builder().date(new Date()).src("11112").dst("9999").cardId(1).billsec(3600).trunk("trnk1")
 		.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build(), c, ch);
 		Assert.assertTrue(cs.getMinRemains() == 0);
 	}
@@ -100,7 +111,8 @@ public class CardStateTest {
 	
 	public  Cdrs loadCdrs() throws ParseException {
 		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
-		c = new Card(1, 1, "c1", "111", null, "", g, null, 1, true, 50, 1981, "test", null, false, null, new Limit(), true, true); 
+		c = new Card(1, 1, "c1", "111", null, "", g, null, 1, true, 50, 1981, "test", null, 
+				false, null, new Limit(), true, true); 
 		ch =  Channel.builder().group(g).id(2).name("ch2").build();
 		CardRepo repo = mock(CardRepoImpl.class);
 		when(repo.findById(1)).thenReturn(c);

@@ -8,6 +8,7 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.Grp;
+import ru.rik.cardsnew.domain.Route;
 import ru.rik.cardsnew.domain.Trunk;
 
 public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
@@ -23,6 +24,7 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	 * @throws ConcurrentModificationException 
 	 */
 	void switchCard(Channel chan, Card c);
-	List<Channel> getSorted(Trunk t, String exten);
+
+	List<Channel> getSorted(Trunk t, String exten, Route route);
 
 }

@@ -22,7 +22,6 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
-import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Route;
 import ru.rik.cardsnew.domain.Trunk;
 
@@ -63,17 +62,21 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	}
 		
 	@Override
-	public List<Channel> getSorted(Trunk t, String exten)  {
-		Oper o = t.getOper();
-		Route route = routes.find(Long.valueOf(exten));
+	public List<Channel> getSorted(Trunk t, String exten, Route route)  {
+//		Oper o = t.getOper();
 		
 		List<Channel> result = t.getChannels().stream()
-				.filter(ch -> ch.isEnabled() && ch.getState().getStatus() == Status.Ready 
-					&&  ch.getCard() != null  && ch.getCard().getStat().getMinRemains() > 0)
+				.peek(ch -> System.out.println(ch.getName()
+						+ " " + ch.getCard().getDlimit()
+						+ " " + ch.getCard().getStat().getMinRemains(route)))
+				.filter(ch -> ch.isEnabled() 
+					&& ch.getState().getStatus() == Status.Ready 
+					&& ch.getCard() != null  
+					&& ch.getCard().getStat().getMinRemains(route) > 0)
 				.sorted((ch1, ch2) -> Long.compare(ch1.getId(), ch2.getId()))					
-				.sorted((ch1, ch2) -> 
-					Integer.compare(ch1.getState().getPriority(), ch2.getState().getPriority()))
+				.sorted((ch1, ch2) -> Integer.compare(ch1.getState().getPriority(), ch2.getState().getPriority()))
 				.collect(Collectors.toList());
+		
 		if (result.size() > 0)
 			result.get(0).getState().incPriority();
 		return result;	
