@@ -121,7 +121,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 
 		S s = findStateById(instance.getId());
 		if (s != null)
-			removeStateIfExists(s);
+			removeStateIfExists(instance.getId());
 	}
 
 	@Override
@@ -169,20 +169,24 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	}
 
 	@Override
-	public boolean removeStateIfExists(S s) {
-		S removed = statsById.remove(s.getId());
-		statsByName.remove(s.getName());
+	public boolean removeStateIfExists(long id) {
+		S removed = statsById.remove(id);
+		if (removed != null)
+			statsByName.remove(removed.getName());
 		return removed != null;
 	}
+	
 	@Override
 	public S findStateById(long id) {
 		return statsById.get(id);
 	}
+	
 	@Override
 	public S findStateByName(String name) {
 		Assert.notNull(name);
 		return statsByName.get(name);
 	}
+	
 	@Override
 	public ConcurrentMap<Long, S> getStates() {
 		return statsById;

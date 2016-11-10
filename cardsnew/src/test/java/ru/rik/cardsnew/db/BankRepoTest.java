@@ -18,7 +18,7 @@ public class BankRepoTest {
 	@Before
 	public void loadData() {
 		repo = spy(new BankRepoImpl());
-		BankRepoImpl.set(repo);
+//		BankRepoImpl.set(repo);
 		
 		List<Bank> list =  new ArrayList<>();
 		Bank b1 = new Bank(1, 1, "1", "1.1.1.1", null);

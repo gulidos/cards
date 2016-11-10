@@ -17,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
@@ -32,7 +33,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
 
 @NamedQueries({  
 	@NamedQuery(name = "findPair", query = "SELECT c FROM Channel c WHERE c.line = :line and c.box = :box"),
@@ -55,21 +56,19 @@ public class Channel implements MyEntity{
  	@Getter @Setter
 	protected long version;
 
-	@Setter @Getter
+	
 	@Column(unique=true, nullable=false)
 	@Size(min = 3, max = 20, message = "Bad value")
-	private String name;
+	@Setter @Getter private String name;
 	
-	@Setter @Getter
-	private Line line;
+	@Setter @Getter private Line line;
 	
-	@Setter @Getter
 	@ManyToOne(optional=false) 
-	private Box box;
+	@Setter @Getter private Box box;
 	
-	@Setter	@Getter  
+	 
 	@ManyToOne(optional = false)
-	private Grp group;
+	@Setter	@Getter private Grp group;
 
 	@Getter	@Setter
 	@ManyToMany(cascade = CascadeType.PERSIST)
@@ -82,15 +81,17 @@ public class Channel implements MyEntity{
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Card card;
 	
-	@Getter	@Setter
-	private boolean enabled;
-
-	public ChannelState getState() {
-		return ChannelRepoImpl.get().findStateById(getId());
+	@Getter	@Setter	private boolean enabled;
+	
+	@Transient
+	@Getter @Setter private ChannelState state;
+	
+	public ChannelState getState(ChannelRepo chans) {
+		return chans.findStateById(getId());
 	}
 	
-	public Channel getPair() {
-		return ChannelRepoImpl.get().findPair(this);
+	public Channel getPair(ChannelRepo chans) {
+		return chans.findPair(this);
 	}
 	
 	

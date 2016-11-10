@@ -27,8 +27,8 @@ public class PeriodicTasks {
 	private static final Logger logger = LoggerFactory.getLogger(PeriodicTasks.class);		
 	
 	@Autowired AsyncTasks asyncTasks;
-	@Autowired ChannelRepo chanRepo;
-	@Autowired CardRepo cardRepo;
+	@Autowired ChannelRepo chans;
+	@Autowired CardRepo cards;
 	@Autowired BankRepo bankRepo;
 	@Autowired HttpHelper httpHelper;
 	@Autowired TaskCompleter taskCompleter;
@@ -43,10 +43,10 @@ public class PeriodicTasks {
 //		logger.debug("Start checkChannels ...");
 		Set<Channel> simSetJobs = new HashSet<>();
 		
-		for (Channel ch : chanRepo.findAll()) { 
+		for (Channel ch : chans.findAll()) { 
 			if (!ch.isEnabled()) continue;
 			
-			ChannelState st = chanRepo.findStateById(ch.getId());
+			ChannelState st = chans.findStateById(ch.getId());
 			if (!st.isGsmDateFresh()) {
 				Callable<State> checkGsm = new Callable<State>() {
 					public GsmState call() throws Exception {
@@ -59,7 +59,7 @@ public class PeriodicTasks {
 			if (simSetJobs.contains(ch)) { // if the channel was already requested as a pair
 				simSetJobs.remove(ch);
 			} else {
-				Channel pair = ch.getPair();
+				Channel pair = ch.getPair(chans);
 				if (pair != null)
 					simSetJobs.add(pair);
 				if (!st.isSimSetDateFresh()) {
@@ -88,10 +88,10 @@ public class PeriodicTasks {
 	@Scheduled(cron = "0 0 0 * * *") 
 	public void midnightReset() {
 		logger.debug("Midnight resetting");
-		cardRepo.findAll().stream()
-		.peek((c-> c.getStat().resetDaylyCounters()))
+		cards.findAll().stream()
+		.peek((c-> c.getStat(cards).resetDaylyCounters()))
 		.peek(c-> c.refreshDayLimit())
-		.forEach(c-> cardRepo.makePersistent(c));
+		.forEach(c-> cards.makePersistent(c));
 	}
 	
 	

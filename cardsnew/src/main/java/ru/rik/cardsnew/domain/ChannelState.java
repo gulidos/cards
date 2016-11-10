@@ -13,9 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.rik.cardsnew.config.Settings;
-import ru.rik.cardsnew.db.BankRepoImpl;
-import ru.rik.cardsnew.db.CardRepoImpl;
-import ru.rik.cardsnew.db.ChannelRepoImpl;
+import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.CardRepo;
+import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -209,10 +209,10 @@ public class ChannelState implements MyState {
 	public void incPriority() {priority.incrementAndGet();	}
 	public int getPriority() {	return priority.get();	}
 	
-	public String toWeb() {
+	public String toWeb(CardRepo cards, ChannelRepo chans, BankRepo banks) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%1$s = %2$s%n", "name", getName()));
-		Card c = ChannelRepoImpl.get().findById(getId()).getCard();
+		Card c = chans.findById(getId()).getCard();
 		sb.append(String.format("%1$s = %2$s%n", "card", c != null ? c.getName() : "none"));
 		sb.append(String.format("%1$s = %2$s%n", "lastGsmUpdate", df.format(lastGsmUpdate)));
 		sb.append(String.format("%1$s = %2$s%n", "nextGsmUpdate", df.format(nextGsmUpdate)));
@@ -226,9 +226,9 @@ public class ChannelState implements MyState {
 		} 
 		
 		Place place = simset != null ? Place.getInstance(simset.getCardPos()) : null;
-		Bank bank = simset != null ? BankRepoImpl.get().findByName(simset.getBankIp()) : null;
+		Bank bank = simset != null ? banks.findByName(simset.getBankIp()) : null;
 
-		c = CardRepoImpl.get().findCardsByPlace(place, bank);
+		c = cards.findCardsByPlace(place, bank);
 		
 		if (simset != null) {
 			sb.append(" \n");

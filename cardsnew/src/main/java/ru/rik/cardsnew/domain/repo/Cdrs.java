@@ -14,7 +14,7 @@ public class Cdrs {
 	static final Logger logger = Logger.getLogger(Cdrs.class);
 	private final Deque<Cdr> cdrsList;
 	private final NavigableMap<String, Cdr> cdrsByCard;
-	private static Cdrs cdrs;
+//	private static Cdrs cdrs;
 	
 	public Cdrs() {
 		this.cdrsList = new ConcurrentLinkedDeque<>();
@@ -24,7 +24,7 @@ public class Cdrs {
 
 	public void init() {
 		logger.debug("initializing ");
-		cdrs = this;
+//		cdrs = this;
 	}
 	
 	public boolean  addCdr(Cdr cdr) {
@@ -45,6 +45,6 @@ public class Cdrs {
 			return cdrsByCard.subMap(keyFrom, keyTo);
 	}
 	
-	public static Cdrs get() {return cdrs;	}
+//	public static Cdrs get() {return cdrs;	}
 
 }

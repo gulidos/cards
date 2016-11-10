@@ -10,7 +10,7 @@ import ru.rik.cardsnew.domain.BankState;
 @Repository
 public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements BankRepo  {
 	private static final long serialVersionUID = 1L;
-	private static BankRepoImpl repo;
+	
 
 
 	public BankRepoImpl() {
@@ -21,11 +21,8 @@ public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements Ba
 	public void init() {
 		super.init();
 		logger.debug("init");
-		repo = this;
 	}
 	
-	public static BankRepoImpl get() {return repo;	}
-	public static void set(BankRepo repo) {	repo = (BankRepoImpl) repo;}
 	
 //	public Bank findBankByIp(String ip) {
 //		

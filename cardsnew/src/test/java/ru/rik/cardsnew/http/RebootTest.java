@@ -19,7 +19,7 @@ public class RebootTest {
 	public static void main(String[] args) throws IOException {
 		Channel ch = new Channel(1, 1, "ch1", Line.L6,
 				new Box(1, 1, "", "172.17.1.34", 8, "", null), 
-				null, null, null, true);
+				null, null, null, true, null);
 		Card c = Card.builder()
 				.place(Place.b0000010)
 				.sernumber("1111111")

@@ -28,7 +28,7 @@
 					<td th:text="${card.name}+ ' / ' + ${card.number}"></td>
 					<td th:text="${card.stat.free} + ' / ' + ${card.channelId}"></td>
 					<td th:text="${card.stat.asr} + ' / ' + ${card.stat.acdFormatted}"></td>
-					<td th:text="${card.dlimit} + ' / ' + ${card.stat.minRemains} +  ' / ' + ${card.stat.todayMinOper}"></td>
+					<td th:text="${card.dlimit} + ' / ' + ${card.stat.minRemains} +  ' / ' + ${card.stat.todayMin}"></td>
 					<td style="text-align: center;">
 					<a th:href="@{/cards/edit(id=${card.id})}">
 							<button type="button" class="btn btn-default btn-xs">

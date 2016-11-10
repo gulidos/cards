@@ -32,7 +32,7 @@
 			<div class="row">
 			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
 			<div class="col-lg-6 col-sm-6 ">
-				<pre  th:text="${state.toWeb()}">
+				<pre  th:text="${stateText}">
 				</pre>
 				<p th:text="${chan.name} + ' fdsdf sdf sd'" ></p>
 				<h2 th:text="${chan.name} + ' fdsdf sdf sd'" ></h2>
@@ -40,7 +40,7 @@
 				
 			</div>
  			<div class="col-lg-6 col-sm-6 ">
-				<pre  th:text="${chan.pair.state.toWeb()}">
+				<pre  th:text="${peerText}">
 				</pre>
 			</div>
  		</div>

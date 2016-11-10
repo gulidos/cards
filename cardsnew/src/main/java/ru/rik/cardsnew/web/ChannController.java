@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.BoxRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
@@ -53,6 +54,7 @@ public class ChannController {
 	
 	@Autowired GroupRepo groups;
 	@Autowired BoxRepo boxes;
+	@Autowired BankRepo banks;
 	@Autowired TrunkRepo trunks;
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
@@ -102,6 +104,10 @@ public class ChannController {
 			if (box != null)
 				list = chans.findBoxChans(box);
 		}
+		
+		for (Channel ch: list ) 
+			ch.setState(chans.findStateById(ch.getId()));
+
 		return list;
 	}
 	
@@ -198,6 +204,7 @@ public class ChannController {
 			@RequestParam(value = "url", defaultValue = "") String url,
 			Model model) {
 		List<Channel> list = getChannels(id, url);
+		
 		filter.setId(id);
 		model.addAttribute("chans", list);
 		model.addAttribute("filter", filter);
@@ -208,10 +215,15 @@ public class ChannController {
 	@Transactional
 	@RequestMapping(value = "/stat", method = RequestMethod.GET)
 	public String statPage(@RequestParam(value = "id", required = true) long id, Model model) {
-		
-		model.addAttribute("state", chans.findStateById(id));
 		Channel chan = chans.findById(id);
+		ChannelState st = chans.findStateById(id);
+		model.addAttribute("state", st);
 		model.addAttribute("chan", chan);
+		model.addAttribute("stateText", st.toWeb(cards, chans, banks));
+		
+		Channel peer = chan.getPair(chans);
+		model.addAttribute("peerText", peer.getState(chans).toWeb(cards, chans, banks));
+		
 		List<Card> listcards = cards.findFreeCardsInGroup(chan.getGroup());
 		if (chan.getCard() != null) {
 			Card c = cards.findById(chan.getCard().getId());
@@ -236,11 +248,11 @@ public class ChannController {
 					
 				} else if (action.equals("gsmreq") && state != null) {
 					Channel ch = chans.findById(state.getId());
-					ChannelState st = ch.getState();
+					ChannelState st = ch.getState(chans);
 					try {
 						GsmState gstate = GsmState.get(ch);
 						st.applyGsmStatus(gstate);
-						SimSet simset = SimSet.get(ch, ch.getPair());
+						SimSet simset = SimSet.get(ch, ch.getPair(chans));
 						st.applySimSet(simset);
 					} catch (SocketTimeoutException | ConnectException e) {
 						st.setStatus(Status.Unreach);

@@ -24,8 +24,6 @@ import ru.rik.cardsnew.domain.Place;
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
 	static final Logger logger = LoggerFactory.getLogger(CardRepoImpl.class);
 	private static final long serialVersionUID = 1L;
-	private static CardRepoImpl repo;
-
 	
 	public CardRepoImpl() {
 		super(Card.class, CardStat.class);
@@ -37,16 +35,13 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public void init() {
 		super.init();
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
-		repo = this;
 		for (Card c : findAll()) {
 			CardStat s = addStateIfAbsent(c);
 			if (c.getChannelId() != 0)
 				s.setFree(true, false);
 		}	
 	}
-	
-	public static CardRepoImpl get() {return repo;	}
-	public static void set(CardRepo r) {repo = (CardRepoImpl) r;}
+
 	
 	@Override
 	public List<Card> findGroupCards(Grp grp) {
@@ -61,7 +56,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		List<Card> result = new ArrayList<>();
 		for (Card c : em.createNamedQuery("findActiveCardsInGrp", Card.class).setParameter("g", grp)
 				.setHint("org.hibernate.cacheable", true).getResultList())
-			if (c.getStat().isFree())
+			if (c.getStat(this).isFree())
 				result.add(c);
 		return result;
     }
@@ -95,24 +90,24 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	@Override
 	public List<Card> findAllAvailableForChannel(Grp g) {
 		return g.getCards().stream()
-		.filter(c->c.getStat().isFree() 
+		.filter(c->c.getStat(this).isFree() 
 				&& c.isActive()  
 //				&& c.getBank().getStat().isAvailable() 
-				&& c.getStat().getMinRemains() > 1)
+				&& c.getStat(this).getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
-		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
+		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.collect(Collectors.toList());
 	}
 	
 	@Override
 	public Card findTheBestInGroupForInsert(Grp g) {
 		Optional<Card> oc = g.getCards().stream()
-		.filter(c->c.getStat().isFree() 
+		.filter(c->c.getStat(this).isFree() 
 				&& c.isActive()  
 //				&& c.getBank().getStat().isAvailable()  
-				&& c.getStat().getMinRemains() > 1)
+				&& c.getStat(this).getMinRemains() > 1)
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
-		.sorted((c1, c2) -> Integer.compare(c2.getStat().getMinRemains(), c1.getStat().getMinRemains()))
+		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.findFirst();
 		if (oc.isPresent())
 			return oc.get();

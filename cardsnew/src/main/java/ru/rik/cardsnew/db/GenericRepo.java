@@ -38,8 +38,6 @@ public interface GenericRepo<T extends MyEntity, S extends MyEntity>
 	
 	public S addStateIfAbsent(T entity);
 	
-	public boolean removeStateIfExists(S s);
-	
 	public T findByName(String name);
 	
 	public S findStateById(long id);
@@ -47,5 +45,7 @@ public interface GenericRepo<T extends MyEntity, S extends MyEntity>
 	public S findStateByName(String name);
 	
 	public ConcurrentMap<Long, S> getStates();
+
+	boolean removeStateIfExists(long id);
 }
 

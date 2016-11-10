@@ -5,6 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Random;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -31,7 +33,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.db.CardRepo;
-import ru.rik.cardsnew.db.CardRepoImpl;
 
 @NamedQueries({ 
 	@NamedQuery(name = "findAllCardsInGrp", query = "SELECT c FROM Card c WHERE c.group = :g"), 
@@ -100,21 +101,23 @@ public class Card implements MyEntity {
 
     @Getter @Setter private Date blockdate;
     
-    @ManyToOne @NotNull(message = "Card's limit can not be null")
+    @ManyToOne(cascade=CascadeType.ALL) 
+    @NotNull(message = "Card's limit can not be null")
     @Getter @Setter private Limit limit;
 
     @Getter @Setter private boolean offnetPos;
     
     @Getter @Setter private boolean mskSeparate;
     
-    public CardStat getStat () {
-    	CardRepo cards = CardRepoImpl.get();
-    	return cards.findStateById(id);
+    @Transient
+    @Getter @Setter private CardStat stat;
+    
+    public CardStat getStat (CardRepo repo) {
+    	return repo.findStateById(id); 
     }
     
     /** tries to make CardStat not free. If fails, throws ConcurrentModificationException*/
-    public void engage() {
-		CardStat st = getStat();
+    public void engage(CardStat st) {
 		if (!st.setFree(true, false)) 
 			throw new ConcurrentModificationException("Card " + getName() + " is already engaged");
 	}

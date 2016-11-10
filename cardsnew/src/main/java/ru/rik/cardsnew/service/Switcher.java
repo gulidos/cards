@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -18,6 +19,7 @@ import ru.rik.cardsnew.service.http.SimSet;
 public class Switcher implements State{
 	private static final Logger logger = LoggerFactory.getLogger(Switcher.class);		
 	@Autowired ChannelRepo chans;
+	@Autowired CardRepo cards;
 	@Setter @Getter private long id;
 	@Setter @Getter private String name;
 	@Setter @Getter private long cardId;
@@ -35,10 +37,10 @@ public class Switcher implements State{
 
 	
 	public State switchCard (Channel ch, Card c) {
-		Channel pair = ch.getPair();
+		Channel pair = ch.getPair(chans);
 		try {
 			if (c!= null)
-				c.engage();
+				c.engage(cards.findStateById(c.getId()));
 			logger.debug("card {} engaged for channel {}",  c!=null ? c.getName() : "-", ch.getName());
 			SimSet.get(ch, null);
 			logger.debug("channel {} available", ch.getName());
@@ -49,13 +51,13 @@ public class Switcher implements State{
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
 				if (c!= null)
-					c.getStat().setFree(false, true);
+					c.getStat(cards).setFree(false, true);
 			}
 			try { 
 				if (pair != null)
-					while (pair.getState().isInUse()) {
+					while (pair.getState(chans).isInUse()) {
 						logger.debug("awaiting for peer chanel {}",  pair.getName());
-						ch.getState().setStatus(Status.AwaitForPeer);
+						ch.getState(chans).setStatus(Status.AwaitForPeer);
 						TimeUnit.SECONDS.sleep(10);
 					}
 				SimSet.post(ch, c); 
@@ -63,13 +65,13 @@ public class Switcher implements State{
 			} catch (Exception e) {
 				logger.error(e.toString(), e);
 				if (c!= null)
-					c.getStat().setFree(false, true);
+					c.getStat(cards).setFree(false, true);
 				// TODO bring back the old card in place
 				throw new RuntimeException(e.getMessage(), e);
 			}
-			ch.getState().setStatus(Status.Inchange);
+			ch.getState(chans).setStatus(Status.Inchange);
 			if (pair != null)
-				pair.getState().setStatus(Status.PeerInchange);	
+				pair.getState(chans).setStatus(Status.PeerInchange);	
 			logger.debug("changing chanel status on Inchange");
 		} catch (Exception e) {
 			logger.error(e.toString(), e);		

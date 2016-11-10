@@ -25,6 +25,6 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	 */
 	void switchCard(Channel chan, Card c);
 
-	List<Channel> getSorted(Trunk t, String exten, Route route);
+	List<Channel> getSorted(Trunk t, Route route);
 
 }

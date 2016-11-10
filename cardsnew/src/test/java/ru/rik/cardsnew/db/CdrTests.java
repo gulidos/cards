@@ -54,7 +54,7 @@ public class CdrTests {
 
 	public  Cdrs loadCdrs() throws ParseException {
 		Grp g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
-		c = new Card(1, 1, "c1", "111", null, "", g , null, 1, true, 50, 1981, "test", null, false, null, new Limit(), true, true);
+		c = new Card(1, 1, "c1", "111", null, "", g , null, 1, true, 50, 1981, "test", null, false, null, new Limit(), true, true, null);
 		CardRepo repo = mock(CardRepoImpl.class);
 		when(repo.findById(1)).thenReturn(c);
 		
@@ -69,19 +69,19 @@ public class CdrTests {
 		cdrs.init();
 		Cdr cdr = Cdr.builder().date(Util.getNowMinusSec(1000)).src("11111").dst("22222").cardId(1).billsec(0).trunk("trnk1")
 				.disp("BUSY").regcode("77").uniqueid("1234567891").channelId(2).build();
-		cs.applyCdr(cdr,c, ch);
+		cs.applyCdr(cdr,c, ch, cdrs);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1200)).src("11112").dst("22222").cardId(1).billsec(60).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567892").channelId(2).build();
-		cs.applyCdr(cdr, c, ch);
+		cs.applyCdr(cdr, c, ch, cdrs);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1300)).src("11112").dst("22222").cardId(1).billsec(70).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567802").channelId(2).build();
-		cs.applyCdr(cdr, c, ch);
+		cs.applyCdr(cdr, c, ch, cdrs);
 		
 		cdr = Cdr.builder().date(Util.getNowMinusSec(1400)).src("11112").dst("22222").cardId(1).billsec(80).trunk("trnk1")
 				.disp("ANSWERED").regcode("77").uniqueid("1234567803").channelId(2).build();
-		cs.applyCdr(cdr, c, ch);
+		cs.applyCdr(cdr, c, ch, cdrs);
 		
 		
 		return cdrs;

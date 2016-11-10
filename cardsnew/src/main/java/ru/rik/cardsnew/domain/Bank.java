@@ -27,7 +27,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.db.BankRepo;
-import ru.rik.cardsnew.db.BankRepoImpl;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 @Entity
@@ -59,9 +58,8 @@ public class Bank implements MyEntity {
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Card> cards = new HashSet<>();
     
-    public BankState getStat () {
-    	BankRepo banks = BankRepoImpl.get();
-    	return banks.findStateById(id);
+    public BankState getStat (BankRepo repo) {
+    	return repo.findStateById(id);
     }
     
 //    @Override public String getName() {return getIp();}

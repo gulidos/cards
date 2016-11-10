@@ -1,8 +1,10 @@
 package ru.rik.cardsnew.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.Builder;
-
+@EqualsAndHashCode @ToString
 public class Route {
 	@Getter private final long fromd;
 	@Getter private final long tod;

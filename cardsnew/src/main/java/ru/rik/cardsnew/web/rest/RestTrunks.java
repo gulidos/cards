@@ -16,7 +16,7 @@ import lombok.Data;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
-import ru.rik.cardsnew.db.RoutingRepo;
+import ru.rik.cardsnew.db.RouteRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Route;
@@ -30,7 +30,7 @@ public class RestTrunks {
 	@Autowired CardRepo cards;
 	@Autowired TrunkRepo trunks;
 	@Autowired ChannelRepo chanRepo;
-	@Autowired RoutingRepo routingRepo;
+	@Autowired RouteRepo routingRepo;
 
 	public RestTrunks() {
 	}
@@ -65,7 +65,7 @@ public class RestTrunks {
 			number = n;
 			int i = 0;
 			Route route = routingRepo.find(Long.valueOf(n));
-			for (Channel ch : chanRepo.getSorted(t, number, route)) {
+			for (Channel ch : chanRepo.getSorted(t, route)) {
 				RestChannel r = new RestChannel(i, ch.getName(), "P", 
 						ch.getCard() != null ? ch.getCard().getName() : "", 
 						ch.getCard() != null ? ch.getCard().getNumber() : "",

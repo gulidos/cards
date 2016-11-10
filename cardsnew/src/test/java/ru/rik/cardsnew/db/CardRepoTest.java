@@ -48,7 +48,7 @@ public class CardRepoTest {
 		List<Card> list = repo.findAllAvailableForChannel(g);
 		System.out.println(list.size());
 		for (Card c: list)
-			System.out.println(c.getName() + " " + c.getStat().getMinRemains());
+			System.out.println(c.getName() + " " + c.getStat(repo).getMinRemains());
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class CardRepoTest {
 		cdrs = new Cdrs();
 		cdrs.init();
 		repo = spy(new CardRepoImpl());
-		CardRepoImpl.set(repo);
+
 		b = Bank.builder().id(1).name("9.9.9.9").build();
 		g = Grp.builder().id(1).name("g1").oper(Oper.RED).build();
 		Set<Card> set = new HashSet<>();
@@ -81,7 +81,7 @@ public class CardRepoTest {
 		
 		Card c1 = Card.builder().id(1).name("c1").active(true).bank(b).group(g).place(Place.b0000000).dlimit(10).build();
 		CardStat cs = repo.addStateIfAbsent(c1);
-		cs.applyCdr(cdr, c1, ch);
+		cs.applyCdr(cdr, c1, ch, cdrs);
 		set.add(c1);
 		doReturn(c1).when(repo).findById(1);
 

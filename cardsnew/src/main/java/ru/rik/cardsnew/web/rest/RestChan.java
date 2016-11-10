@@ -44,7 +44,7 @@ public class RestChan {
 		if (c == null)
 			return "There aren't more cards for group " + ch.getGroup().getName() + " available";
 		
-		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), ch.getState());
+		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), ch.getState(chans));
 		return "Installing " + c.getName() + " card in " + ch.getName() +"  channel";
 	}
 
@@ -73,7 +73,7 @@ public class RestChan {
 			name = c.getName();
 			number = c.getNumber();
 			sernumber = c.getSernumber();
-			total = c.getStat().getMinRemains();
+			total = c.getStat(cards).getMinRemains();
 		}
 	}
 	

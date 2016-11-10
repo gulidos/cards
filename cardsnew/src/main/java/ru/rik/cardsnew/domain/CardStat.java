@@ -48,7 +48,7 @@ public class CardStat implements State {
 		this.acd  = this.asr = 0;
 	}
 
-	public void applyCdr(Cdr cdr, Card card, Channel ch) {
+	public void applyCdr(Cdr cdr, Card card, Channel ch, Cdrs cdrs) {
 		if (cdr.isToday()) {
 			todayMinTotal += cdr.getMin();
 			todayCalls++;
@@ -58,9 +58,9 @@ public class CardStat implements State {
 			if (cdr.isOffnet(card, ch))
 				todayOffnet += cdr.getMinOper();
 		}
-		Cdrs.get().addCdr(cdr);
+		cdrs.addCdr(cdr);
 		
-		SortedMap<String, Cdr>  lastCdrs= Cdrs.get().findCdrByCards(cdr.getCardId(), true);
+		SortedMap<String, Cdr>  lastCdrs= cdrs.findCdrByCards(cdr.getCardId(), true);
 		
 		calcAsr(lastCdrs);
 		calcAcd(lastCdrs);

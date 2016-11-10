@@ -6,26 +6,29 @@ import java.sql.ResultSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Route;
 
-public class RoutingRepoImpl implements RoutingRepo {
-	static final Logger logger = LoggerFactory.getLogger(RoutingRepoImpl.class);
+@Repository
+public class RouteRepoImpl implements RouteRepo {
+	static final Logger logger = LoggerFactory.getLogger(RouteRepoImpl.class);
 	static final String query = "select * from numberplan";
 	private volatile TreeMap<Long, Route> map = new TreeMap<>();
+	@Autowired DataSource ds;
 	
-	public RoutingRepoImpl() {
-	}
+	public RouteRepoImpl() {}
 	
-	@Autowired
+	@PostConstruct 
 	@Override
-	public int load(DataSource ds) {
+	public int load() {
 		int n = 0;
         TreeMap<Long, Route> newMap = new TreeMap<>();
 
@@ -36,7 +39,7 @@ public class RoutingRepoImpl implements RoutingRepo {
 				Route r = Route.builder()
 						.fromd(rs.getLong("fromd"))
 						.tod(rs.getLong("tod"))
-						.oper(Oper.findByMnc(rs.getInt("owner")))
+						.oper(Oper.findByMnc(rs.getInt("mnc")))
 						.regcode(rs.getInt("regcode"))
 						.build();
 				newMap.put(r.getFromd(), r);

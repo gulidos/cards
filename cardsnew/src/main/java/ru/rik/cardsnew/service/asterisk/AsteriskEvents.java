@@ -22,14 +22,15 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
+import ru.rik.cardsnew.domain.repo.Cdrs;
 
 public class AsteriskEvents implements ManagerEventListener {
 	static final Logger logger = LoggerFactory.getLogger(AsteriskEvents.class);
-
 	private ManagerConnection connection;
 	
-	@Autowired private CardRepo cardRepo;
+	@Autowired private CardRepo cards;
 	@Autowired private ChannelRepo chanRepo;
+	@Autowired private Cdrs cdrs;
 	private static AsteriskEvents asterisk;
 
 	public AsteriskEvents() {
@@ -74,7 +75,7 @@ public class AsteriskEvents implements ManagerEventListener {
 
 		if (cardname == null) return;
 		
-		Card card = cardRepo.findByName(cardname);
+		Card card = cards.findByName(cardname);
 		Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 		
 		if (card == null && chan != null) { 
@@ -96,7 +97,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.build();
 			logger.debug("applying {}", cdr);
 			
-		card.getStat().applyCdr(cdr, card, chan);
+		card.getStat(cards).applyCdr(cdr, card, chan, cdrs);
 		} catch (ParseException pe) {
 			logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
 		}			

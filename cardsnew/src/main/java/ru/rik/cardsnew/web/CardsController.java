@@ -51,27 +51,10 @@ public class CardsController {
 			@RequestParam(value = "id", defaultValue = "0") long id, 
 			@RequestParam(value = "url", defaultValue = "") String url,
 			Model model) {
-		if (url.isEmpty()) {
-			filter.setUrl("");
-			filter.setId(0);
-			model.addAttribute("cards", cards.findAll());
-		} else if ("group".equals(url)) {
-			Grp grp = groups.findById(id);
-			filter.setUrl("group");
-			filter.setId(id);
-			if (grp != null)
-				model.addAttribute("cards", cards.findGroupCards(grp));
-		} else if ("bank".equals(url)) {
-			Bank bank = banks.findById(id);
-			filter.setUrl("bank");
-			filter.setId(id);
-			if (bank != null) {
-				List<Card> list = new ArrayList<Card>(bank.getCards());
-				for (Card card : list) 
-					card.hashCode();
-				model.addAttribute("cards", list);
-			}	
-		} 		
+		
+		List<Card> list = getCardList(id, url, model);
+		
+		model.addAttribute("cards", list);
 		model.addAttribute("filter", filter);
 		
 		if (!model.containsAttribute("card")) {
@@ -79,6 +62,34 @@ public class CardsController {
 			model.addAttribute("card", card);
 		}
 		return "cards";
+	}
+
+	private List<Card> getCardList(long id, String url, Model model) {
+		List<Card> list = null;
+		if (url.isEmpty()) {
+			filter.setUrl("");
+			filter.setId(0);
+			list= cards.findAll();
+		} else if ("group".equals(url)) {
+			Grp grp = groups.findById(id);
+			filter.setUrl("group");
+			filter.setId(id);
+			if (grp != null)
+				list=  cards.findGroupCards(grp);
+		} else if ("bank".equals(url)) {
+			Bank bank = banks.findById(id);
+			filter.setUrl("bank");
+			filter.setId(id);
+			if (bank != null) {
+				list = new ArrayList<Card>(bank.getCards());
+				for (Card card : list) 
+					card.hashCode();
+				model.addAttribute("cards", list);
+			}	
+		} 		
+		for (Card c: list)
+			c.setStat(cards.findStateById(c.getId()));
+		return list;
 	}
 	
 
@@ -201,16 +212,20 @@ public class CardsController {
 
 	
 	@RequestMapping(value = "/stats", method = RequestMethod.GET)
-	public String stat(Model model) {
-		model.addAttribute("cards", cards.findAll());
+	public String stat(
+			@RequestParam(value = "id", defaultValue = "0") long id, 
+			@RequestParam(value = "url", defaultValue = "") String url, 
+			Model model)	{
+		List<Card> list = getCardList(id, url, model);
+		model.addAttribute("cards", list);
 
 		if (!model.containsAttribute("card")) {
 			Card card = new Card();
 			model.addAttribute("card", card);
 		}
-
 		return "cardsstat";
 	}
+	
 	
 	@RequestMapping(value = "/refreshlimits", method = RequestMethod.GET)
 	public String refreshLimits(Model model) {

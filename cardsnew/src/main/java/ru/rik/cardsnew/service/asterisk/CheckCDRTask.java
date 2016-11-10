@@ -19,15 +19,17 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.CardsStates;
+import ru.rik.cardsnew.domain.repo.Cdrs;
 
 
 public class CheckCDRTask {
 	static final Logger logger = LoggerFactory.getLogger(CheckCDRTask.class);
 
 	@Autowired private CardsStates cardsStates;
-	@Autowired private CardRepo cardRepo;
+	@Autowired private CardRepo cards;
 	@Autowired private ChannelRepo chanRepo;
 	@Autowired private DataSource ds;
+	@Autowired private Cdrs cdrs;
 
 	public CheckCDRTask() {
 		logger.info("Creating Tast for getting CDRs");
@@ -53,7 +55,7 @@ public class CheckCDRTask {
 				String cardname = rs.getString("userfield");
 				String destchanname = rs.getString("dstchannel");
 				if (cardname == null ) continue; 
-				Card card = cardRepo.findByName(cardname);
+				Card card = cards.findByName(cardname);
 				Channel chan = chanRepo.findByName(Cdr.parseChannel(destchanname));
 				
 				if (card != null && chan != null) { 
@@ -72,7 +74,7 @@ public class CheckCDRTask {
 								.uniqueid(rs.getString("uniqueid"))
 								.channelId(chan != null ? chan.getId() : 0)
 								.build();
-						card.getStat().applyCdr(cdr, card, chan);
+						card.getStat(cards).applyCdr(cdr, card, chan, cdrs);
 
 						
 						n++;
