@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
+import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Route;
@@ -112,6 +113,7 @@ public class ChannelRepoTest {
 		activate5channels();
 		route = Route.builder().oper(Oper.GREEN).regcode(1).build();
 		List<Channel> list = chans.getSorted(t,  route);
+		System.out.println(list.size());
 		Assert.assertTrue(list.size() == 5);
 		
 		Card c1 = chans.findById(1).getCard();
@@ -125,6 +127,27 @@ public class ChannelRepoTest {
 		Assert.assertTrue(list.size() == 4);
 	}
 	
+	@Test @Transactional
+	public void whenDeleteChannelAssureStatAlsoDeleted() {
+		Channel ch = chans.findById(1);
+		Assert.assertNotNull(ch);
+		chans.makeTransient(ch);
+		
+		ChannelState cs = chans.findStateById(ch.getId());
+		Assert.assertNull(cs);	
+	}
+	
+	@Test @Transactional
+	public void changeChannelNameChechStatesNameAlsoChanged() {
+		Channel ch = chans.findById(1);
+		Assert.assertNotNull(ch);
+		String name = "new name";
+		ch.setName(name);
+		chans.makePersistent(ch);
+		
+		Assert.assertEquals(ch.getState(chans).getName(), name);
+	}
+	
 	
 	private void activate5channels() {
 		route = Route.builder().oper(Oper.GREEN).regcode(77).build();
@@ -132,8 +155,11 @@ public class ChannelRepoTest {
 		
 		for (int i = 1; i < 6; i++) 
 			chans.removeStateIfExists(i);
-		
 		chans.init();
+		
+		for (int i = 1; i < 16; i++) 
+			cards.removeStateIfExists(i);
+		cards.init();
 		
 		Channel ch1 = chans.findById(1); 
 		chans.switchCard(ch1, cards.findById(1));

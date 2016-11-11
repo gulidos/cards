@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import ru.rik.cardsnew.domain.Place;
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
 	static final Logger logger = LoggerFactory.getLogger(CardRepoImpl.class);
 	private static final long serialVersionUID = 1L;
+	@Autowired BankRepo banks;
 	
 	public CardRepoImpl() {
 		super(Card.class, CardStat.class);
@@ -90,22 +92,18 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	@Override
 	public List<Card> findAllAvailableForChannel(Grp g) {
 		return g.getCards().stream()
-		.filter(c->c.getStat(this).isFree() 
-				&& c.isActive()  
-//				&& c.getBank().getStat().isAvailable() 
-				&& c.getStat(this).getMinRemains() > 1)
+		.filter(c->isEligible(c))
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.collect(Collectors.toList());
 	}
+
 	
 	@Override
 	public Card findTheBestInGroupForInsert(Grp g) {
 		Optional<Card> oc = g.getCards().stream()
-		.filter(c->c.getStat(this).isFree() 
-				&& c.isActive()  
-//				&& c.getBank().getStat().isAvailable()  
-				&& c.getStat(this).getMinRemains() > 1)
+		.filter(c->isEligible(c))
+		.peek(c -> System.out.println(c.getName() + " " + c.getStat(this).getMinRemains()))
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.findFirst();
@@ -114,6 +112,12 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		else return null;
 	}
 	
+	private boolean isEligible(Card c) {
+		return c.getStat(this).isFree() 
+				&& c.isActive()  
+				&& c.getBank().getStat(banks).isAvailable() 
+				&& c.getStat(this).getMinRemains() > 1;
+	}
 	
 	@Override
 	public List<Card> findAll() {

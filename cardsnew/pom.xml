@@ -34,7 +34,12 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	<repositories>
+		<repository>
+			<id>my</id>
+			<url>file://${basedir}/lib</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -182,24 +187,47 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
-	<dependency>
-		<groupId>com.h2database</groupId>
-		<artifactId>h2</artifactId>
-	</dependency>
-<!-- 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-configuration2</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-beanutils</groupId>
-					<artifactId>commons-beanutils</artifactId>
-				</exclusion>
-			</exclusions>
-			<version>2.1</version>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-		</dependency> -->
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.attention</groupId>
+			<artifactId>attention</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.attention</groupId>
+			<artifactId>attention-interface</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.attention</groupId>
+			<artifactId>attention-sms</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.attention</groupId>
+			<artifactId>util</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.attention</groupId>
+			<artifactId>intention</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-configuration2</artifactId> 
+			<exclusions> <exclusion> <groupId>commons-beanutils</groupId> <artifactId>commons-beanutils</artifactId> 
+			</exclusion> </exclusions> <version>2.1</version> </dependency> <dependency> 
+			<groupId>commons-beanutils</groupId> <artifactId>commons-beanutils</artifactId> 
+			</dependency> -->
 	</dependencies>
 </project>

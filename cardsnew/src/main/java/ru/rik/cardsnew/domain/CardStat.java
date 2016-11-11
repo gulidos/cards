@@ -26,13 +26,13 @@ public class CardStat implements State {
 	private String name;
 	private AtomicBoolean free = new AtomicBoolean(true);
 	
-	@Getter	private int asr;
-	@Getter private double acd;
-	@Getter private int todayMinTotal;
-	@Getter private int todayMin;
-	@Getter private int todayOffnet;
-	@Getter private int todayMsk;
-	@Getter private int todayCalls;
+	@Getter	private volatile int asr;
+	@Getter private volatile double acd;
+	@Getter private volatile int todayMinTotal;
+	@Getter private volatile int todayMin;
+	@Getter private volatile int todayOffnet;
+	@Getter private volatile int todayMsk;
+	@Getter private volatile int todayCalls;
 	
 
 	public CardStat() {} //needed !! 

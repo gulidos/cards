@@ -86,7 +86,7 @@ public class Card implements MyEntity {
     @Getter @Setter	private Bank bank;
     
     @Getter @Setter	private long channelId;
-	
+	 
     @Getter @Setter private boolean active;
     
     @Getter @Setter private int dlimit;
@@ -128,6 +128,7 @@ public class Card implements MyEntity {
     	dlimit = limit.getF() + rnd.nextInt(limit.getT() - limit.getF());
     }
     
+   
 	public String toStringAll() {
 		return toString() 
 				+ " group: " + ( group != null ? group.getId() : "none") 
