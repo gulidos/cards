@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.asteriskjava.manager.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +24,8 @@ import ru.rik.cardsnew.service.http.SimSet;
 @EqualsAndHashCode
 public class ChannelState implements MyState {
 	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
-
+	@Autowired AsteriskEvents astMngr;
+	
 	private long id;
 	private String name;
 	
@@ -194,7 +196,7 @@ public class ChannelState implements MyState {
 	
 	public boolean isInUse() {
 		try {
-			String state = AsteriskEvents.get().getDeviceState(getName());
+			String state = astMngr.getDeviceState(getName());
 			if ("NOT_INUSE".equals(state))
 				return false;
 			else 
@@ -240,7 +242,7 @@ public class ChannelState implements MyState {
 			}
 		
 		try {
-			sb.append(String.format("%1$s = %2$s%n", "Asterisk status", AsteriskEvents.get().getDeviceState(getName())));
+			sb.append(String.format("%1$s = %2$s%n", "Asterisk status", astMngr.getDeviceState(getName())));
 		} catch (IllegalArgumentException | IllegalStateException | IOException | TimeoutException e) {
 			logger.error(e.getMessage(), e);
 		}

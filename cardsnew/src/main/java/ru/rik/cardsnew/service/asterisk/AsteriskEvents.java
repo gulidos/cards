@@ -31,7 +31,6 @@ public class AsteriskEvents implements ManagerEventListener {
 	@Autowired private CardRepo cards;
 	@Autowired private ChannelRepo chanRepo;
 	@Autowired private Cdrs cdrs;
-	private static AsteriskEvents asterisk;
 
 	public AsteriskEvents() {
 		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "myasterisk", "mycode");
@@ -40,12 +39,10 @@ public class AsteriskEvents implements ManagerEventListener {
 
 	public void start() throws IOException, AuthenticationFailedException, TimeoutException, InterruptedException {
 		logger.info("Asterisk managerConnection log in ");
-		asterisk = this;
 		connection.addEventListener(this);
 		connection.login();
 	}
 	
-	public static AsteriskEvents get() {return asterisk;}
 
 	public void stop() throws IllegalStateException {
 		logger.info("Asterisk managerConnection is logging off ");
