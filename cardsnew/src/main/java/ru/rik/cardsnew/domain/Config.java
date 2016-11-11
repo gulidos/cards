@@ -4,6 +4,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,6 +22,8 @@ import lombok.experimental.Builder;
 public class Config {
 	@Id
 	@Getter @Setter private String name;
+	@Version
+	@Getter @Setter private long version;
 	@Getter @Setter private String value;
 	@Getter @Setter private String descr;
 	

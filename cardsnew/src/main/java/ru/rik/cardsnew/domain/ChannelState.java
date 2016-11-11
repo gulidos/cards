@@ -34,8 +34,7 @@ public class ChannelState implements MyState {
 	private volatile GsmState gsmstatus;
 	private volatile Date lastGsmUpdate, nextGsmUpdate, lastSimSetUpdate, nextSimSetUpdate; 
 	private volatile SimSet simset;
-	@Getter
-	private volatile Status status;
+	@Getter private volatile Status status;
 	private volatile Date lastStatusChange;
 	
 	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
