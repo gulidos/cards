@@ -50,9 +50,7 @@ public class RootConfig implements SchedulingConfigurer {
 	}
 
 	@Bean
-	public AppInitializer appInitializer() {
-		return new AppInitializer();
-	}
+	public AppInitializer appInitializer() {return new AppInitializer();}
 
 	@Bean
 	public CardsStates cardsStates() {
@@ -83,9 +81,8 @@ public class RootConfig implements SchedulingConfigurer {
 	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
-	public AsteriskEvents asteriskEvents() {
-		return new AsteriskEvents();
-	}
+	public AsteriskEvents asteriskEvents() {return new AsteriskEvents();}
+	
 	@Bean public Switcher switcher() {return new Switcher();}
 
 	@Bean

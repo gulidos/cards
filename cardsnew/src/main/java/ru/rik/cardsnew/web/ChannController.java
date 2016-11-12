@@ -42,6 +42,7 @@ import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
 import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -61,6 +62,7 @@ public class ChannController {
 	@Autowired Filter filter;
 	@Autowired Switcher switcher;
 	@Autowired TaskCompleter taskCompleter;
+	@Autowired private AsteriskEvents astMngr;
 	
 	public ChannController() { 	super();}
 	
@@ -219,10 +221,10 @@ public class ChannController {
 		ChannelState st = chans.findStateById(id);
 		model.addAttribute("state", st);
 		model.addAttribute("chan", chan);
-		model.addAttribute("stateText", st.toWeb(cards, chans, banks));
+		model.addAttribute("stateText", st.toWeb(cards, chans, banks, astMngr));
 		
 		Channel peer = chan.getPair(chans);
-		model.addAttribute("peerText", peer.getState(chans).toWeb(cards, chans, banks));
+		model.addAttribute("peerText", peer.getState(chans).toWeb(cards, chans, banks, astMngr));
 		
 		List<Card> listcards = cards.findFreeCardsInGroup(chan.getGroup());
 		if (chan.getCard() != null) {

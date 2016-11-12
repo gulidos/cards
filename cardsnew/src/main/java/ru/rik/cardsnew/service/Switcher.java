@@ -14,16 +14,19 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.SimSet;
 
 public class Switcher implements State{
 	private static final Logger logger = LoggerFactory.getLogger(Switcher.class);		
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
+	@Autowired private AsteriskEvents astMngr;
 	@Setter @Getter private long id;
 	@Setter @Getter private String name;
 	@Setter @Getter private long cardId;
 	@Setter @Getter private String cardName;
+	
 	
 	public Switcher() {	}
 	
@@ -55,7 +58,7 @@ public class Switcher implements State{
 			}
 			try { 
 				if (pair != null)
-					while (pair.getState(chans).isInUse()) {
+					while (pair.getState(chans).isInUse(astMngr)) {
 						logger.debug("awaiting for peer chanel {}",  pair.getName());
 						ch.getState(chans).setStatus(Status.AwaitForPeer);
 						TimeUnit.SECONDS.sleep(10);

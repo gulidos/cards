@@ -5,7 +5,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Random;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -101,7 +100,7 @@ public class Card implements MyEntity {
 
     @Getter @Setter private Date blockdate;
     
-    @ManyToOne(cascade=CascadeType.ALL) 
+    @ManyToOne
     @NotNull(message = "Card's limit can not be null")
     @Getter @Setter private Limit limit;
 

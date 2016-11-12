@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.asteriskjava.manager.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +23,7 @@ import ru.rik.cardsnew.service.http.SimSet;
 @EqualsAndHashCode
 public class ChannelState implements MyState {
 	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
-	@Autowired AsteriskEvents astMngr;
+	
 	
 	private long id;
 	private String name;
@@ -193,7 +192,7 @@ public class ChannelState implements MyState {
 		return now - nextdate.getTime() < 0;
 	}
 	
-	public boolean isInUse() {
+	public boolean isInUse(AsteriskEvents astMngr) {
 		try {
 			String state = astMngr.getDeviceState(getName());
 			if ("NOT_INUSE".equals(state))
@@ -210,7 +209,7 @@ public class ChannelState implements MyState {
 	public void incPriority() {priority.incrementAndGet();	}
 	public int getPriority() {	return priority.get();	}
 	
-	public String toWeb(CardRepo cards, ChannelRepo chans, BankRepo banks) {
+	public String toWeb(CardRepo cards, ChannelRepo chans, BankRepo banks, AsteriskEvents astMngr) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%1$s = %2$s%n", "name", getName()));
 		Card c = chans.findById(getId()).getCard();
