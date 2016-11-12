@@ -17,7 +17,7 @@ public class GetSms {
 			Channel ch = new Channel();
 			System.out.print("Читаем sms из " + ch.getName() + " " + " ...  ");
 			TelnetHelper t = new TelnetHelper();
-			TelnetClient tc  = t.getConnection("172.17.1.34" , 8023, "voip", "1234");
+			TelnetClient tc  = t.getConnection("172.17.1.34" , 8123, "voip", "1234");
 //			TelnetClient tc  = t.getConnection("192.168.5.206" , 8223, "voip", "1234");
 			for (int i = 1; i <= 2; i++) {
 				System.out.println("module " + i);
@@ -27,7 +27,7 @@ public class GetSms {
 						System.out.println(sms.getDate().getTime() + " From: " + sms.getOrigAddress() + " Sms: "
 								+ sms.getEncodedmsg());
 					}
-					t.DeleteSms(tc, allsms);
+					t.deleteSms(tc, allsms);
 				} else
 					System.out.println("there is nothing ");
 				if (i ==1)

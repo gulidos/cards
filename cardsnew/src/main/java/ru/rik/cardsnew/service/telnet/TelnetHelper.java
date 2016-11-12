@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,7 @@ public class TelnetHelper {
 	}
 
 	
-	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) throws InterruptedException {
+	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module)  {
 		ArrayList<Sms> result = new ArrayList<>(); 
 		sendCmd(telnet, "state" + module, "]", 10);
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
@@ -90,7 +91,7 @@ public class TelnetHelper {
 
 	}
 
-	public int DeleteSms(TelnetClient telnet, ArrayList<Sms> arr) {
+	public int deleteSms(TelnetClient telnet, List<Sms> arr) {
 		int i = 0;
 		for (Sms sms : arr) {
 			sendCmd(telnet, "AT+CMGD=" + sms.getNum(), "0\r\n", 10);

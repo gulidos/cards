@@ -12,10 +12,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Builder;
 
 @Entity @Table(name="_SMS")
-@NoArgsConstructor  @AllArgsConstructor @Builder
+@NoArgsConstructor  @AllArgsConstructor @Builder @ToString(exclude = {"card", "channel"})
 public class Sms {
 	@Id
 	@Getter @Setter private long id;
