@@ -2,6 +2,9 @@ package ru.rik.cardsnew;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ThreadFactory;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -27,10 +30,15 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ru.rik.cardsnew.config.RootConfig.MyUncaughtExceptionHandler;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.repo.Cdrs;
+import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
 @EnableTransactionManagement
 @EnableCaching
@@ -113,7 +121,46 @@ public class ConfigJpaH2 {
 	
 	@Bean(initMethod = "init")
 	public Cdrs cdrs() {return new Cdrs();}
+	@Bean public TelnetHelper telnetHelper() {return new TelnetHelper();}
 	
+	@Bean
+	MyThreadFactory threadFactory() {
+		return new MyThreadFactory();
+	}
+	
+	public class MyThreadFactory implements ThreadFactory {
+		private MyUncaughtExceptionHandler handler = new MyUncaughtExceptionHandler();
+
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(r);
+			t.setUncaughtExceptionHandler(handler);
+			return t;
+		}
+	}
+	
+	@Bean
+	public ThreadPoolTaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(3);
+//		executor.setMaxPoolSize(30);
+		executor.setQueueCapacity(100);
+		executor.setThreadNamePrefix("MyExecutor-");
+		executor.setThreadFactory(threadFactory());
+		executor.initialize();
+		return executor;
+	}
+	
+	@Bean
+	public CompletionService<State> completionService() {
+		CompletionService<State> service = new ExecutorCompletionService<State>(taskExecutor());
+		return service;
+	}
+	
+	@Bean(initMethod = "start")
+	public TaskCompleter taskCompleter() {
+		return new TaskCompleter(completionService(), taskExecutor());
+	}
 	
 //	@Bean(initMethod = "init") 
 //	public CardRepo cardRepo() {return new CardRepoImpl();}

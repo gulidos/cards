@@ -44,7 +44,7 @@ public class SmsTask implements MyState {
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		
 		List<Sms> allsms = h.FetchSmsFromChannel(tc, ch.getLine().getNport() + 1);
-		
+		System.out.println("FetchMain");
 		SmsTask smstask = SmsTask.builder()
 			.ch(ch).pair(pair)
 			.telnetClient(tc)
@@ -58,6 +58,7 @@ public class SmsTask implements MyState {
 	
 	public SmsTask deleteMain(TelnetHelper h){
 		phase = Phase.DeleteMain;
+		System.out.println(phase);
 		h.deleteSms(telnetClient, smslist);
 		return this;
 	}
@@ -65,14 +66,18 @@ public class SmsTask implements MyState {
 	
 	public SmsTask fetchPair(TelnetHelper h) {
 		phase = Phase.FetchPair;
-		smslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
+		System.out.println(phase);
+		if (pair != null)
+			smslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
 		return this;
 	}
 	
 	
 	public SmsTask deletePair(TelnetHelper h){
 		phase = Phase.DeletePair;
-		h.deleteSms(telnetClient, smslist);
+		System.out.println(phase);
+		if (pair != null)
+			h.deleteSms(telnetClient, smslist);
 		try {
 			getTelnetClient().disconnect();
 		} catch (IOException e) {
@@ -99,14 +104,14 @@ public class SmsTask implements MyState {
 	public static void main(String[] args) throws SocketException, IOException {
 		TelnetHelper h = new TelnetHelper();
 		Channel ch = Channel.builder()
-				.box(Box.builder().ip("172.17.1.34").capacity(8).build())
-				.line(Line.L1)
+				.box(Box.builder().ip("172.17.1.34").build())
+				.line(Line.L6)
 				.build();
 		
 		
 		Channel pair = Channel.builder()
-				.box(Box.builder().ip("172.17.1.34").capacity(8).build())
-				.line(Line.L2)
+				.box(Box.builder().ip("172.17.1.34").build())
+				.line(Line.L5)
 				.build();
 		
 		SmsTask task = get(h, ch, pair);

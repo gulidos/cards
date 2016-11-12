@@ -18,12 +18,15 @@ import org.springframework.util.Assert;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.BankState;
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
+import ru.rik.cardsnew.service.telnet.SmsTask;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
 public class TaskCompleter implements Runnable{
 	private static final Logger logger = LoggerFactory.getLogger(TaskCompleter.class);		
@@ -33,7 +36,7 @@ public class TaskCompleter implements Runnable{
 	private final ConcurrentMap<Future<State>, State> map;
 	@Autowired private ChannelRepo chans;
 	@Autowired private BankRepo banks;
-
+	@Autowired private TelnetHelper telnetHandler;
 
 	@Autowired
 	public TaskCompleter(CompletionService<State> completionService,
@@ -75,6 +78,9 @@ public class TaskCompleter implements Runnable{
 				else if (result.getClazz() == Switcher.class) {
 					Switcher sw = (Switcher) result;
 					logger.debug("installing in channel {} card {}", sw.getName(), sw.getCardName());
+				}
+				else if (result.getClazz() == SmsTask.class) {
+					handleSms((SmsTask) result);
 				}
 			} catch (InterruptedException e) {
 				logger.info("interrupted");
@@ -129,13 +135,44 @@ public class TaskCompleter implements Runnable{
 		}
 	}
 	
-	private void applyBankStatus(BankStatus g) {
-//		logger.debug(g.toString());
-		
+	
+	private void applyBankStatus(BankStatus g) {		
 		BankState st = banks.findStateById(g.getId());
 		st.applyBankStatus(g);
 	}
 	
+	
+	private void handleSms(SmsTask smsTask) {
+		Channel ch = smsTask.getCh();
+		Channel pair = smsTask.getPair();
+		switch (smsTask.getPhase()) {
+		case FetchMain:
+			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
+			if (smsTask.getSmslist().size() > 0) {
+				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
+				addTask(getsms, ch.getState(chans));
+			}	
+			break;
+		case DeleteMain:	
+			System.out.println(ch.getName() + " delete main smses completed: ");
+			if (smsTask.getPair() != null) {
+				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
+				addTask(getsms, ch.getState(chans));
+			}	
+		case FetchPair:	
+			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist());
+			if (smsTask.getSmslist().size() > 0) {
+				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
+				addTask(getsms, ch.getState(chans));
+			}
+		case DeletePair:	
+			System.out.println(pair.getName() + " delete pair smses completed: ");
+			
+		default:
+			break;
+		}
+		
+	}
 
 	
 }

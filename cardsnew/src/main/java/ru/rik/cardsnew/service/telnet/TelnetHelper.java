@@ -28,12 +28,19 @@ public class TelnetHelper {
 	private static final Logger logger = LoggerFactory.getLogger(TelnetHelper.class);		
 	
 	private final Pattern beginP = Pattern.compile("^\\s*(\\d{1,2}),\\d{1,2},,\\d{1,3}\\s*(07.*)\\s*0*\\s*", Pattern.MULTILINE);
+	public final Pattern free = Pattern.compile("\\s*^\\s*.*free\\.\\s*\\]", Pattern.DOTALL);
 	private final int waitTime = 500; 
 	// private static final String NOT_SMS_START = "^\\+CMGL.*|^0$";
 
-	public TelnetHelper() {
-		
+	public static void main(String[] args) {
+		String str = "\n module 2: free.\n]";
+		TelnetHelper t = new TelnetHelper();
+//		Matcher matcher = t.free.matcher(str);
+		if (t.free.matcher(str).matches()) {
+			System.out.println("matches");
+		}
 	}
+	public TelnetHelper() {	}
 	
 
 	public TelnetClient getConnection (String server, int port, String user, String password) throws IOException, SocketException {
@@ -63,11 +70,18 @@ public class TelnetHelper {
 	
 	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module)  {
 		ArrayList<Sms> result = new ArrayList<>(); 
-		sendCmd(telnet, "state" + module, "]", 10);
+		String state = sendCmd(telnet, "state" + module, "]", 10);
+		System.out.println(state);
+		if (!free.matcher(state).matches()) {
+			sendCmd(telnet, "\u0018", "]", 10);
+			return result;    // channel isn't ready
+		}	
+		
+		System.out.println(state);
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
 		sendCmd(telnet, "AT+CMGF=0", "\n0\r\n", 10);
 		String resp = sendCmd(telnet, "AT+CMGL=4", "\r\n0\r\n", 10);
-
+		
 		if (resp != null && resp.trim().length() > 5) 
 			for (String str : resp.split("\\+CMGL: ")) {
 				Matcher matcher = beginP.matcher(str);
@@ -85,6 +99,7 @@ public class TelnetHelper {
 					sms.setOrigAddress(decoder.getOriginatingAddress().getNumber());
 					sms.setDate(decoder.getServiceCentreTimeStamp().getDate().getTime());
 					result.add(sms);
+					System.out.println("sms:" + sms.toString());
 				}
 			}
 		return result;
@@ -154,6 +169,7 @@ public class TelnetHelper {
 	}
 
 	public String sendCmd(TelnetClient telnet, String command, String prompt, int timeout) {
+		System.out.println("send command" + command);
 		try {
 			write(telnet, command);
 			return readUntil(telnet, prompt, timeout);
