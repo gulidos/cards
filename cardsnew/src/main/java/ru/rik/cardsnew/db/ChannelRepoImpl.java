@@ -22,6 +22,7 @@ import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Route;
+import ru.rik.cardsnew.domain.Sms;
 import ru.rik.cardsnew.domain.Trunk;
 
 @Repository
@@ -128,5 +129,13 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			chan.setCard(c);
 
 		makePersistent(chan);
+	}
+	
+	
+	@Override @Transactional
+	public void smsSave(List<Sms> list) {
+		for (Sms sms: list)
+			em.merge(sms);
+
 	}
 }

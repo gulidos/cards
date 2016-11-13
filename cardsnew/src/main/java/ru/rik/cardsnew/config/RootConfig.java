@@ -32,6 +32,7 @@ import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.http.HttpHelper;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
 @Configuration
 @EnableCaching
@@ -73,9 +74,9 @@ public class RootConfig implements SchedulingConfigurer {
 	}
 
 	@Bean(initMethod = "init")
-	public Cdrs cdrs() {
-		return new Cdrs();
-	}
+	public Cdrs cdrs() {return new Cdrs();}
+	
+	@Bean public TelnetHelper telnetHelper() {return new TelnetHelper();}
 
 	 @Bean (initMethod="init")
 	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}

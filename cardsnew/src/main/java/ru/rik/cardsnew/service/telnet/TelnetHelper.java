@@ -71,13 +71,13 @@ public class TelnetHelper {
 	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module)  {
 		ArrayList<Sms> result = new ArrayList<>(); 
 		String state = sendCmd(telnet, "state" + module, "]", 10);
-		System.out.println(state);
+//		System.out.println(state);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 10);
 			return result;    // channel isn't ready
 		}	
 		
-		System.out.println(state);
+//		System.out.println(state);
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
 		sendCmd(telnet, "AT+CMGF=0", "\n0\r\n", 10);
 		String resp = sendCmd(telnet, "AT+CMGL=4", "\r\n0\r\n", 10);
@@ -99,7 +99,7 @@ public class TelnetHelper {
 					sms.setOrigAddress(decoder.getOriginatingAddress().getNumber());
 					sms.setDate(decoder.getServiceCentreTimeStamp().getDate().getTime());
 					result.add(sms);
-					System.out.println("sms:" + sms.toString());
+//					System.out.println("sms:" + sms.toString());
 				}
 			}
 		return result;
@@ -169,7 +169,7 @@ public class TelnetHelper {
 	}
 
 	public String sendCmd(TelnetClient telnet, String command, String prompt, int timeout) {
-		System.out.println("send command" + command);
+//		System.out.println("send command" + command);
 		try {
 			write(telnet, command);
 			return readUntil(telnet, prompt, timeout);

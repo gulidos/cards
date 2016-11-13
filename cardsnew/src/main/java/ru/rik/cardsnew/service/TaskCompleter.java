@@ -148,7 +148,8 @@ public class TaskCompleter implements Runnable{
 		switch (smsTask.getPhase()) {
 		case FetchMain:
 			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0) {
+			if (smsTask.getSmslist().size() > 0 ) { //&& smsTask.getCard() != null
+				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
 				addTask(getsms, ch.getState(chans));
 			}	
@@ -161,7 +162,8 @@ public class TaskCompleter implements Runnable{
 			}	
 		case FetchPair:	
 			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0) {
+			if (smsTask.getSmslist().size() > 0) { //&& smsTask.getCard() != null
+				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
 			}

@@ -36,7 +36,7 @@ public class SmsTaskTest {
 				.line(Line.L2)
 				.build();
 		
-		SmsTask task = SmsTask.get(h, ch, pair);
+		SmsTask task = SmsTask.get(h, ch, null, pair, null);
 		task.setTelnetClient(mock(TelnetClient.class));
 		Assert.assertEquals(task.getPhase(), Phase.FetchMain);
 		
