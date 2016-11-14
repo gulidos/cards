@@ -107,7 +107,10 @@ public class TaskCompleter implements Runnable{
 			} else if (st.getClazz() == BankState.class) {
 				BankState bState = (BankState) st;
 				bState.setAvailable(false);
-			}
+			} else if (st.getClazz() == SmsTask.class) {
+				SmsTask smsTask = (SmsTask) st;
+				System.out.println();
+			}	
 		} else 
 			logger.error(e.getMessage(), e);
 	}

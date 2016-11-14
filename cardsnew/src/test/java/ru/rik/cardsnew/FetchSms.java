@@ -45,8 +45,8 @@ public class FetchSms {
 //			.filter(ch -> (ch.getCard() != null))
 			.peek(ch -> System.out.println(ch.getName() + " pair: " + ch.getPair(chans).getName()))
 			.forEach(ch -> taskCompleter.addTask(
-					() -> SmsTask.get(h, ch, null, ch.getPair(chans), null), 
-					ch.getState(chans)));
+					() -> SmsTask.get(h, ch, null, ch.getPair(chans), null),  
+					ch.getState(chans))); !!! тут
 			
 		
 //		for (Channel ch : chans.findAll()) {

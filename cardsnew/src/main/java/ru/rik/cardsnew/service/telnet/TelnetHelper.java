@@ -51,11 +51,13 @@ public class TelnetHelper {
 				telnet.setReaderThread(true); 
 				telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
 				telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
+				telnet.setConnectTimeout(10000);
+				
 			} catch (InvalidTelnetOptionException e) {
 				logger.error(e.getMessage(), e);
 			}
 			telnet.connect(server, port);
-			telnet.setSoTimeout(70000);
+			
 			wait(1000);
 			
 			readUntil(telnet, "username: ", 10);
@@ -64,12 +66,14 @@ public class TelnetHelper {
 			readUntil(telnet, "password: *", 10);
 			write(telnet, password); wait(waitTime);
 			readUntil(telnet, "]", 10);
+			telnet.setSoTimeout(70000);
 			return telnet;
 	}
 
 	
 	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module)  {
 		ArrayList<Sms> result = new ArrayList<>(); 
+		
 		String state = sendCmd(telnet, "state" + module, "]", 10);
 //		System.out.println(state);
 		if (!free.matcher(state).matches()) {
