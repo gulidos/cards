@@ -26,15 +26,22 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.BankRepoImpl;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.CardRepoImpl;
+import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.ChannelRepoImpl;
 
 @EnableTransactionManagement
 @EnableCaching
 @Configuration
 public class ConfigJpaLite {
-	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&characterEncoding=utf-8 ";
-
+//	ALTER TABLE _SMS CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci
+//	ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+	private static final String MYSQL_JDBC_HP2 = 
+			"jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false"
+			+ "&useUnicode=true&characterSetResults=utf8&amp;characterEncoding=UTF-8;";
 	public ConfigJpaLite() {}
 	
 	public DataSource dataSourceTarget() {
@@ -43,6 +50,7 @@ public class ConfigJpaLite {
 		ds.setUrl(MYSQL_JDBC_HP2);
 		ds.setUsername("root");
 		ds.setPassword("parallaxtal");
+		
 		return ds;
 	}
 
@@ -63,7 +71,10 @@ public class ConfigJpaLite {
 		jpaPropertiesMap.put("net.sf.ehcache.configurationResourceName", "ehcache.xml");
 		jpaPropertiesMap.put("hibernate.cache.use_structured_entries", "false");
 		jpaPropertiesMap.put("hibernate.generate_statistics", "true");
-		jpaPropertiesMap.put("hibernate.cache.auto_evict_collection_cache", "true"); 
+		jpaPropertiesMap.put("hibernate.cache.auto_evict_collection_cache", "true");
+		jpaPropertiesMap.put("hibernate.connection.CharSet", "utf8");
+		jpaPropertiesMap.put("hibernate.connection.characterEncoding", "utf8");
+		jpaPropertiesMap.put("hibernate.connection.useUnicode", "true");
 		return jpaPropertiesMap;
 	}
 
@@ -85,6 +96,7 @@ public class ConfigJpaLite {
 		adapter.setDatabase(Database.MYSQL);
 		adapter.setShowSql(true);
 		adapter.setGenerateDdl(true);
+		
 		adapter.setDatabasePlatform("org.hibernate.dialect.MySQL5InnoDBDialect");
 		return adapter;
 	}
@@ -107,12 +119,11 @@ public class ConfigJpaLite {
 		return cmfb;
 	}
 	
-//	@Bean public ChannelRepo chanRepo() {return new ChannelRepoImpl();}
+	@Bean public ChannelRepo chanRepo() {return new ChannelRepoImpl();}
 	@Bean(initMethod = "init") 
 	public CardRepo cardRepo() {return new CardRepoImpl();}
 
-	// @Bean public TrunksStates trunksStats() { return new TrunksStates();
-	// }
+	 @Bean public BankRepo bankRepo() {return new BankRepoImpl();}
 	@Configuration
 	@EnableTransactionManagement
 	public static class TransactionConfig {

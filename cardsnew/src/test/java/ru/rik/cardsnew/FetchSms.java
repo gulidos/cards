@@ -28,7 +28,7 @@ public class FetchSms {
 	
 	public FetchSms() {	}
 
-//	@Test
+	@Test
 	@Transactional
 
 	public void getSms() throws InterruptedException {
@@ -55,7 +55,7 @@ public class FetchSms {
 //			taskCompleter.addTask(getsms, ch.getState(chans));
 //		}
 		
-		Thread.sleep(120000);
+		Thread.sleep(600000);
 
 	}
 	

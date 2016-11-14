@@ -34,24 +34,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching
 @EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
 public class JpaConfig {
-//	private static final String H2_JDBC_URL = "jdbc:h2:~/dbcards;mv_store=false";
-//	private static final String H2_JDBC_MEM = "jdbc:h2:mem:test_mem";
-	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&useUnicode=yes&amp;characterEncoding=UTF-8";
+//	ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
+	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&ampuseUnicode=true"
+			+ "&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf-8;";
 	  public DataSource dataSourceTarget() {
-//	    EmbeddedDatabaseBuilder ds = new EmbeddedDatabaseBuilder();
-//	    edb.setType(EmbeddedDatabaseType.H2);
-//		  JdbcDataSource ds = new JdbcDataSource();
 		  DriverManagerDataSource ds = new DriverManagerDataSource();
 		  ds.setDriverClassName("com.mysql.jdbc.Driver");
 		  ds.setUrl(MYSQL_JDBC_HP2);
 		  ds.setUsername("root");
 		  ds.setPassword("parallaxtal");
-
-	   // edb.addScript("schema.sql");
-	   // edb.addScript("spittr/db/jpa/test-data.sql"); 
-//	    EmbeddedDatabase embeddedDatabase = edb.build();
-//	    return embeddedDatabase;
 		  return ds;
 	  }
 
@@ -68,7 +60,7 @@ public class JpaConfig {
   private Map<String,?> jpaProperties() {
 	  Map<String,String> jpaPropertiesMap = new HashMap<String,String>(); 
 //	  jpaPropertiesMap.put("hibernate.dialect","org.hibernate.dialect.H2Dialect"); 
-//	  jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
+	  jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
 	  jpaPropertiesMap.put("hibernate.cache.use_second_level_cache", "true");
 	  jpaPropertiesMap.put("hibernate.cache.use_query_cache", "true");
 	  jpaPropertiesMap.put("hibernate.cache.region.factory_class", 
@@ -77,6 +69,10 @@ public class JpaConfig {
 	  jpaPropertiesMap.put("hibernate.cache.use_structured_entries","false");
 	  jpaPropertiesMap.put("hibernate.generate_statistics","true");
 	  jpaPropertiesMap.put("hibernate.cache.auto_evict_collection_cache","true"); //!!! without it collections caches dont refresh
+	  jpaPropertiesMap.put("hibernate.connection.CharSet","utf8");
+	  jpaPropertiesMap.put("hibernate.connection.characterEncoding","utf8");
+	  jpaPropertiesMap.put("hibernate.connection.useUnicode","true");
+
 	  return jpaPropertiesMap;
   }
   

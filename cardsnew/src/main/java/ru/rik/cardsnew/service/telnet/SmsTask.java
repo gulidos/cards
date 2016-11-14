@@ -57,7 +57,7 @@ public class SmsTask implements MyState {
 			.allsms(allsms)
 			.phase(Phase.FetchMain)
 			.build();
-		
+		smstask.getSmslist().stream().forEach(s -> {s.setChannel(ch);	s.setCard(card);});
 		return smstask;
 	}
 
@@ -75,6 +75,7 @@ public class SmsTask implements MyState {
 		System.out.println(phase + " " + ch.getName());
 		if (pair != null)
 			smslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
+		smslist.stream().forEach(s -> {s.setChannel(pair);	s.setCard(pairCard);});
 		return this;
 	}
 	
