@@ -44,6 +44,7 @@ public class SmsTask implements MyState {
 	
 
 	public static SmsTask get(TelnetHelper h, Channel ch, Card card, Channel pair, Card pairCard) throws SocketException, IOException {
+	
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
@@ -111,14 +112,14 @@ public class SmsTask implements MyState {
 	public static void main(String[] args) throws SocketException, IOException {
 		TelnetHelper h = new TelnetHelper();
 		Channel ch = Channel.builder()
-				.box(Box.builder().ip("172.17.1.34").build())
-				.line(Line.L6)
+				.box(Box.builder().ip("192.168.5.102").build())
+				.line(Line.L1)
 				.build();
 		
 		
 		Channel pair = Channel.builder()
-				.box(Box.builder().ip("172.17.1.34").build())
-				.line(Line.L5)
+				.box(Box.builder().ip("192.168.5.102").build())
+				.line(Line.L2)
 				.build();
 		
 		SmsTask task = get(h, ch, null, pair, null);

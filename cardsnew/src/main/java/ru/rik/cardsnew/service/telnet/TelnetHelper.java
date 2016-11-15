@@ -78,6 +78,7 @@ public class TelnetHelper {
 //		System.out.println(state);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 10);
+//			logger.debug("channel {} is not ready", telnet.getRemoteAddress() + " " + telnet.getRemotePort() );
 			return result;    // channel isn't ready
 		}	
 		
