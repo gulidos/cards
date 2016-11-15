@@ -36,8 +36,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import ru.rik.cardsnew.config.RootConfig.MyUncaughtExceptionHandler;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
+import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
 @EnableTransactionManagement
@@ -161,7 +165,13 @@ public class ConfigJpaH2 {
 	public TaskCompleter taskCompleter() {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}
-	
+
+	 @Bean (initMethod="init")
+	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+	@Bean public Switcher switcher() {return new Switcher();}
+	@Bean(initMethod = "start", destroyMethod = "stop")
+	public AsteriskEvents asteriskEvents() {return new AsteriskEvents();}
+	@Bean public CardsStates cardsStates() {return new CardsStates();}
 //	@Bean(initMethod = "init") 
 //	public CardRepo cardRepo() {return new CardRepoImpl();}
 

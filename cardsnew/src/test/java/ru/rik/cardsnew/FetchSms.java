@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rik.cardsnew.config.RootConfig;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
@@ -30,6 +31,8 @@ public class FetchSms {
 	@Autowired private ChannelRepo chans;
 	@Autowired private CardRepo cards;
 	@Autowired private TaskCompleter taskCompleter;
+	@Autowired private GroupRepo groups;
+
 	
 	public FetchSms() {	}
 
@@ -38,7 +41,7 @@ public class FetchSms {
 
 	public void getSms() throws InterruptedException {
 		Set<Channel> telnetJobs = new HashSet<>();
-	
+//		groups.findById(7).getChannels().stream()
 		chans.findAll().stream()
 //			.filter(ch -> (ch.getCard() != null))
 			.peek(ch -> System.out.println(ch.getName() + " pair: " + ch.getPair(chans).getName()))
