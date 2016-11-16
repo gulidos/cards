@@ -117,7 +117,7 @@ public class TelnetHelper {
 			sendCmd(telnet, "AT+CMGD=" + sms.getNum(), "0\r\n", 10);
 			i++;
 		}
-		sendCmd(telnet, "\u0018", "]", 10);
+		sendCmd(telnet, "\u0018", "]", 3000);
 		return i;
 	}
 
@@ -153,7 +153,7 @@ public class TelnetHelper {
 		} catch (SocketTimeoutException et) {
 			logger.error(et.getMessage(), et);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return sb.toString();
 	}
@@ -169,7 +169,7 @@ public class TelnetHelper {
 			out.flush();
 //			System.out.println("send command: " + value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -179,7 +179,7 @@ public class TelnetHelper {
 			write(telnet, command);
 			return readUntil(telnet, prompt, timeout);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -188,7 +188,7 @@ public class TelnetHelper {
 		try {
 			telnet.disconnect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 

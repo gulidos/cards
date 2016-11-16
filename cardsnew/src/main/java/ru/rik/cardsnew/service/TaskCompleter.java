@@ -1,6 +1,5 @@
 package ru.rik.cardsnew.service;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Callable;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
+import lombok.Getter;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.BankState;
@@ -34,7 +34,7 @@ public class TaskCompleter implements Runnable{
 
 	private final CompletionService<State> completionServ;
 	private final ThreadPoolTaskExecutor executor;
-	private final ConcurrentMap<Future<State>, State> map;
+	@Getter private final ConcurrentMap<Future<State>, State> map;
 	@Autowired private ChannelRepo chans;
 	@Autowired private BankRepo banks;
 	@Autowired private TelnetHelper telnetHandler;
@@ -168,14 +168,16 @@ public class TaskCompleter implements Runnable{
 			} else if (smsTask.getPair() != null) {
 				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			}
+			} else 
+				smsTask.disconnect();
 			break;
 		case DeleteMain:	
 			System.out.println(ch.getName() + " delete main smses completed: ");
 			if (smsTask.getPair() != null) {
 				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			}	
+			} else
+				smsTask.disconnect();
 			break;
 		case FetchPair:	
 			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist());
@@ -183,27 +185,20 @@ public class TaskCompleter implements Runnable{
 				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			} else {
-				try {
-					smsTask.getTelnetClient().disconnect();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
+			} else 
+				smsTask.disconnect();
 			break;
 		case DeletePair:	
 			System.out.println(pair.getName() + " delete pair smses completed: ");
-			try {
-				smsTask.getTelnetClient().disconnect();
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			}
+			smsTask.disconnect();
 			break;
 		default:
 			break;
 		}
 		
 	}
+
+
 
 	
 }

@@ -2,7 +2,10 @@ package ru.rik.cardsnew;
 
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +21,7 @@ import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
@@ -32,14 +36,14 @@ public class FetchSms {
 	@Autowired private CardRepo cards;
 	@Autowired private TaskCompleter taskCompleter;
 	@Autowired private GroupRepo groups;
-
+	
 	
 	public FetchSms() {	}
 
 	@Test
 	@Transactional
 
-	public void getSms() throws InterruptedException {
+	public void getSms() throws InterruptedException, ExecutionException {
 		Set<Channel> telnetJobs = new HashSet<>();
 //		groups.findById(7).getChannels().stream()
 		chans.findAll().stream()
@@ -55,11 +59,24 @@ public class FetchSms {
 						telnetJobs.add(ch);
 						st.setStatus(Status.Smsfetch);
 						taskCompleter.addTask(() -> SmsTask.get(h, ch, null, peer, null), st);
-
 					}
 			}); 
-
-		Thread.sleep(1200000);
+		
+		
+		Map<Future<State>, State> map  = taskCompleter.getMap();
+		for (int i = 0; i < 100; i++) {
+			Thread.sleep(1000);
+			System.out.println("size: " + map.size());
+			for (Future<State> s: map.keySet()) {
+				if (map.get(s).getClass() == ChannelState.class) {
+					ChannelState st = (ChannelState) map.get(s);
+					System.out.println(st.getName() + " " + st.getStatus());
+				}
+			}	
+//			map.forEach(action);
+//			forEach((Future<State> f) -> System.out.println(f.toString()));
+		}
+		
 
 	}
 	

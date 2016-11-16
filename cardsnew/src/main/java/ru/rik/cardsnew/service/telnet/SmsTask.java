@@ -72,6 +72,7 @@ public class SmsTask implements MyState {
 	
 	
 	public SmsTask fetchPair(TelnetHelper h) {
+
 		phase = Phase.FetchPair;
 		System.out.println(phase + " " + ch.getName());
 		if (pair != null)
@@ -94,6 +95,13 @@ public class SmsTask implements MyState {
 		return this;
 	}
 	
+	public void disconnect() {
+		try {
+			telnetClient.disconnect();
+		} catch (IOException e) {
+			logger.error(e.getMessage(),e);
+		}
+	}
 	
 	@Override public long getId() {return ch.getId();	}
 	@Override public void setId(long id) {}

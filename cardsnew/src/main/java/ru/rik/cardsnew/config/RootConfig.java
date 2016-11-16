@@ -54,24 +54,16 @@ public class RootConfig implements SchedulingConfigurer {
 	public AppInitializer appInitializer() {return new AppInitializer();}
 
 	@Bean
-	public CardsStates cardsStates() {
-		return new CardsStates();
-	}
+	public CardsStates cardsStates() {return new CardsStates();}
 
 	@Bean
-	public HttpHelper httpHelper() {
-		return new HttpHelper();
-	}
+	public HttpHelper httpHelper() {return new HttpHelper();}
 
 	@Bean
-	public PeriodicTasks periodicTasks() {
-		return new PeriodicTasks();
-	}
+	public PeriodicTasks periodicTasks() {return new PeriodicTasks();}
 
 	@Bean
-	public AsyncTasks asyncTasks() {
-		return new AsyncTasks();
-	}
+	public AsyncTasks asyncTasks() {return new AsyncTasks();}
 
 	@Bean(initMethod = "init")
 	public Cdrs cdrs() {return new Cdrs();}
@@ -87,9 +79,7 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean public Switcher switcher() {return new Switcher();}
 
 	@Bean
-	MyThreadFactory threadFactory() {
-		return new MyThreadFactory();
-	}
+	MyThreadFactory threadFactory() {return new MyThreadFactory();}
 
 	@Bean
 	public ThreadPoolTaskExecutor taskExecutor() {
@@ -100,9 +90,11 @@ public class RootConfig implements SchedulingConfigurer {
 		executor.setThreadNamePrefix("MyExecutor-");
 		executor.setThreadFactory(threadFactory());
 		executor.initialize();
+		
 		return executor;
 	}
 
+	
 	@Bean(destroyMethod = "shutdown")
 	public TaskExecutor taskSheduleExecutor() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -111,6 +103,11 @@ public class RootConfig implements SchedulingConfigurer {
 		return scheduler;
 	}
 
+//	@Bean 
+//	public BlockingQueue<Future<State>> blockingQueue() {
+//		return new LinkedBlockingQueue<Future<State>>(1000);
+//	}
+	
 	@Bean
 	public CompletionService<State> completionService() {
 		CompletionService<State> service = new ExecutorCompletionService<State>(taskExecutor());
@@ -151,4 +148,16 @@ public class RootConfig implements SchedulingConfigurer {
 			return t;
 		}
 	}
+	
+//	public class MyCompletionService<State> extends ExecutorCompletionService<State> {
+//		private final BlockingQueue<Future<State>> completionQueue;
+//		
+//		public MyCompletionService(Executor executor, BlockingQueue<Future<State>> completionQueue) {
+//			super(executor, completionQueue);
+//			this.completionQueue = completionQueue;
+//		}
+//
+//		public BlockingQueue<Future<State>> getCompletionQueue() {return completionQueue;}
+//		
+//	}
 }
