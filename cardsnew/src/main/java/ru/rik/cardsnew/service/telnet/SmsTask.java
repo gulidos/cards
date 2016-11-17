@@ -32,7 +32,8 @@ public class SmsTask implements MyState {
 	
 	@Builder
 	public SmsTask(Channel ch, Card card, Channel pair, Card pairCard, TelnetClient telnetClient, List<Sms> allsms, Phase phase) {
-		super();
+		if (ch == null || card == null)
+			throw new IllegalArgumentException("channel or cards can not be null!");
 		this.ch = ch;
 		this.card = card;
 		this.pairCard = pairCard;
@@ -44,7 +45,6 @@ public class SmsTask implements MyState {
 	
 
 	public static SmsTask get(TelnetHelper h, Channel ch, Card card, Channel pair, Card pairCard) throws SocketException, IOException {
-	
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
@@ -63,7 +63,7 @@ public class SmsTask implements MyState {
 	}
 
 	
-	public SmsTask deleteMain(TelnetHelper h){
+	public SmsTask deleteMain(TelnetHelper h) {
 		phase = Phase.DeleteMain;
 		System.out.println(phase + " " + ch.getName());
 		h.deleteSms(telnetClient, smslist);

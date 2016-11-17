@@ -22,6 +22,7 @@ import ru.rik.cardsnew.domain.Trunk;
 import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.domain.events.Cdr;
 import ru.rik.cardsnew.domain.repo.Cdrs;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConfigJpaH2.class)
 public class ChannelRepoTest {

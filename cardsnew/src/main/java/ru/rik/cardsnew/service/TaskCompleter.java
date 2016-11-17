@@ -16,6 +16,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
 import lombok.Getter;
+import lombok.Setter;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.BankState;
@@ -35,13 +36,12 @@ public class TaskCompleter implements Runnable{
 	private final CompletionService<State> completionServ;
 	private final ThreadPoolTaskExecutor executor;
 	@Getter private final ConcurrentMap<Future<State>, State> map;
-	@Autowired private ChannelRepo chans;
+	@Autowired @Setter private ChannelRepo chans;
 	@Autowired private BankRepo banks;
 	@Autowired private TelnetHelper telnetHandler;
 
 	@Autowired
-	public TaskCompleter(CompletionService<State> completionService,
-			ThreadPoolTaskExecutor taskExecutor ) {
+	public TaskCompleter(CompletionService<State> completionService, ThreadPoolTaskExecutor taskExecutor ) {
 		this.completionServ = completionService;
 		this.executor = taskExecutor;
 		this.map = new ConcurrentHashMap<>();
@@ -155,13 +155,13 @@ public class TaskCompleter implements Runnable{
 	}
 	
 	
-	private void handleSms(SmsTask smsTask) {
+	protected void handleSms(SmsTask smsTask) {
 		Channel ch = smsTask.getCh();
 		Channel pair = smsTask.getPair();
 		switch (smsTask.getPhase()) {
 		case FetchMain:
 			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0 ) { //&& smsTask.getCard() != null
+			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) { 
 				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
 				addTask(getsms, ch.getState(chans));
@@ -181,7 +181,7 @@ public class TaskCompleter implements Runnable{
 			break;
 		case FetchPair:	
 			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0) { //&& smsTask.getCard() != null
+			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) { 
 				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
 				addTask(getsms, ch.getState(chans));

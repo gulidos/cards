@@ -35,6 +35,7 @@ public class ChannelState implements MyState {
 	private volatile SimSet simset;
 	@Getter private volatile Status status;
 	private volatile Date lastStatusChange;
+	@Getter private volatile Date lastSmsFetchDate;
 	
 	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
@@ -44,7 +45,8 @@ public class ChannelState implements MyState {
 		this.lastGsmUpdate = new Date(0); // set date the oldest when create State 
 		this.nextGsmUpdate = new Date(0);  
 		this.nextSimSetUpdate = new Date(0);
-		this.lastSimSetUpdate = new Date(0);	
+		this.lastSimSetUpdate = new Date(0);
+		this.lastSmsFetchDate = new Date(0);
 	}
 	
 	public ChannelState (Status s, Date lastStatusChange ) {
@@ -54,6 +56,7 @@ public class ChannelState implements MyState {
 		this.nextGsmUpdate = new Date(0);  
 		this.nextSimSetUpdate = new Date(0);
 		this.lastSimSetUpdate = new Date(0);
+		this.lastSmsFetchDate = new Date(0);
 	}
 	
 	public void applyGsmStatus(GsmState gs) {
@@ -84,7 +87,9 @@ public class ChannelState implements MyState {
 		case Inchange: 
 		case PeerInchange: setChangeStatus(s); break;
 		case Smsfetch: 
-		case UssdRec:	setMantainStatus(s); break;
+			lastSmsFetchDate = new Date(); 
+			setMantainStatus(s); break;
+		case UssdReq:	setMantainStatus(s); break;
 		default:
 			throw new IllegalArgumentException("Unknown channel's status: " + s.toString());
 		}
@@ -108,7 +113,7 @@ public class ChannelState implements MyState {
 				logger.info("channel {} is failed", getName());
 			}	
 			break;
-		case Ready:	case UssdRec: case Smsfetch: case Unreach:	 // has been Unreachable, become Failed
+		case Ready:	case UssdReq: case Smsfetch: case Unreach:	 // has been Unreachable, become Failed
 			this.status = s; //Become Failed
 			lastStatusChange = new Date();
 			nextSimSetUpdate = Util.getNowPlusSec(Settings.FAIL_INTERVAL);
@@ -253,7 +258,7 @@ public class ChannelState implements MyState {
 	public Class<?> getClazz() {return ChannelState.class;	}
 	
 	public enum Status {
-		Ready, Failed, Unreach, AwaitForPeer, Inchange, PeerInchange, Smsfetch, UssdRec;
+		Ready, Failed, Unreach, AwaitForPeer, Inchange, PeerInchange, Smsfetch, UssdReq;
 	}
 
 }
