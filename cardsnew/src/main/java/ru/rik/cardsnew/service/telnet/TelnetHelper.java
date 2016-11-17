@@ -98,6 +98,7 @@ public class TelnetHelper {
 					int smscInfoLength = Convert.hexToInt(msgstr.substring(0, 2));
 					msgstr = msgstr.substring(2);
 					msgstr = msgstr.substring(smscInfoLength * 2);
+					
 					SMSDeliver decoder = new SMSDeliver(msgstr);
 					decoder.decode();
 					sms.setEncodedmsg(decoder.getMessage());
