@@ -160,7 +160,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return sb.toString();
+		return sb != null ? sb.toString() : "";
 	}
 
 	private void wait(int timeout) {

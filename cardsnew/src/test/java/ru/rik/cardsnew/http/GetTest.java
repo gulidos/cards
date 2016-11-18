@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jsoup.Connection;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,13 +27,7 @@ public class GetTest {
 			Connection con = Jsoup.connect("http://192.168.200.45:8080/gsmstatus.cgi")
 					.header("Authorization", "Basic " + encodedString)
 					.followRedirects(true);
-			Document doc = null;
-			try {
-				 doc = con.data("nPortNum", "1").post();
-			} catch (HttpStatusException  e) {
-				e.printStackTrace();
-			}
-			
+				Document doc = con.data("nPortNum", "1").post();
 //			System.out.println(doc.html());	
 			Element imob  = doc.select("input[name=COPS]").first();	
 			System.out.println("Operator: " + (imob != null ?  imob.attributes().get("value") : ""));

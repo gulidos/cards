@@ -106,9 +106,9 @@ public class ChannController {
 			if (box != null)
 				list = chans.findBoxChans(box);
 		}
-		
-		for (Channel ch: list ) 
-			ch.setState(chans.findStateById(ch.getId()));
+		if (list != null)
+			for (Channel ch: list ) 
+				ch.setState(chans.findStateById(ch.getId()));
 
 		return list;
 	}

@@ -74,7 +74,6 @@ public class SmsTask implements MyState {
 	
 	public SmsTask fetchPair(TelnetHelper h) {
 		phase = Phase.FetchPair;
-		System.out.println("doing fetchPair" + phase + " " + pair.getName());
 		if (pair != null) {
 			pairSmslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
 		}	
@@ -85,7 +84,6 @@ public class SmsTask implements MyState {
 	
 	public SmsTask deletePair(TelnetHelper h){
 		phase = Phase.DeletePair;
-		System.out.println("deletePair " + phase + " " + pair.getName());
 		if (pair != null)
 			h.deleteSms(telnetClient, pairSmslist);
 		disconnect();

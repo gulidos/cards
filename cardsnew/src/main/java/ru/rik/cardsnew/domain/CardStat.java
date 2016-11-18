@@ -72,7 +72,7 @@ public class CardStat implements State {
 			asr = 0;
 			return;
 		}	
-		double total = 0;
+		int total = 0;
 		double answered = 0;
 		for (String k : lastCdrs.keySet()) {
 			Cdr cdr = lastCdrs.get(k);
