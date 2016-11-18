@@ -254,11 +254,11 @@
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
     <groupId>org.smslib</groupId>
     <artifactId>smslib</artifactId>
     <version>3.5.4</version>
-</dependency>
+</dependency> -->
 		
 	</dependencies>
 </project>

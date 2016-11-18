@@ -1,26 +1,23 @@
 package ru.rik.cardsnew.service;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.Future;
 
 import org.apache.commons.net.telnet.TelnetClient;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.db.CardRepo;
@@ -30,71 +27,93 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Sms;
-import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.SmsTask.Phase;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
+import ru.rik.cardsnew.service.telnet.TelnetHelperMock;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConfigJpaH2.class)
 public class SmsTests {
 	@Autowired private  CardRepo cards;
 	@Autowired private  ChannelRepo chans;
-	private CompletionService<State> completionService;
-	private ThreadPoolTaskExecutor taskExecutor;
+	@Autowired private TaskCompleter taskCompleter;
+	
 	private TelnetHelper th;
 	private TelnetClient tc;
-	private TaskCompleter taskCompleter;
 	private Channel ch;
 	Card card;
 	ChannelState st;
 	Channel pair;
+	Card cardPair;
 	
 	public SmsTests() {	}
 	
-//	@Before
+	@Before
 	public void init() throws SocketException, IOException {
-		completionService = mock(CompletionService.class);
-		when(completionService.submit(any())).thenReturn(mock(Future.class));
-		taskExecutor = mock(ThreadPoolTaskExecutor.class);
-		th = mock(TelnetHelper.class);
 		tc = mock(TelnetClient.class);
-		taskCompleter = new TaskCompleter( completionService, taskExecutor );
+//		th = mock(TelnetHelper.class);
+		th = new TelnetHelperMock(tc);
+		
 		taskCompleter.setChans(chans);
-		when(th.getConnection(any(), anyInt(), any(), any())).thenReturn(tc);
+		taskCompleter.setTelnetHandler(th);
+//		when(th.getConnection(any(), anyInt(), any(), any())).thenReturn(tc);
 		ch = chans.findById(1);
 		card = cards.findById(1);
 		chans.switchCard(ch, card);
 		st = chans.findStateById(ch.getId());
-		pair = ch.getPair(chans);
+		pair = chans.findById(2);
+		cardPair = cards.findById(2);
 		st.setStatus(Status.Ready);
 		st.setStatus(Status.Smsfetch);
 	}
 	
-//	@Test @Transactional
-	public void checkMainChannelNoSms() throws IOException {
-		SmsTask task = new SmsTask(ch, card, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
+	@Test 
+	public void checkMainChannelNoSms() throws IOException, InterruptedException {
+		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
+		Thread.sleep(20);
 		Assert.assertEquals(task.getPhase(), Phase.FetchMain);
 		verify(tc, times(1)).disconnect();
 	}
 	
-//	@Test(expected = IllegalArgumentException.class)
-	@Transactional
+	@Test(expected = IllegalArgumentException.class)
 	public void checkCardIsNull() throws IOException {
 		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
 	}
 	
-//	@Test @Transactional
-	public void ifMainHasSmsDeleteThem() throws InterruptedException {
+	@Test 
+	public void ifMainHasSmsDeleteThem() throws InterruptedException, IOException {
+		System.out.println("telnet mock: " + tc);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
-		SmsTask task = new SmsTask(ch, card, pair, null, tc, smslist, Phase.FetchMain); 
+		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain); 
 		taskCompleter.handleSms(task);
-		
-//		Assert.assertEquals(task.getPhase(), Phase.DeleteMain);
-//		verify(th, times(1)).deleteSms(tc, smslist);
+		Thread.sleep(200);
+		Assert.assertEquals(task.getPhase(), Phase.DeleteMain);
+		verify(tc, times(1)).disconnect();
 	}
 	
+	@Test 
+	public void ifThereIsPairFetchFromIt() throws InterruptedException, IOException {
+		Assert.assertNotNull(ch);
+		Assert.assertNotNull(card);
+		Assert.assertNotNull(pair);
+		Assert.assertNotNull(cardPair);
+		
+		SmsTask task = new SmsTask(ch, card, pair, cardPair, tc, new ArrayList<Sms>(), Phase.FetchMain);
+		List<Sms> smslist = new ArrayList<Sms>();
+		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
+		task.setPairSmslist(smslist);
+		
+		taskCompleter.handleSms(task);
+		
+		
+		Thread.sleep(300);
+//		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
+		verify(tc, times(1)).disconnect();
+		
+
+	}
 }

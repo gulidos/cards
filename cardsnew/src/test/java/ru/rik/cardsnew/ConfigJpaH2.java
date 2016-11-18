@@ -43,6 +43,7 @@ import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
+import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 
 @EnableTransactionManagement
 @EnableCaching
@@ -125,7 +126,7 @@ public class ConfigJpaH2 {
 	
 	@Bean(initMethod = "init")
 	public Cdrs cdrs() {return new Cdrs();}
-	@Bean public TelnetHelper telnetHelper() {return new TelnetHelper();}
+	@Bean public TelnetHelper telnetHelper() {return new TelnetHelperImpl();}
 	
 	@Bean
 	MyThreadFactory threadFactory() {

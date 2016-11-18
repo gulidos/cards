@@ -25,7 +25,8 @@ public class SmsTask implements MyState {
 	@Getter private final Card card;
 	@Getter private final Channel pair;
 	@Getter private final Card pairCard;
-	@Getter private List<Sms> smslist;
+	@Getter @Setter private List<Sms> smslist;
+	@Getter @Setter private List<Sms> pairSmslist;
 	@Getter @Setter private TelnetClient telnetClient;
 	@Getter @Setter private Phase phase; 
 	
@@ -72,12 +73,11 @@ public class SmsTask implements MyState {
 	
 	
 	public SmsTask fetchPair(TelnetHelper h) {
-
 		phase = Phase.FetchPair;
 		System.out.println(phase + " " + ch.getName());
 		if (pair != null)
-			smslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
-		smslist.stream().forEach(s -> {s.setChannel(pair);	s.setCard(pairCard);});
+			pairSmslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
+		pairSmslist.stream().forEach(s -> {s.setChannel(pair);	s.setCard(pairCard);});
 		return this;
 	}
 	
@@ -86,17 +86,14 @@ public class SmsTask implements MyState {
 		phase = Phase.DeletePair;
 		System.out.println(phase + " " + ch.getName());
 		if (pair != null)
-			h.deleteSms(telnetClient, smslist);
-		try {
-			getTelnetClient().disconnect();
-		} catch (IOException e) {
-			logger.error(e.getMessage(),e);
-		}
+			h.deleteSms(telnetClient, pairSmslist);
+		disconnect();
 		return this;
 	}
 	
 	public void disconnect() {
 		try {
+			System.out.println("doing disconnect " + telnetClient);
 			telnetClient.disconnect();
 		} catch (IOException e) {
 			logger.error(e.getMessage(),e);
@@ -118,7 +115,7 @@ public class SmsTask implements MyState {
 	
 
 	public static void main(String[] args) throws SocketException, IOException {
-		TelnetHelper h = new TelnetHelper();
+		TelnetHelper h = new TelnetHelperImpl();
 		Channel ch = Channel.builder()
 				.box(Box.builder().ip("192.168.5.102").build())
 				.line(Line.L1)
@@ -147,4 +144,13 @@ public class SmsTask implements MyState {
 		
 
 	}
+
+
+//	@Override
+//	public String toString() {
+//		return "SmsTask [ch=" + ch.getName() + ", card=" + card.getName() + ", pair=" + pair.getName() 
+//		+ ", pairCard=" + pairCard.getName() + ", smslist="
+//				+ smslist + ", pairSmslist=" + pairSmslist + ", telnetClient=" + telnetClient + ", phase=" + phase
+//				+ "]";
+//	}
 }

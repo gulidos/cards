@@ -38,7 +38,7 @@ public class TaskCompleter implements Runnable{
 	@Getter private final ConcurrentMap<Future<State>, State> map;
 	@Autowired @Setter private ChannelRepo chans;
 	@Autowired private BankRepo banks;
-	@Autowired private TelnetHelper telnetHandler;
+	@Autowired @Setter private TelnetHelper telnetHandler;
 
 	@Autowired
 	public TaskCompleter(CompletionService<State> completionService, ThreadPoolTaskExecutor taskExecutor ) {
@@ -161,35 +161,42 @@ public class TaskCompleter implements Runnable{
 		switch (smsTask.getPhase()) {
 		case FetchMain:
 			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) { 
+			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
 				chans.smsSave(smsTask.getSmslist());
 				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
 				addTask(getsms, ch.getState(chans));
 			} else if (smsTask.getPair() != null) {
 				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			} else 
+			} else {
+				System.out.println("Disconnect from " + smsTask.getPhase());
 				smsTask.disconnect();
+			}	
 			break;
 		case DeleteMain:	
 			System.out.println(ch.getName() + " delete main smses completed: ");
 			if (smsTask.getPair() != null) {
 				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			} else
+			} else {
+				System.out.println("Disconnect from " + smsTask.getPhase());
 				smsTask.disconnect();
+			}	
 			break;
 		case FetchPair:	
-			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist());
-			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) { 
-				chans.smsSave(smsTask.getSmslist());
+			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist() + smsTask.toString());
+			if (smsTask.getPairSmslist().size() > 0 && smsTask.getCard() != null) { 
+				chans.smsSave(smsTask.getPairSmslist());
 				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
-			} else 
+			} else {
+				System.out.println("Disconnect from " + smsTask.getPhase());
 				smsTask.disconnect();
+			}	
 			break;
 		case DeletePair:	
 			System.out.println(pair.getName() + " delete pair smses completed: ");
+			System.out.println("Disconnect from " + smsTask.getPhase());
 			smsTask.disconnect();
 			break;
 		default:
