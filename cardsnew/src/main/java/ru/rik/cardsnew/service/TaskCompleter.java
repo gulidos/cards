@@ -184,8 +184,9 @@ public class TaskCompleter implements Runnable{
 			}	
 			break;
 		case FetchPair:	
-			System.out.println(pair.getName() + " got pair smses: " + smsTask.getSmslist() + smsTask.toString());
-			if (smsTask.getPairSmslist().size() > 0 && smsTask.getCard() != null) { 
+			System.out.println(pair.getName() + " got pair smses: " 
+					+ smsTask.getPairSmslist() + smsTask.getPairCard().getName());
+			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
 				chans.smsSave(smsTask.getPairSmslist());
 				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
 				addTask(getsms, ch.getState(chans));
@@ -196,8 +197,6 @@ public class TaskCompleter implements Runnable{
 			break;
 		case DeletePair:	
 			System.out.println(pair.getName() + " delete pair smses completed: ");
-			System.out.println("Disconnect from " + smsTask.getPhase());
-			smsTask.disconnect();
 			break;
 		default:
 			break;

@@ -100,7 +100,7 @@ public class ConfigJpaH2 {
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
 		adapter.setDatabase(Database.H2);
-		adapter.setShowSql(true);
+		adapter.setShowSql(false);
 		adapter.setGenerateDdl(false);
 		adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
 		return adapter;

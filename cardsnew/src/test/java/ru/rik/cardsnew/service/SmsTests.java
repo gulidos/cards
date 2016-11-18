@@ -16,8 +16,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.db.CardRepo;
@@ -49,7 +51,9 @@ public class SmsTests {
 	
 	public SmsTests() {	}
 	
-	@Before
+	@Before 
+	@Transactional
+	@Rollback(false) 
 	public void init() throws SocketException, IOException {
 		tc = mock(TelnetClient.class);
 //		th = mock(TelnetHelper.class);
@@ -64,11 +68,21 @@ public class SmsTests {
 		st = chans.findStateById(ch.getId());
 		pair = chans.findById(2);
 		cardPair = cards.findById(2);
+		chans.switchCard(pair, cardPair);
 		st.setStatus(Status.Ready);
 		st.setStatus(Status.Smsfetch);
 	}
 	
-	@Test 
+//	
+//	@After
+//	public void destroy () {
+//		chans.switchCard(ch, null);
+//		chans.switchCard(pair, null);
+//		
+//	}
+	
+	
+	@Test
 	public void checkMainChannelNoSms() throws IOException, InterruptedException {
 		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
@@ -101,12 +115,16 @@ public class SmsTests {
 		Assert.assertNotNull(card);
 		Assert.assertNotNull(pair);
 		Assert.assertNotNull(cardPair);
+		Assert.assertNotNull(ch.getCard());
+		Assert.assertNotNull(pair.getCard());
+		Assert.assertTrue(card.getChannelId() != 0);
+		Assert.assertTrue(cardPair.getChannelId() != 0);
 		
-		SmsTask task = new SmsTask(ch, card, pair, cardPair, tc, new ArrayList<Sms>(), Phase.FetchMain);
+//		SmsTask task = new SmsTask(ch, card, pair, cardPair, tc, new ArrayList<Sms>(), Phase.FetchMain);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
-		task.setPairSmslist(smslist);
-		((TelnetHelperMock) th).setSmses(smslist);
+		((TelnetHelperMock) th).setPairSmses(smslist);
+		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair);
 		
 		taskCompleter.handleSms(task);
 		

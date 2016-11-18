@@ -2,6 +2,7 @@ package ru.rik.cardsnew.service.telnet;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.net.telnet.TelnetClient;
@@ -12,9 +13,12 @@ import ru.rik.cardsnew.domain.Sms;
 
 public class TelnetHelperMock implements TelnetHelper {
 	private TelnetClient telnetClient;
-	@Getter @Setter private List<Sms> smses;
+	@Getter @Setter private List<Sms> mainSmses = new ArrayList<>();
+	@Getter @Setter private List<Sms> pairSmses = new ArrayList<>();
+	int i;
 	
-	public TelnetHelperMock(TelnetClient telnetClient) {	
+	public TelnetHelperMock(TelnetClient telnetClient) {
+		i = 1;
 		this.telnetClient = telnetClient;
 	}
 
@@ -22,13 +26,18 @@ public class TelnetHelperMock implements TelnetHelper {
 	public TelnetClient getConnection(String server, int port, String user, String password)
 			throws IOException, SocketException {
 		wait(30);
+	
 		return telnetClient;
 	}
 
 	@Override
 	public List<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) {
 		wait(30);
-		return smses;
+	if (i == 1) {
+		i++;
+		return mainSmses;
+	} else 
+		return pairSmses;
 	}
 
 	@Override
