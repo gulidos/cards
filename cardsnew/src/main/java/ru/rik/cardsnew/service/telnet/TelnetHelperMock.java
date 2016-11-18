@@ -2,15 +2,18 @@ package ru.rik.cardsnew.service.telnet;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.net.telnet.TelnetClient;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.rik.cardsnew.domain.Sms;
 
 public class TelnetHelperMock implements TelnetHelper {
 	private TelnetClient telnetClient;
+	@Getter @Setter private List<Sms> smses;
+	
 	public TelnetHelperMock(TelnetClient telnetClient) {	
 		this.telnetClient = telnetClient;
 	}
@@ -23,9 +26,9 @@ public class TelnetHelperMock implements TelnetHelper {
 	}
 
 	@Override
-	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) {
+	public List<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) {
 		wait(30);
-		return null;
+		return smses;
 	}
 
 	@Override

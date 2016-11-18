@@ -106,12 +106,13 @@ public class SmsTests {
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
 		task.setPairSmslist(smslist);
+		((TelnetHelperMock) th).setSmses(smslist);
 		
 		taskCompleter.handleSms(task);
 		
 		
 		Thread.sleep(300);
-//		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
+		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
 		verify(tc, times(1)).disconnect();
 		
 

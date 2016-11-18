@@ -1,7 +1,7 @@
 package ru.rik.cardsnew.service.telnet;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.telnet.TelnetClient;
 
@@ -21,7 +21,7 @@ public class GetSms {
 //			TelnetClient tc  = t.getConnection("192.168.5.206" , 8223, "voip", "1234");
 			for (int i = 1; i <= 2; i++) {
 				System.out.println("module " + i);
-				ArrayList<Sms> allsms = t.FetchSmsFromChannel(tc, i);
+				List<Sms> allsms = t.FetchSmsFromChannel(tc, i);
 				if (allsms.size() > 0) {
 					for (Sms sms : allsms) {
 						System.out.println(sms.getDate().getTime() + " From: " + sms.getOrigAddress() + " Sms: "
