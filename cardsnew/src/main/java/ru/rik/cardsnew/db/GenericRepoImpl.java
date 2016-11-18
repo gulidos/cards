@@ -47,8 +47,8 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 	@PostConstruct
 	protected void init() {
 		logger.debug("post constructor initialisation {} repo", entityClass.getName());
-		for (T entity : findAll())
-			addStateIfAbsent(entity);
+		for (T entity : findAll()) 
+			addStateIfAbsent(entity);	
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 
 	// ============== State methods =====================
 	/**
-     * Returns the State for a given entity. If there weren't such state, it is a new State
+     * Returns the State for a given entity. If there wasn't such state, it is a new State
      * otherwise - existing state
      */
 	@Override
@@ -162,9 +162,17 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-		} else 
-			if (!entity.getName().equals(state.getName())) 
+		} else {
+			String stateOldName = state.getName();
+			if (!entity.getName().equals(stateOldName)) {
+				statsByName.remove(stateOldName);
+				if (statsByName.putIfAbsent(entity.getName(), state) != null)
+					throw new IllegalStateException("stat with name " + state.getName() 
+					+ " already exists in " +	state.getClazz());
 				state.setName(entity.getName());
+				
+			}	
+		}	
 		return state;
 	}
 

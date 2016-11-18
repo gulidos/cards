@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,46 +43,61 @@ public class SmsTests {
 	private TelnetHelper th;
 	private TelnetClient tc;
 	private Channel ch;
-	Card card;
-	ChannelState st;
-	Channel pair;
-	Card cardPair;
+	private Card card;
+	private ChannelState st;
+	private Channel pair;
+	private Card cardPair;
 	
 	public SmsTests() {	}
 	
 	@Before 
 	@Transactional
-	@Rollback(false) 
-	public void init() throws SocketException, IOException {
+	public void init() throws SocketException, IOException, InterruptedException {
 		tc = mock(TelnetClient.class);
-//		th = mock(TelnetHelper.class);
 		th = new TelnetHelperMock(tc);
-		
 		taskCompleter.setChans(chans);
 		taskCompleter.setTelnetHandler(th);
-//		when(th.getConnection(any(), anyInt(), any(), any())).thenReturn(tc);
-		ch = chans.findById(1);
-		card = cards.findById(1);
-		chans.switchCard(ch, card);
+		initChannels();
+	}
+
+	
+	private void initChannels() throws InterruptedException {
+
+		
+		ch = chans.switchCard(chans.findById(1), cards.findById(1));
 		st = chans.findStateById(ch.getId());
-		pair = chans.findById(2);
-		cardPair = cards.findById(2);
-		chans.switchCard(pair, cardPair);
 		st.setStatus(Status.Ready);
 		st.setStatus(Status.Smsfetch);
+		card = ch.getCard();		
+	
+		pair = chans.switchCard(chans.findById(2), cards.findById(2));
+		st = chans.findStateById(pair.getId());
+		st.setStatus(Status.Ready);
+		st.setStatus(Status.Smsfetch);
+		cardPair = pair.getCard();
 	}
 	
-//	
+
 //	@After
-//	public void destroy () {
-//		chans.switchCard(ch, null);
-//		chans.switchCard(pair, null);
+	public void destroy () {
+		chans.switchCard(ch, null);
+		chans.switchCard(pair, null);
+//		for (int i = 1; i < 6; i++) chans.removeStateIfExists(i);
+//		chans.init();
 //		
-//	}
+//		for (int i = 1; i < 16; i++) cards.removeStateIfExists(i);
+//		cards.init();
+	}
 	
 	
 	@Test
 	public void checkMainChannelNoSms() throws IOException, InterruptedException {
+		Assert.assertNotNull(pair);
+		Assert.assertNotNull(cardPair);
+		Assert.assertNotNull(ch.getCard());
+		Assert.assertNotNull(pair.getCard());
+		Assert.assertTrue(card.getChannelId() != 0);
+		Assert.assertTrue(cardPair.getChannelId() != 0);
 		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
 		Thread.sleep(20);
@@ -93,12 +107,20 @@ public class SmsTests {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void checkCardIsNull() throws IOException {
+		Assert.assertNotNull(ch.getCard());
+		Assert.assertNotNull(pair.getCard());
+		Assert.assertTrue(card.getChannelId() != 0);
+		Assert.assertTrue(cardPair.getChannelId() != 0);		
 		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
 	}
 	
 	@Test 
 	public void ifMainHasSmsDeleteThem() throws InterruptedException, IOException {
+		Assert.assertNotNull(ch.getCard());
+		Assert.assertNotNull(pair.getCard());
+		Assert.assertTrue(card.getChannelId() != 0);
+		Assert.assertTrue(cardPair.getChannelId() != 0);
 		System.out.println("telnet mock: " + tc);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
@@ -111,24 +133,17 @@ public class SmsTests {
 	
 	@Test 
 	public void ifThereIsPairFetchFromIt() throws InterruptedException, IOException {
-		Assert.assertNotNull(ch);
-		Assert.assertNotNull(card);
-		Assert.assertNotNull(pair);
-		Assert.assertNotNull(cardPair);
 		Assert.assertNotNull(ch.getCard());
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
 		Assert.assertTrue(cardPair.getChannelId() != 0);
 		
-//		SmsTask task = new SmsTask(ch, card, pair, cardPair, tc, new ArrayList<Sms>(), Phase.FetchMain);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
 		((TelnetHelperMock) th).setPairSmses(smslist);
 		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair);
 		
 		taskCompleter.handleSms(task);
-		
-		
 		Thread.sleep(300);
 		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
 		verify(tc, times(1)).disconnect();

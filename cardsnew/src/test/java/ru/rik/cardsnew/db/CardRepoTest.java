@@ -3,6 +3,7 @@ package ru.rik.cardsnew.db;
 import java.text.ParseException;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,20 +28,30 @@ public class CardRepoTest {
 	@Autowired private  ChannelRepo chans;
 	@Autowired private Cdrs cdrs;
 	@Autowired private GroupRepo groups;
-	@Autowired private  TrunkRepo trunks;
 	
-	public CardRepoTest() {
-	}
+	
+	public CardRepoTest() {	}
 
 	@Before
 	public void loadData() throws ParseException {
 	
 	}
-
-	@Test @Transactional
-	public void getCards() {
-		Assert.assertTrue(cards.findAll().size() > 0);
+	
+	@After
+	public void resetState() {
+		for (int i = 1; i <= cards.getCount(); i++)
+			cards.removeStateIfExists(i);
+		cards.init();
 	}
+	
+	@Test 
+	public void checkCount() {
+		long size1 = cards.findAll().size();
+		long size2 = cards.getCount();
+		System.out.println("size1: " + size1 + " size2: " + size2);
+	}
+
+
 	
 	@Test @Transactional
 	public void getAllAvailableForSwitching() {

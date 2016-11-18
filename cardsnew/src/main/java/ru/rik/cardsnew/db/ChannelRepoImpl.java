@@ -29,7 +29,6 @@ import ru.rik.cardsnew.domain.Trunk;
 public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> implements ChannelRepo {
 	private static final long serialVersionUID = 1L;
 	static final Logger logger = LoggerFactory.getLogger(ChannelRepoImpl.class);
-//	private static ChannelRepoImpl repo;
 	@Autowired private CardRepo cards;
 	
 	public ChannelRepoImpl() {
@@ -41,11 +40,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	public void init() {
 		super.init();
 		logger.debug("initializing static variable");
-//		repo = this;
 	}
-
-//	public static ChannelRepoImpl get() {return repo;	}
-//	public static void set(ChannelRepo repo2) {repo = (ChannelRepoImpl) repo2;}
 
 	@Override
 	public Channel findPair(Channel ch) {
@@ -99,14 +94,14 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	 */
 	@Override @Transactional
 //	(propagation = Propagation.REQUIRES_NEW)
-	public void switchCard(Channel ch, Card c) {
+	public Channel switchCard(Channel ch, Card c) {
 		Assert.notNull(ch);
-		
 		Channel chan = findById(ch.getId());
 		if (chan.getVersion() != ch.getVersion())
 			throw new ConcurrentModificationException("Channel " + chan.getName() + " was modified");	
-		Channel peer = chan.getPair(this);
 		chan.getState(this).setStatus(Status.Inchange);
+
+		Channel peer = chan.getPair(this);
 		if (peer!=null)
 			peer.getState(this).setStatus(Status.PeerInchange);
 		
@@ -115,7 +110,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			oldCard.setChannelId(0); // set to null channel Id
 			CardStat st = oldCard.getStat(cards);
 			if (!st.setFree(false, true))
-				logger.error("card {} was free, but expected not free");
+				logger.error("card {} was free, but expected not free", oldCard.getName());
 		}	
 		
 		if (c != null) {
@@ -128,7 +123,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		} else 
 			chan.setCard(c);
 
-		makePersistent(chan);
+		return makePersistent(chan);
 	}
 	
 	

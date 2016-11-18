@@ -24,9 +24,10 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 
 	/** Transactional.
 	 * Fixes changing card in channel into database
+	 * @return 
 	 * @throws ConcurrentModificationException 
 	 */
-	void switchCard(Channel chan, Card c);
+	Channel switchCard(Channel chan, Card c);
 
 	List<Channel> getSorted(Trunk t, Route route);
 	

@@ -41,7 +41,6 @@ import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
-import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 
@@ -167,8 +166,8 @@ public class ConfigJpaH2 {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}
 
-	 @Bean (initMethod="init")
-	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
+//	 @Bean (initMethod="init")
+//	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 	@Bean public Switcher switcher() {return new Switcher();}
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public AsteriskEvents asteriskEvents() {return new AsteriskEvents();}

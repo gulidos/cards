@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class ChannelRepoTest {
 	private Route route;
 	public ChannelRepoTest() {	}
 	
+	@Before
+	public void initBefore() {
+		
+	}
+	
 	
 	@Test @Transactional
 	public void insertCard() {
@@ -43,7 +49,6 @@ public class ChannelRepoTest {
 		long channelId = 1l;
 		
 		Card c = cards.findById(cardId);
-	
 		Channel ch  = chans.findById(channelId);
 		Assert.assertNotNull(c);
 		Assert.assertNotNull(ch);
@@ -51,6 +56,11 @@ public class ChannelRepoTest {
 		Assert.assertEquals(c.getChannelId(), 0);
 		
 		// switching
+
+		chans.findAll().stream()
+		.forEach((Channel cha) -> System.out.println("!!=== " + cha.getId() + " " + cha.getName()));
+//		+ " state: " + cha.getState(chans) != null ?  cha.getState(chans).getId() : 999));
+		Assert.assertNotNull(ch.getState(chans));
 		chans.switchCard(ch, c);
 		
 		Assert.assertEquals(ch.getCard(), c);
@@ -113,6 +123,7 @@ public class ChannelRepoTest {
 	public void ifOverallRemainTimeOfCardInChanIsOverSkip() throws ParseException {
 		activate5channels();
 		route = Route.builder().oper(Oper.GREEN).regcode(1).build();
+
 		List<Channel> list = chans.getSorted(t,  route);
 		System.out.println(list.size());
 		Assert.assertTrue(list.size() == 5);
@@ -135,7 +146,8 @@ public class ChannelRepoTest {
 		chans.makeTransient(ch);
 		
 		ChannelState cs = chans.findStateById(ch.getId());
-		Assert.assertNull(cs);	
+		Assert.assertNull(cs);
+		
 	}
 	
 	@Test @Transactional
@@ -149,38 +161,48 @@ public class ChannelRepoTest {
 		Assert.assertEquals(ch.getState(chans).getName(), name);
 	}
 	
-	
+	@Transactional
 	private void activate5channels() {
 		route = Route.builder().oper(Oper.GREEN).regcode(77).build();
 		t = trunks.findById(1);
+		t.getChannels().forEach(ch -> ch.hashCode()); // reinit (reread) each of the channel
 		
-		for (int i = 1; i < 6; i++) 
+		for (int i = 0; i <= chans.getCount(); i++) 
 			chans.removeStateIfExists(i);
 		chans.init();
 		
-		for (int i = 1; i < 16; i++) 
+		for (int i = 0; i <= cards.getCount(); i++) 
 			cards.removeStateIfExists(i);
 		cards.init();
 		
 		Channel ch1 = chans.findById(1); 
+		Assert.assertNotNull(ch1);
 		chans.switchCard(ch1, cards.findById(1));
 		ch1.getState(chans).setStatus(Status.Ready);
 		
-		Channel ch2 = chans.findById(2); 
+		Channel ch2 = chans.findById(2);
+		Assert.assertNotNull(ch2);
 		chans.switchCard(ch2, cards.findById(2));
 		ch2.getState(chans).setStatus(Status.Ready);
 		
-		Channel ch3 = chans.findById(3); 
+		Channel ch3 = chans.findById(3);
+		Assert.assertNotNull(ch3);
 		chans.switchCard(ch3, cards.findById(3));
 		ch3.getState(chans).setStatus(Status.Ready);
 		
-		Channel ch4 = chans.findById(4); 
+		Channel ch4 = chans.findById(4);
+		Assert.assertNotNull(ch4);
 		chans.switchCard(ch4, cards.findById(4));
 		ch4.getState(chans).setStatus(Status.Ready);
 		
-		Channel ch5 = chans.findById(5); 
+		Channel ch5 = chans.findById(5);
+		Assert.assertNotNull(ch5);
 		chans.switchCard(ch5, cards.findById(5));
 		ch5.getState(chans).setStatus(Status.Ready);
+		
+		Assert.assertNotNull(ch1.getCard());
 	}
+
+
 	
 }

@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.rik.cardsnew.ConfigJpaLite;
+import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.domain.Sms;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ConfigJpaLite.class)
+@ContextConfiguration(classes = ConfigJpaH2.class)
 
 public class SmsTest {
 	@Autowired private ChannelRepo chans;
