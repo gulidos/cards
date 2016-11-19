@@ -19,4 +19,6 @@ public interface TelnetHelper {
 
 	void disconnect(TelnetClient telnet);
 
+	String sendUssd(TelnetClient telnet, int module);
+
 }

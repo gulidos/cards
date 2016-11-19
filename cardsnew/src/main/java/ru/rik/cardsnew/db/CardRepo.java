@@ -32,4 +32,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	void init();
 
+	void setChannelToNull(List<Card> list);
+
 }

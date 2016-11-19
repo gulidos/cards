@@ -131,6 +131,13 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	public void smsSave(List<Sms> list) {
 		for (Sms sms: list)
 			em.merge(sms);
-
+	}
+	
+	@Override @Transactional
+	public void setCardToNull(List<Channel> list) {
+		list.stream()
+		.filter(ch -> ch.isEnabled())
+		.peek(ch-> ch.setCard(null))
+		.forEach(ch-> makePersistent(ch));
 	}
 }

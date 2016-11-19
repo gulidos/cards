@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.domain;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +12,10 @@ public class UssdTest {
 	static String encoded = "0421043F0430044104380431043E0020043704300020043E04310440043004490435043D0438043500210020041C044B0020043D0430043F0440043004320438043C0020043E04420432043504420020043D04300020041204300448002004370430043F0440043E04410020043200200053004D0053";
 	static String decoded = "Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS";
 
-
+	static String encodedResp = "+CUSD: 0,\"0421043F0430044104380431043E0020043704300020043E0431044004300449043504" +
+	"3D0438043500210020041C044B0020043D0430043F0440043004320438043C0020043E0442043204" +
+	"3504420020043D04300020041204300448002004370430043F0440043E0441002004320020005300" +
+	"4D0053\",72";
 
 	@Test
 	public void decoderTest() {
@@ -28,5 +32,14 @@ public class UssdTest {
 		String res = task.encodeReq("*100#");
 		Assert.assertEquals("002a0031003000300023", res);
 	}
+	
+	@Test
+	public void encodeFullRespTest() {
+		UssdTask task = new UssdTask();
+		task.setEncodedResp(encodedResp);
+		String decodedResp = task.getDecoded();
+		Assert.assertEquals(decodedResp, decoded);
+	}
+	
 
 }

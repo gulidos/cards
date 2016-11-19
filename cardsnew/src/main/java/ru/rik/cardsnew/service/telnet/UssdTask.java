@@ -1,5 +1,7 @@
 package ru.rik.cardsnew.service.telnet;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,14 +10,16 @@ import org.apache.commons.net.telnet.TelnetClient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 @NoArgsConstructor
 public class UssdTask {
 	@Getter private Channel ch;
 	@Getter private Card card;
-	@Getter @Setter private TelnetClient telnetClient;	
-	@Getter @Setter private String decodedAnswer;
+	@Getter @Setter private TelnetClient telnetClient;
+	@Getter @Setter private String encodedResp;
+	@Getter @Setter private String decodedResp;
 	
 	private static final Pattern MSG_PATTERN = Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$");
 	private static final Pattern pd = Pattern.compile("(\\d)");
@@ -29,6 +33,32 @@ public class UssdTask {
 		this.telnetClient = telnetClient;
 	}
 
+	
+	public static UssdTask get(TelnetHelper h, Channel ch, Card card) throws SocketException, IOException {
+		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
+				ch.getLine().getTelnetport(),
+				Box.DEF_USER, Box.DEF_PASSWORD);
+		UssdTask task = new UssdTask(ch, card, tc);
+		return task;
+	}
+	
+	public UssdTask sendUssd(TelnetHelper h) {
+		encodedResp = h.sendUssd(telnetClient, ch.getLine().getNport() + 1);
+		return this;	
+	}
+	
+	
+	public String getDecoded() {
+		String str = null;
+		Matcher m = MSG_PATTERN.matcher(encodedResp);
+		if (m.find())  
+			str = m.group(2);
+		byte[] responded = pduToBytes(str);
+		return decodeUcs2Encoding(null, responded);
+	}	
+		
+	
+	
 	public String encodeReq(String req) {
 		String result = null;
 		Matcher m = pd.matcher(req);
@@ -64,24 +94,4 @@ public class UssdTask {
 				throw new RuntimeException(e);
 			}
 		}
-		
-		
-//		if ($ARGV[1] ne '') {
-//	        $ussd_req = request_encode ($ARGV[1]);
-//	} else {
-//	        if ($operator eq 'mts')  {
-//	                #$ussd_req = "00230031003000300023";
-//	                $ussd_req = "002a0031003000300023";
-//	        } else {
-//	                $ussd_req = "002a0031003000300023";
-//	        }
-
-		
-//		sub request_encode {
-//	        my $str = $_[0];
-//	        $str =~ s/(\d)/003$1/g;
-//	        $str =~ s/(\*)/002a/g;
-//	        $str =~ s/(\#)/0023/g;
-//	        return $str;
-//	}
 }

@@ -32,5 +32,6 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	List<Channel> getSorted(Trunk t, Route route);
 	
 	@Transactional void smsSave(List<Sms> list);
+	void setCardToNull(List<Channel> list);
 
 }

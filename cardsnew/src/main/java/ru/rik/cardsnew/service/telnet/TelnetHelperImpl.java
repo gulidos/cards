@@ -77,10 +77,8 @@ public class TelnetHelperImpl implements TelnetHelper {
 		ArrayList<Sms> result = new ArrayList<>(); 
 		
 		String state = sendCmd(telnet, "state" + module, "]", 10);
-//		System.out.println(state);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 10);
-//			logger.debug("channel {} is not ready", telnet.getRemoteAddress() + " " + telnet.getRemotePort() );
 			return result;    // channel isn't ready
 		}	
 		
@@ -112,6 +110,20 @@ public class TelnetHelperImpl implements TelnetHelper {
 			}
 		return result;
 
+	}
+	
+	@Override
+	public String sendUssd(TelnetClient telnet, int module) {
+		String state = sendCmd(telnet, "state" + module, "]", 10);
+		if (!free.matcher(state).matches()) {
+			sendCmd(telnet, "\u0018", "]", 10);
+			return null;
+		}	
+		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
+		String r = sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
+		System.out.println(r);
+		String encoded = sendCmd(telnet, "AT+CUSD=1,\"002a0031003000300023\"", "\n0\r\n", 10);
+		return encoded;
 	}
 
 	
