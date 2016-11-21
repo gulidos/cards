@@ -57,7 +57,7 @@ public class TelnetHelperMock implements TelnetHelper {
 	}
 
 	@Override
-	public String sendUssd(TelnetClient telnet, int module) {
+	public String sendUssd(TelnetClient telnet, int module, String s) {
 		return null;
 	}
 }

@@ -8,11 +8,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.config.RootConfig;
@@ -31,7 +29,7 @@ import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = ConfigJpaH2.class)
 @ContextConfiguration(classes = RootConfig.class)
 
@@ -87,17 +85,16 @@ public class FetchSms {
 				Place place = Place.getInstance(ss.getCardPos());
 				Bank bank = banks.findByName(ss.getBankIp()) ;
 				Card c = cards.findCardsByPlace(place, bank);
-				chans.switchCard(ss.getCh(), c);
+				try {
+					chans.switchCard(ss.getCh(), c);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			});
-//			.forEach(cards.findCardsByPlace(place, bank));
-		
-		
-		
-//			.map(st -> st.getSimset())
-//			.forEach(ss-> System.out.println(ss.getCh().getName() + " " + ss.getBankIp() + " " + ss.getCardPos()));
+
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void getSms() throws InterruptedException, ExecutionException {
 		Set<Channel> telnetJobs = new HashSet<>();
@@ -115,7 +112,7 @@ public class FetchSms {
 						telnetJobs.add(ch);
 						st.setStatus(Status.Ready);
 						st.setStatus(Status.Smsfetch);
-						taskCompleter.addTask(() -> SmsTask.get(h, ch, null, peer, null), st);
+						taskCompleter.addTask(() -> SmsTask.get(h, ch, ch.getCard(), peer, peer.getCard()), st);
 					}
 			}); 
 		
@@ -125,12 +122,13 @@ public class FetchSms {
 			Thread.sleep(3000);
 			System.out.println("size: " + map.size());
 			for (Future<State> s: map.keySet()) {
-
-				if (map.get(s).getClass() == ChannelState.class) {
-					ChannelState st = (ChannelState) map.get(s);
-					if (st.getStatus() == Status.Smsfetch)
-						System.out.println(st.getName() + " " + st.getStatus());
-				}
+				System.out.println(map.get(s).getName() + " " + map.get(s).getClass() + " " );
+//				map.get(s).getClass();
+//				if (map.get(s).getClass() == ChannelState.class) {	
+//					ChannelState st = (ChannelState) map.get(s);
+//					if (st.getStatus() == Status.Smsfetch)
+//						System.out.println(st.getName() + " " + st.getStatus());
+//				}
 			}	
 
 		}

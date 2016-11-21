@@ -113,17 +113,16 @@ public class TelnetHelperImpl implements TelnetHelper {
 	}
 	
 	@Override
-	public String sendUssd(TelnetClient telnet, int module) {
+	public String sendUssd(TelnetClient telnet, int module, String encodedReq) {
 		String state = sendCmd(telnet, "state" + module, "]", 10);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 10);
 			return null;
 		}	
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
-		String r = sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
-		System.out.println(r);
-		String encoded = sendCmd(telnet, "AT+CUSD=1,\"002a0031003000300023\"", "\n0\r\n", 10);
-		return encoded;
+		sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
+		String encodedResp = sendCmd(telnet, "AT+CUSD=1,\"" + encodedReq + "\"", "\n0\r\n", 10);
+		return encodedResp;
 	}
 
 	
