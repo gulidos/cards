@@ -68,8 +68,6 @@ public class UssdTask {
 		String str = null;
 		Matcher m = MSG_PATTERN.matcher(encodedResp);
 		if (m.find()) {
-			System.out.println(m.group(1));
-			System.out.println(m.group(2));
 			str = m.group(2);
 		} 
 		
@@ -95,20 +93,20 @@ public class UssdTask {
 	
 	public float getBalance() {
 		float balance = 0;
-		String b = null;
+		String str = null;
 		if (ch.getGroup().getOper() == Oper.GREEN) {
 			Matcher m = greenBalance.matcher(encodedResp);
-			if (m.find())  b = m.group(1);
+			if (m.find())  str = m.group(1);
 		} else {
 			Matcher m = yellowBalance.matcher(encodedResp);
-			
 			if (m.find()) {
-				b = m.group(2);
-				System.out.println("matched " + m.group(1) + " " + m.group(2));
+				str = m.group(2);
+				if (m.group(1).contains("Минус") || m.group(1).contains("Minus"))
+					str = "-"+str;
 			}
 		}
-		balance = Float.parseFloat(b);
-		System.out.println("balance: " + b);
+		balance = Float.parseFloat(str);
+		System.out.println("balance: " + str);
 		return balance;
 	}
 	

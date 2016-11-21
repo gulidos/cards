@@ -1,7 +1,7 @@
-INSERT INTO  _LIMIT  ( id ,  descr ,  f ,  name ,  t ,  version ,  value )
+INSERT INTO  _LIMIT  ( id ,  descr ,  f ,  name ,  t ,  version  )
 VALUES
-	(1, 'limit_test', 50, 'test', 70, 1, NULL),
-	(2, 'limit big', 70, 'big', 100, 0, NULL);
+	(1, 'limit_test', 50, 'test', 70, 1),
+	(2, 'limit big', 70, 'big', 100, 0);
 
 INSERT INTO  _GRP  ( id ,  name ,  oper ,  version ,  descr )
 VALUES

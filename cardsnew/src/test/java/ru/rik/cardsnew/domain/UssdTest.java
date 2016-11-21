@@ -98,9 +98,9 @@ public class UssdTest {
 		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.YELLOW).build()).build();
 		task.setCh(ch);
 		task.setCard(new Card());
-		task.setEncodedResp("Баланс 174.60 р.Внимание! Похолодание");
+		task.setEncodedResp("Минус 174.60 р.Внимание! Похолодание");
 		System.out.println(task.getBalance());
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
 	}
 	
 	public static void main(String[] args) throws SocketException, IOException {
