@@ -243,7 +243,6 @@ public class ChannController {
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
-			logger.debug("State: {}", state.toString());
 				if (action.equals("cancel")) {
 //					String message = chan.toString() + " edit cancelled";
 //					redirectAttrs.addFlashAttribute("message", message);

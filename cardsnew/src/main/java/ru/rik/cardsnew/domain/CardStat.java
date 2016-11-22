@@ -3,6 +3,7 @@ package ru.rik.cardsnew.domain;
 import java.text.DecimalFormat;
 import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +33,7 @@ public class CardStat implements State {
 	@Getter private volatile int todayMin;
 	@Getter private volatile int todayOffnet;
 	@Getter private volatile int todayMsk;
-	@Getter private volatile int todayCalls;
+	private volatile AtomicInteger todayCalls = new AtomicInteger(0);
 	
 
 	public CardStat() {} //needed !! 
@@ -44,14 +45,14 @@ public class CardStat implements State {
 	public void setCard(Card card) {
 		this.id = card.getId();
 		this.name = card.getName();
-		this.todayMinTotal = this.todayCalls  = this.todayMin = 0;
+		this.todayMinTotal =  this.todayMin = 0;
 		this.acd  = this.asr = 0;
 	}
 
 	public void applyCdr(Cdr cdr, Card card, Channel ch, Cdrs cdrs) {
 		if (cdr.isToday()) {
 			todayMinTotal += cdr.getMin();
-			todayCalls++;
+			todayCalls.incrementAndGet();
 			todayMin += cdr.getMinOper();
 			if (Settings.MSK_REGCODE.equals(cdr.getRegcode()))
 				todayMsk += cdr.getMinOper();
@@ -125,7 +126,8 @@ public class CardStat implements State {
 
 	
 	public void resetDaylyCounters() {
-		todayMinTotal = todayMin = todayCalls= 0;
+		todayMinTotal = todayMin =  0;
+		todayCalls.set(0);
 	}
 
 	public Card getCard() {
@@ -166,6 +168,7 @@ public class CardStat implements State {
 	}
 
 	
+	public int getTodayCalls() {return todayCalls.get();}
 	
 	@Override public long getId() {return id;}
 	@Override public String getName() {return name;}

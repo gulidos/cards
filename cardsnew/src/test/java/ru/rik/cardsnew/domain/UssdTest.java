@@ -101,6 +101,11 @@ public class UssdTest {
 		task.setEncodedResp("Минус 174.60 р.Внимание! Похолодание");
 		System.out.println(task.getBalance());
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		
+		task.setEncodedResp("Minus 174.60 р.Внимание! Похолодание");
+		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		task.setEncodedResp("- 174.60 р.Внимание! Похолодание");
+		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
 	}
 	
 	public static void main(String[] args) throws SocketException, IOException {

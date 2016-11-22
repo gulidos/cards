@@ -1,5 +1,7 @@
 package ru.rik.cardsnew;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletionService;
@@ -169,14 +171,15 @@ public class ConfigJpaH2 {
 //	 @Bean (initMethod="init")
 //	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 	@Bean public Switcher switcher() {return new Switcher();}
+	
 	@Bean(initMethod = "start", destroyMethod = "stop")
-	public AsteriskEvents asteriskEvents() {return new AsteriskEvents();}
+	public AsteriskEvents asteriskEvents() {
+//		return new AsteriskEvents();
+		return mock(AsteriskEvents.class);
+	}
+	
 	@Bean public CardsStates cardsStates() {return new CardsStates();}
-//	@Bean(initMethod = "init") 
-//	public CardRepo cardRepo() {return new CardRepoImpl();}
 
-	// @Bean public TrunksStates trunksStats() { return new TrunksStates();
-	// }
 	@Configuration
 	@EnableTransactionManagement
 	public static class TransactionConfig {
