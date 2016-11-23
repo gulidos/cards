@@ -23,14 +23,15 @@ public class UssdTask {
 	@Getter @Setter private String encodedResp;
 	@Getter @Setter private String decodedResp;
 	
-	private static final Pattern MSG_PATTERN = Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$", Pattern.MULTILINE);
+	private static final Pattern MSG_PATTERN = 
+			Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$"
+					, Pattern.MULTILINE);
 	private static final Pattern pd = Pattern.compile("(\\d)");
 	private static final Pattern ps = Pattern.compile("(\\*)");
 	private static final Pattern pp = Pattern.compile("(\\#)");
 	
 	private static final Pattern greenBalance = Pattern.compile("(^\\-*\\d{1,4}[.,]\\d\\d)(р.*)", Pattern.MULTILINE);
 	private static final Pattern yellowBalance = 
-//			Pattern.compile("^(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?).*"
 			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);
 

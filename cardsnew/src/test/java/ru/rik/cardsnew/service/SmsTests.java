@@ -44,7 +44,7 @@ public class SmsTests {
 	private TelnetClient tc;
 	private Channel ch;
 	private Card card;
-	private ChannelState st;
+	private ChannelState st, pairSt;
 	private Channel pair;
 	private Card cardPair;
 	
@@ -71,9 +71,9 @@ public class SmsTests {
 		card = ch.getCard();		
 	
 		pair = chans.switchCard(chans.findById(2), cards.findById(2));
-		st = chans.findStateById(pair.getId());
-		st.setStatus(Status.Ready);
-		st.setStatus(Status.Smsfetch);
+		pairSt = chans.findStateById(pair.getId());
+		pairSt.setStatus(Status.Ready);
+		pairSt.setStatus(Status.Smsfetch);
 		cardPair = pair.getCard();
 	}
 	
@@ -103,6 +103,8 @@ public class SmsTests {
 		Thread.sleep(20);
 		Assert.assertEquals(task.getPhase(), Phase.FetchMain);
 		verify(tc, times(1)).disconnect();
+		Assert.assertEquals(st.getStatus(), Status.Ready);
+
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -113,6 +115,7 @@ public class SmsTests {
 		Assert.assertTrue(cardPair.getChannelId() != 0);		
 		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
 		taskCompleter.handleSms(task);
+		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
 	
 	@Test 
@@ -129,6 +132,7 @@ public class SmsTests {
 		Thread.sleep(200);
 		Assert.assertEquals(task.getPhase(), Phase.DeleteMain);
 		verify(tc, times(1)).disconnect();
+		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
 	
 	@Test 
@@ -147,7 +151,8 @@ public class SmsTests {
 		Thread.sleep(300);
 		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
 		verify(tc, times(1)).disconnect();
-		
+		Assert.assertEquals(st.getStatus(), Status.Ready);
+
 
 	}
 }

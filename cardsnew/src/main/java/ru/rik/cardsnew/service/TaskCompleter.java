@@ -105,16 +105,14 @@ public class TaskCompleter implements Runnable{
 				State st = map.remove(f);
 				if (st.getClazz() == ChannelState.class) {
 					ChannelState chState = (ChannelState) st;
-					if (chState.getStatus() == Status.Smsfetch)
+					if (chState.getStatus() == Status.Smsfetch) {
+						chState.setStatus(Status.Ready);
 						logger.error("can not telnet to channel {}  ", chState.getName() + chans.findById(chState.getId()));
-					else
+					} else
 						chState.setStatus(Status.Unreach);
 				} else if (st.getClazz() == BankState.class) {
 					BankState bState = (BankState) st;
 					bState.setAvailable(false);
-				} else if (st.getClazz() == SmsTask.class) {
-					SmsTask smsTask = (SmsTask) st;
-					System.out.println();
 				} else
 					logger.error(e.getMessage(), e);
 			} else 
@@ -158,45 +156,43 @@ public class TaskCompleter implements Runnable{
 	protected void handleSms(SmsTask smsTask) {
 		Channel ch = smsTask.getCh();
 		Channel pair = smsTask.getPair();
+		ChannelState st = ch.getState(chans);
+		ChannelState pairSt = pair != null ? pair.getState(chans) : null;
 		switch (smsTask.getPhase()) {
 		case FetchMain:
-			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
 			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
 				chans.smsSave(smsTask.getSmslist());
-				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				addTask(() -> smsTask.deleteMain(telnetHandler), st);
 			} else if (smsTask.getPair() != null) {
-				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				addTask(() -> smsTask.fetchPair(telnetHandler), st);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case DeleteMain:	
-			System.out.println(ch.getName() + " delete main smses completed: ");
 			if (smsTask.getPair() != null) {
-				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				addTask(() -> smsTask.fetchPair(telnetHandler), st);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case FetchPair:	
-			System.out.println(pair.getName() + " got pair smses: " 
-					+ smsTask.getPairSmslist() + smsTask.getPairCard().getName());
 			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
 				chans.smsSave(smsTask.getPairSmslist());
-				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				addTask(() -> smsTask.deletePair(telnetHandler), st);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case DeletePair:	
-			System.out.println(pair.getName() + " delete pair smses completed: ");
+			st.setStatus(Status.Ready);
+			if (pairSt != null) pairSt.setStatus(Status.Ready);
 			break;
 		default:
 			break;

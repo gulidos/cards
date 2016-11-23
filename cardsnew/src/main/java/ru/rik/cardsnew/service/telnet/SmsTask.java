@@ -46,6 +46,9 @@ public class SmsTask implements MyState {
 	
 
 	public static SmsTask get(TelnetHelper h, Channel ch, Card card, Channel pair, Card pairCard) throws SocketException, IOException {
+		if (ch == null) throw new IllegalArgumentException("Channel can not be null");
+		if (card == null) throw new IllegalArgumentException("Card can not be null");
+		
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
