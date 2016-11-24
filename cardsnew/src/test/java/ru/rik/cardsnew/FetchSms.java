@@ -7,8 +7,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.config.RootConfig;
@@ -23,7 +26,7 @@ import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = ConfigJpaH2.class)
 @ContextConfiguration(classes = RootConfig.class)
 
@@ -37,13 +40,13 @@ public class FetchSms {
 	
 	public FetchSms() {	}
 
-//	@Test
+	@Test
 	@Transactional
 
 	public void getSms() throws InterruptedException, ExecutionException {
 		Set<Channel> telnetJobs = new HashSet<>();
-		groups.findById(7).getChannels().stream()
-//		chans.findAll().stream()
+//		groups.findById(7).getChannels().stream()
+		chans.findAll().stream()
 //			.filter(ch -> (ch.getCard() != null))
 			.peek(ch -> System.out.println(ch.getName() + " pair: " + ch.getPair(chans).getName()))
 			.forEach(ch -> { 
