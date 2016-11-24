@@ -1,16 +1,20 @@
 package ru.rik.cardsnew;
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.config.RootConfig;
@@ -26,10 +30,12 @@ import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.TaskDescriptor;
+import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = ConfigJpaH2.class)
 @ContextConfiguration(classes = RootConfig.class)
 
@@ -68,7 +74,7 @@ public class FetchSms {
 //			}
 //		}
 		
-		Map<Future<State>, State> map  = taskCompleter.getMap();
+		Map<Future<State>, TaskDescriptor> map  = taskCompleter.getMap();
 		for (int i = 0; i < 30; i++) {
 			Thread.sleep(1000);
 			System.out.println("size: " + map.size());
@@ -94,7 +100,7 @@ public class FetchSms {
 
 	}
 	
-//	@Test
+	@Test
 	@Transactional
 	public void getSms() throws InterruptedException, ExecutionException {
 		Set<Channel> telnetJobs = new HashSet<>();
@@ -112,17 +118,19 @@ public class FetchSms {
 						telnetJobs.add(ch);
 						st.setStatus(Status.Ready);
 						st.setStatus(Status.Smsfetch);
-						taskCompleter.addTask(() -> SmsTask.get(h, ch, ch.getCard(), peer, peer.getCard()), st);
+						TaskDescriptor td = new TaskDescriptor(SmsTask.class, st, new Date());
+						taskCompleter.addTask(() -> SmsTask.get(h, ch, ch.getCard(), peer, peer.getCard(), td),	td);
 					}
 			}); 
 		
 		
-		Map<Future<State>, State> map  = taskCompleter.getMap();
+		Map<Future<State>, TaskDescriptor> map  = taskCompleter.getMap();
 		for (int i = 0; i < 100; i++) {
 			Thread.sleep(3000);
 			System.out.println("size: " + map.size());
 			for (Future<State> s: map.keySet()) {
-				System.out.println(map.get(s).getName() + " " + map.get(s).getClass() + " " );
+				TaskDescriptor descr = map.get(s);
+				System.out.println(descr.getName() + " " + descr.getClazz() + " " + descr.getStartDate());
 //				map.get(s).getClass();
 //				if (map.get(s).getClass() == ChannelState.class) {	
 //					ChannelState st = (ChannelState) map.get(s);

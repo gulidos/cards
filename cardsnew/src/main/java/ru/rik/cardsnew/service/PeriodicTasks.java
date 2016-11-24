@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -51,7 +52,8 @@ public class PeriodicTasks {
 			
 			ChannelState st = chans.findStateById(ch.getId());
 			if (!st.isGsmDateFresh()) 
-				taskCompleter.addTask(()-> GsmState.get(ch), st);
+				taskCompleter.addTask(()-> GsmState.get(ch),
+						new TaskDescriptor(GsmState.class, st, new Date()));
 
 			if (pairsJobs.contains(ch)) { // if the channel was already requested as a pair
 				pairsJobs.remove(ch);
@@ -61,12 +63,13 @@ public class PeriodicTasks {
 				if (pair != null)
 					pairsJobs.add(pair);
 				if (!st.isSimSetDateFresh()) 
-					taskCompleter.addTask(()-> SimSet.get(ch, pair), st);
+					taskCompleter.addTask(()-> SimSet.get(ch, pair), new TaskDescriptor(SimSet.class, st, new Date()));
 				if (!st.isSmsFetchDateFresh()) {
 					st.setStatus(Status.Smsfetch);
 					pairSt.setStatus(Status.Smsfetch);
 					taskCompleter.addTask(() -> 
-						SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pair.getCard()), st);
+						SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pair.getCard()), 
+						new TaskDescriptor(SmsTask.class, st, new Date()));
 				}	
 			}
 		}	
@@ -79,7 +82,7 @@ public class PeriodicTasks {
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
 			Callable<State> checkBank = () -> BankStatus.get(b);
-			taskCompleter.addTask(checkBank, st);
+			taskCompleter.addTask(checkBank, new TaskDescriptor(BankStatus.class, st, new Date()));
 		}
 	}
 	

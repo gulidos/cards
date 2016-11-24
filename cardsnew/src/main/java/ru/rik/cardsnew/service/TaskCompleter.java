@@ -2,12 +2,14 @@ package ru.rik.cardsnew.service;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
@@ -35,7 +39,7 @@ public class TaskCompleter implements Runnable{
 
 	private final CompletionService<State> completionServ;
 	private final ThreadPoolTaskExecutor executor;
-	@Getter private final ConcurrentMap<Future<State>, State> map;
+	@Getter private final ConcurrentMap<Future<State>, TaskDescriptor> map;
 	@Autowired @Setter private ChannelRepo chans;
 	@Autowired private BankRepo banks;
 	@Autowired @Setter private TelnetHelper telnetHandler;
@@ -52,12 +56,14 @@ public class TaskCompleter implements Runnable{
 		executor.submit(this);
 	}
 
-	public Future<State> addTask(Callable<State> task, State st ) {
+	public Future<State> addTask(Callable<State> task, TaskDescriptor descr ) {
 		Future<State> f = completionServ.submit(task);
-		map.putIfAbsent(f, st);
+		
+		map.putIfAbsent(f, descr);
 		return f;
 	}
 	
+
 	
 	@Override
 	public void run() {
@@ -102,7 +108,8 @@ public class TaskCompleter implements Runnable{
 		try {
 			Throwable cause = e.getCause();
 			if (cause instanceof SocketTimeoutException || cause instanceof ConnectException) {
-				State st = map.remove(f);
+				TaskDescriptor descr = map.remove(f);
+				State st = descr.getState();
 				if (st.getClazz() == ChannelState.class) {
 					ChannelState chState = (ChannelState) st;
 					if (chState.getStatus() == Status.Smsfetch) {
@@ -157,14 +164,15 @@ public class TaskCompleter implements Runnable{
 		Channel ch = smsTask.getCh();
 		Channel pair = smsTask.getPair();
 		ChannelState st = ch.getState(chans);
+		TaskDescriptor descr = new TaskDescriptor(SmsTask.class, st, new Date());
 		ChannelState pairSt = pair != null ? pair.getState(chans) : null;
 		switch (smsTask.getPhase()) {
 		case FetchMain:
 			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
 				chans.smsSave(smsTask.getSmslist());
-				addTask(() -> smsTask.deleteMain(telnetHandler), st);
+				addTask(() -> smsTask.deleteMain(telnetHandler), descr);
 			} else if (smsTask.getPair() != null) {
-				addTask(() -> smsTask.fetchPair(telnetHandler), st);
+				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
 				st.setStatus(Status.Ready);
 				if (pairSt != null) pairSt.setStatus(Status.Ready);
@@ -173,7 +181,7 @@ public class TaskCompleter implements Runnable{
 			break;
 		case DeleteMain:	
 			if (smsTask.getPair() != null) {
-				addTask(() -> smsTask.fetchPair(telnetHandler), st);
+				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
 				st.setStatus(Status.Ready);
 				if (pairSt != null) pairSt.setStatus(Status.Ready);
@@ -183,7 +191,7 @@ public class TaskCompleter implements Runnable{
 		case FetchPair:	
 			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
 				chans.smsSave(smsTask.getPairSmslist());
-				addTask(() -> smsTask.deletePair(telnetHandler), st);
+				addTask(() -> smsTask.deletePair(telnetHandler), descr);
 			} else {
 				st.setStatus(Status.Ready);
 				if (pairSt != null) pairSt.setStatus(Status.Ready);
