@@ -16,6 +16,7 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
@@ -53,23 +54,24 @@ public class PeriodicTasks {
 			ChannelState st = chans.findStateById(ch.getId());
 			if (!st.isGsmDateFresh()) 
 				taskCompleter.addTask(()-> GsmState.get(ch),
-						new TaskDescriptor(GsmState.class, st, new Date()));
+						new TaskDescr(GsmState.class, st, new Date()));
 
 			if (pairsJobs.contains(ch)) { // if the channel was already requested as a pair
 				pairsJobs.remove(ch);
 			} else {
 				Channel pair = ch.getPair(chans);
+				Card pairCard = pair != null ? pair.getCard() : null;
 				ChannelState pairSt = chans.findStateById(pair.getId());
 				if (pair != null)
 					pairsJobs.add(pair);
 				if (!st.isSimSetDateFresh()) 
-					taskCompleter.addTask(()-> SimSet.get(ch, pair), new TaskDescriptor(SimSet.class, st, new Date()));
-				if (!st.isSmsFetchDateFresh()) {
+					taskCompleter.addTask(()-> SimSet.get(ch, pair), new TaskDescr(SimSet.class, st, new Date()));
+				if (!st.isSmsFetchDateFresh() && ch.getCard() != null) {
 					st.setStatus(Status.Smsfetch);
 					pairSt.setStatus(Status.Smsfetch);
+					TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 					taskCompleter.addTask(() -> 
-						SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pair.getCard()), 
-						new TaskDescriptor(SmsTask.class, st, new Date()));
+						SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pairCard, td), td);
 				}	
 			}
 		}	
@@ -81,8 +83,8 @@ public class PeriodicTasks {
 //		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
-			Callable<State> checkBank = () -> BankStatus.get(b);
-			taskCompleter.addTask(checkBank, new TaskDescriptor(BankStatus.class, st, new Date()));
+			Callable<State> checkBank = () -> BankStatus.get(b, new TaskDescr(BankStatus.class, st, new Date()));
+			taskCompleter.addTask(checkBank, new TaskDescr(BankStatus.class, st, new Date()));
 		}
 	}
 	

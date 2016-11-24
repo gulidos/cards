@@ -98,7 +98,8 @@ public class SmsTests {
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
 		Assert.assertTrue(cardPair.getChannelId() != 0);
-		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
 		Thread.sleep(20);
 		Assert.assertEquals(task.getPhase(), Phase.FetchMain);
@@ -112,8 +113,9 @@ public class SmsTests {
 		Assert.assertNotNull(ch.getCard());
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
-		Assert.assertTrue(cardPair.getChannelId() != 0);		
-		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
+		Assert.assertTrue(cardPair.getChannelId() != 0);
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
 		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
@@ -127,7 +129,8 @@ public class SmsTests {
 		System.out.println("telnet mock: " + tc);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
-		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain); 
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
 		Thread.sleep(200);
 		Assert.assertEquals(task.getPhase(), Phase.DeleteMain);
@@ -145,7 +148,8 @@ public class SmsTests {
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
 		((TelnetHelperMock) th).setPairSmses(smslist);
-		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair);
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair, td);
 		
 		taskCompleter.handleSms(task);
 		Thread.sleep(300);

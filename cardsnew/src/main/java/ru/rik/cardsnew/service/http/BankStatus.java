@@ -13,25 +13,30 @@ import lombok.Data;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.service.TaskDescr;
 @Data
 public class BankStatus implements State {
 	private long id;
 	private String name;
 	private int activecards;
+	private TaskDescr taskDescr;
 	
 	@Builder
-	public BankStatus(long id, String name, int cardcount) {
+	public BankStatus(long id, String name, int cardcount, TaskDescr td) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.activecards = cardcount;
+		this.taskDescr = td;
 	}
 
-	public static BankStatus get(final Bank b) throws IOException, InterruptedException {
+	public static BankStatus get(final Bank b, TaskDescr td) throws IOException, InterruptedException {
 		if (b == null) throw new NullPointerException("Bank must not be null!");
+		td.setStage("Getting bank pages ");
 		BankStatus.BankStatusBuilder bld  = BankStatus.builder(); 
-		bld.id(b.getId());
-		bld.name(b.getName());
+		bld.id(b.getId())
+		.name(b.getName())
+		.td(td);
 		String host = b.getName();
 		String port = Integer.toString(80);
 		String login = Bank.DEF_USER + ":" + Bank.DEF_PASSWORD;
@@ -76,11 +81,11 @@ public class BankStatus implements State {
 	@Override
 	public Class<?> getClazz() {return BankStatus.class;}
 	
-	public static void main(String[] args) throws IOException, InterruptedException {
-		Bank b = Bank.builder().name("72.0.202.21").id(1).build();
-		BankStatus bs = BankStatus.get(b);
-		System.out.println(bs.toString());
-	}
+//	public static void main(String[] args) throws IOException, InterruptedException {
+//		Bank b = Bank.builder().name("72.0.202.21").id(1).build();
+//		BankStatus bs = BankStatus.get(b);
+//		System.out.println(bs.toString());
+//	}
 
 
 }

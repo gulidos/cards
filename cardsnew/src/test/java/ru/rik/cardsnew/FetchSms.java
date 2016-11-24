@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -30,8 +29,7 @@ import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskCompleter;
-import ru.rik.cardsnew.service.TaskDescriptor;
-import ru.rik.cardsnew.service.http.BankStatus;
+import ru.rik.cardsnew.service.TaskDescr;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 
@@ -50,7 +48,7 @@ public class FetchSms {
 	
 	public FetchSms() {	}
 	
-	@Test
+//	@Test
 	public void fakTest()  {
 		
 	}
@@ -74,7 +72,7 @@ public class FetchSms {
 //			}
 //		}
 		
-		Map<Future<State>, TaskDescriptor> map  = taskCompleter.getMap();
+		Map<Future<State>, TaskDescr> map  = taskCompleter.getMap();
 		for (int i = 0; i < 30; i++) {
 			Thread.sleep(1000);
 			System.out.println("size: " + map.size());
@@ -108,6 +106,7 @@ public class FetchSms {
 //		chans.findAll().stream()
 //			.filter(ch -> (ch.getCard() != null))
 			.peek(ch -> System.out.println(ch.getName() + " pair: " + ch.getPair(chans).getName()))
+			.filter(ch-> ch.getCard() != null)
 			.forEach(ch -> { 
 					if (telnetJobs.contains(ch))
 						telnetJobs.remove(ch);
@@ -118,25 +117,23 @@ public class FetchSms {
 						telnetJobs.add(ch);
 						st.setStatus(Status.Ready);
 						st.setStatus(Status.Smsfetch);
-						TaskDescriptor td = new TaskDescriptor(SmsTask.class, st, new Date());
+						TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 						taskCompleter.addTask(() -> SmsTask.get(h, ch, ch.getCard(), peer, peer.getCard(), td),	td);
 					}
 			}); 
 		
 		
-		Map<Future<State>, TaskDescriptor> map  = taskCompleter.getMap();
+		Map<Future<State>, TaskDescr> map  = taskCompleter.getMap();
 		for (int i = 0; i < 100; i++) {
-			Thread.sleep(3000);
-			System.out.println("size: " + map.size());
+			Thread.sleep(500);
+			System.out.println("");
+			System.out.println("========================================== size: " + map.size());
 			for (Future<State> s: map.keySet()) {
-				TaskDescriptor descr = map.get(s);
-				System.out.println(descr.getName() + " " + descr.getClazz() + " " + descr.getStartDate());
-//				map.get(s).getClass();
-//				if (map.get(s).getClass() == ChannelState.class) {	
-//					ChannelState st = (ChannelState) map.get(s);
-//					if (st.getStatus() == Status.Smsfetch)
-//						System.out.println(st.getName() + " " + st.getStatus());
-//				}
+				TaskDescr descr = map.get(s);
+				System.out.println(descr.getName() + " " + descr.getClazz().getSimpleName() + " " 
+				+ (new Date().getTime() - descr.getLastChangeDate().getTime())/1000 +
+						" " + descr.getStage() );
+
 			}	
 
 		}

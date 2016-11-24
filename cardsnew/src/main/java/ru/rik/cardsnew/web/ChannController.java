@@ -41,11 +41,10 @@ import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
-import ru.rik.cardsnew.service.Switcher;
+import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
-import ru.rik.cardsnew.service.TaskDescriptor;
+import ru.rik.cardsnew.service.TaskDescr;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
-import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -63,7 +62,7 @@ public class ChannController {
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
 	@Autowired Filter filter;
-	@Autowired Switcher switcher;
+	@Autowired SwitchTask switcher;
 	@Autowired TaskCompleter taskCompleter;
 	@Autowired private AsteriskEvents astMngr;
 	
@@ -288,12 +287,14 @@ public class ChannController {
 		if (action.equals("install")) {
 			Card newCard = chan.getCard(); 
 			Card persCard = cards.findById(newCard.getId());
-			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard);
-			taskCompleter.addTask(switchCard, new TaskDescriptor(Switcher.class, st, new Date()));
+			TaskDescr td = new TaskDescr(SwitchTask.class, st, new Date());
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard, td);
+			taskCompleter.addTask(switchCard, td);
 			
 		} else if (action.equals("clear")) {
-			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null);
-			taskCompleter.addTask(switchCard, new TaskDescriptor(Switcher.class, st, new Date()));
+			TaskDescr td = new TaskDescr(SwitchTask.class, st, new Date());
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null, td);
+			taskCompleter.addTask(switchCard, td);
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();

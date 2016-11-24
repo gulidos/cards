@@ -3,6 +3,7 @@ package ru.rik.cardsnew.domain;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.JpaConfig;
+import ru.rik.cardsnew.service.TaskDescr;
 import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 import ru.rik.cardsnew.service.telnet.UssdTask;
 //@RunWith(SpringJUnit4ClassRunner.class)
@@ -114,7 +116,8 @@ public class UssdTest {
 		Channel ch = chans.findByName("bln75");		
 		Card c = ch.getCard();
 		TelnetHelperImpl th = new TelnetHelperImpl();
-		UssdTask task = UssdTask.get(th, ch, new Card());
+		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 
+		UssdTask task = UssdTask.get(th, ch, new Card(), td);
 		task.sendUssd(th, "*100#");
 		
 		System.out.println(task.getDecoded());

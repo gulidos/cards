@@ -15,6 +15,7 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.service.TaskDescr;
 @NoArgsConstructor
 public class UssdTask {
 	@Getter @Setter private Channel ch;
@@ -22,6 +23,7 @@ public class UssdTask {
 	@Getter @Setter private TelnetClient telnetClient;
 	@Getter @Setter private String encodedResp;
 	@Getter @Setter private String decodedResp;
+	@Getter @Setter private TaskDescr td;
 	
 	private static final Pattern MSG_PATTERN = 
 			Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$"
@@ -36,21 +38,22 @@ public class UssdTask {
 					, Pattern.MULTILINE);
 
 	
-	public UssdTask(Channel ch, Card card, TelnetClient telnetClient) {
+	public UssdTask(Channel ch, Card card, TelnetClient telnetClient, TaskDescr td) {
 		super();
 		this.ch = ch;
 		this.card = card;
 		this.telnetClient = telnetClient;
+		this.td = td;
 	}
 
 	
-	public static UssdTask get(TelnetHelper h, Channel ch, Card card) throws SocketException, IOException {
+	public static UssdTask get(TelnetHelper h, Channel ch, Card card, TaskDescr td) throws SocketException, IOException {
 		Assert.assertNotNull(ch);
 		Assert.assertNotNull(card);
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
-		UssdTask task = new UssdTask(ch, card, tc);
+		UssdTask task = new UssdTask(ch, card, tc, td);
 		
 		return task;
 	}

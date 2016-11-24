@@ -17,8 +17,8 @@ import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.SimSet;
 
-public class Switcher implements State{
-	private static final Logger logger = LoggerFactory.getLogger(Switcher.class);		
+public class SwitchTask implements State{
+	private static final Logger logger = LoggerFactory.getLogger(SwitchTask.class);		
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
 	@Autowired private AsteriskEvents astMngr;
@@ -26,20 +26,23 @@ public class Switcher implements State{
 	@Setter @Getter private String name;
 	@Setter @Getter private long cardId;
 	@Setter @Getter private String cardName;
+	@Setter @Getter private TaskDescr td;
 	
 	
-	public Switcher() {	}
+	public SwitchTask() {	}
 	
-	public Switcher(long id, String name, long cardId, String cardName) {
+	public SwitchTask(long id, String name, long cardId, String cardName, TaskDescr td) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.cardId = cardId;
 		this.cardName = cardName;
+		this.td = td;
 	}
 
 	
-	public State switchCard (Channel ch, Card c) {
+	public SwitchTask switchCard (Channel ch, Card c, TaskDescr td) {
+		td.setStage("in " + ch.getName() +  " installing card " + c.getName() + " write to Db");
 		Channel pair = ch.getPair(chans);
 		try {
 			if (c!= null)
@@ -59,6 +62,7 @@ public class Switcher implements State{
 			try { 
 				if (pair != null)
 					while (pair.getState(chans).isInUse(astMngr)) {
+						td.setStage("in " + ch.getName() +  " installing card " + c.getName() + " awaiting for peer " + pair.getName());
 						logger.debug("awaiting for peer chanel {}",  pair.getName());
 						ch.getState(chans).setStatus(Status.AwaitForPeer);
 						TimeUnit.SECONDS.sleep(10);
@@ -80,13 +84,13 @@ public class Switcher implements State{
 			logger.error(e.toString(), e);		
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		return new Switcher(ch.getId(), ch.getName(), c!= null? c.getId() : 0, c!= null?  c.getName() : "-");
+		return new SwitchTask(ch.getId(), ch.getName(), c!= null? c.getId() : 0, c!= null?  c.getName() : "-", td);
 	}
 
 
 	@Override
 	public Class<?> getClazz() {
-		return Switcher.class;
+		return SwitchTask.class;
 	}
 
 

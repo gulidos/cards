@@ -14,10 +14,9 @@ import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.MyState;
 import ru.rik.cardsnew.domain.Sms;
-import ru.rik.cardsnew.service.TaskDescriptor;
+import ru.rik.cardsnew.service.TaskDescr;
 
 public class SmsTask implements MyState {
 	private static final Logger logger = LoggerFactory.getLogger(SmsTask.class);		
@@ -26,7 +25,7 @@ public class SmsTask implements MyState {
 	@Getter private final Card card;
 	@Getter private final Channel pair;
 	@Getter private final Card pairCard;
-	@Getter private final TaskDescriptor td;
+	@Getter private final TaskDescr td;
 	@Getter @Setter private List<Sms> smslist;
 	@Getter @Setter private List<Sms> pairSmslist;
 	@Getter @Setter private TelnetClient telnetClient;
@@ -36,7 +35,7 @@ public class SmsTask implements MyState {
 	
 	@Builder
 	public SmsTask(Channel ch, Card card, Channel pair, Card pairCard, 
-			TelnetClient telnetClient, List<Sms> allsms, Phase phase, TaskDescriptor td) {
+			TelnetClient telnetClient, List<Sms> allsms, Phase phase, TaskDescr td) {
 		if (ch == null || card == null)
 			throw new IllegalArgumentException("channel or cards can not be null!");
 		this.ch = ch;
@@ -50,22 +49,25 @@ public class SmsTask implements MyState {
 	}
 	
 
-	public static SmsTask get(TelnetHelper h, Channel ch, Card card, Channel pair, Card pairCard, TaskDescriptor td) throws SocketException, IOException {
+	public static SmsTask get(TelnetHelper h, Channel ch, Card card, Channel pair, Card pairCard, TaskDescr td) 
+			throws SocketException, IOException {
 		if (ch == null) throw new IllegalArgumentException("Channel can not be null");
 		if (card == null) throw new IllegalArgumentException("Card can not be null");
-		
+	
+		td.setStage("Connecting to" + ch.getBox().getIp() + ":" + ch.getLine().getTelnetport());	
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		
 		List<Sms> allsms = h.FetchSmsFromChannel(tc, ch.getLine().getNport() + 1);
-		System.out.println("FetchMain " + ch.getName());
+		td.setStage("Fetching main ");	
 		SmsTask smstask = SmsTask.builder()
 			.ch(ch).pair(pair)
 			.card(card).pairCard(pairCard)
 			.telnetClient(tc)
 			.allsms(allsms)
 			.phase(Phase.FetchMain)
+			.td(td)
 			.build();
 		smstask.getSmslist().stream().forEach(s -> {s.setChannel(ch);	s.setCard(card);});
 		return smstask;
@@ -74,7 +76,7 @@ public class SmsTask implements MyState {
 	
 	public SmsTask deleteMain(TelnetHelper h) {
 		phase = Phase.DeleteMain;
-		System.out.println(phase + " " + ch.getName());
+		td.setStage("Deleting main " + smslist.size() + " smses");	
 		h.deleteSms(telnetClient, smslist);
 		return this;
 	}
@@ -83,6 +85,7 @@ public class SmsTask implements MyState {
 	public SmsTask fetchPair(TelnetHelper h) {
 		phase = Phase.FetchPair;
 		if (pair != null) {
+			td.setStage("Fetching pair");	
 			pairSmslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
 		}	
 		pairSmslist.stream().forEach(s -> {s.setChannel(pair);	s.setCard(pairCard);});
@@ -93,6 +96,7 @@ public class SmsTask implements MyState {
 	public SmsTask deletePair(TelnetHelper h){
 		phase = Phase.DeletePair;
 		if (pair != null)
+			td.setStage("Deleting pair " + pairSmslist.size() + " smses");	
 			h.deleteSms(telnetClient, pairSmslist);
 		disconnect();
 		return this;
@@ -100,7 +104,7 @@ public class SmsTask implements MyState {
 	
 	public void disconnect() {
 		try {
-			System.out.println("doing disconnect " + telnetClient);
+			td.setStage("Disconnecting");
 			telnetClient.disconnect();
 		} catch (IOException e) {
 			logger.error(e.getMessage(),e);

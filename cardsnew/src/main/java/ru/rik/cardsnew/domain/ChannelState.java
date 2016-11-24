@@ -29,7 +29,8 @@ public class ChannelState implements MyState {
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
-	private volatile Date lastGsmUpdate, nextGsmUpdate; 
+	private volatile Date lastGsmUpdate = new Date();
+	private volatile Date nextGsmUpdate = new Date(); 
 	
 	private volatile SimSet simset;
 	private volatile Date lastSimSetUpdate = new Date();

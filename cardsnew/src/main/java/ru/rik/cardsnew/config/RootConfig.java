@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -29,7 +27,7 @@ import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
 import ru.rik.cardsnew.service.AsyncTasks;
 import ru.rik.cardsnew.service.PeriodicTasks;
-import ru.rik.cardsnew.service.Switcher;
+import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.asterisk.CheckCDRTask;
@@ -79,7 +77,7 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public AsteriskEvents asteriskEvents() {return new AsteriskEvents();}
 	
-	@Bean public Switcher switcher() {return new Switcher();}
+	@Bean public SwitchTask switcher() {return new SwitchTask();}
 
 	@Bean
 	MyThreadFactory threadFactory() {return new MyThreadFactory();}
@@ -96,11 +94,11 @@ public class RootConfig implements SchedulingConfigurer {
 		return executor;
 	}
 
-	@Bean
-	public ThreadPoolExecutor executor() {
-		ThreadPoolExecutor e = new ThreadPoolExecutor(5, 15, 10, TimeUnit.SECONDS, null);
-		return e;
-	}
+//	@Bean
+//	public ThreadPoolExecutor executor() {
+//		ThreadPoolExecutor e = new ThreadPoolExecutor(5, 15, 10, TimeUnit.SECONDS, null);
+//		return e;
+//	}
 	
 	@Bean(destroyMethod = "shutdown")
 	public TaskExecutor taskSheduleExecutor() {
