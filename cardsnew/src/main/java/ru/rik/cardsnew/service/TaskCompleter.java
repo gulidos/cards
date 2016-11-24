@@ -35,7 +35,7 @@ public class TaskCompleter implements Runnable{
 
 	private final CompletionService<State> completionServ;
 	private final ThreadPoolTaskExecutor executor;
-	@Getter private final ConcurrentMap<Future<State>, State> map;
+	@Getter private final ConcurrentMap<Future<State>, TaskDescr> map;
 	@Autowired @Setter private ChannelRepo chans;
 	@Autowired private BankRepo banks;
 	@Autowired @Setter private TelnetHelper telnetHandler;
@@ -52,12 +52,17 @@ public class TaskCompleter implements Runnable{
 		executor.submit(this);
 	}
 
-	public Future<State> addTask(Callable<State> task, State st ) {
+	public Future<State> addTask(Callable<State> task, TaskDescr descr ) {
+		if (descr.getStage() == null)
+			descr.setStage("queued");
+		
 		Future<State> f = completionServ.submit(task);
-		map.putIfAbsent(f, st);
+		
+		map.putIfAbsent(f, descr);
 		return f;
 	}
 	
+
 	
 	@Override
 	public void run() {
@@ -66,7 +71,7 @@ public class TaskCompleter implements Runnable{
 			try {
 				f = completionServ.take();
 				State result = f.get();
-				map.remove(f);
+				TaskDescr td = map.remove(f);
 				
 				if (result.getClazz() == GsmState.class)				
 					applyGsmState((GsmState) result);
@@ -76,8 +81,8 @@ public class TaskCompleter implements Runnable{
 				else if (result.getClazz() == BankStatus.class) {
 					applyBankStatus((BankStatus) result);
 				} 
-				else if (result.getClazz() == Switcher.class) {
-					Switcher sw = (Switcher) result;
+				else if (result.getClazz() == SwitchTask.class) {
+					SwitchTask sw = (SwitchTask) result;
 					logger.debug("installing in channel {} card {}", sw.getName(), sw.getCardName());
 				}
 				else if (result.getClazz() == SmsTask.class) {
@@ -96,39 +101,36 @@ public class TaskCompleter implements Runnable{
 
 
 	/**
-     * Handles all the exceptions during the task's execution
+     * Handles all exceptions during the task's execution
      */
 	private void execExceptionHandler(Future<State> f, ExecutionException e) {
 		try {
 			Throwable cause = e.getCause();
 			if (cause instanceof SocketTimeoutException || cause instanceof ConnectException) {
-				State st = map.remove(f);
+				TaskDescr descr = map.remove(f);
+				State st = descr.getState();
 				if (st.getClazz() == ChannelState.class) {
 					ChannelState chState = (ChannelState) st;
-					if (chState.getStatus() == Status.Smsfetch)
-						logger.error("can not telnet to channel {}  ", chState.getName() + chans.findById(chState.getId()));
-					else
+					if (chState.getStatus() == Status.Smsfetch) {
+						chState.setStatus(Status.Ready);
+						logger.error("can not telnet to channel {}  ", chState.getName());
+					} else
 						chState.setStatus(Status.Unreach);
 				} else if (st.getClazz() == BankState.class) {
 					BankState bState = (BankState) st;
 					bState.setAvailable(false);
-				} else if (st.getClazz() == SmsTask.class) {
-					SmsTask smsTask = (SmsTask) st;
-					System.out.println();
 				} else
 					logger.error(e.getMessage(), e);
 			} else 
 				logger.error(e.getMessage(), e);
 		} catch (Exception e1) {
-			logger.error(e.getMessage(), e);
+			logger.error(e1.getMessage(), e1);
 
 		}
 	}
 	
 	
 	private void applyGsmState(GsmState g) {
-//		logger.debug(g.toString());
-		
 		ChannelState st = chans.findStateById(g.getId());
 		st.applyGsmStatus(g);
 	}
@@ -158,45 +160,48 @@ public class TaskCompleter implements Runnable{
 	protected void handleSms(SmsTask smsTask) {
 		Channel ch = smsTask.getCh();
 		Channel pair = smsTask.getPair();
+		ChannelState st = ch.getState(chans);
+		TaskDescr descr = smsTask.getTd();
+		ChannelState pairSt = pair != null ? pair.getState(chans) : null;
 		switch (smsTask.getPhase()) {
 		case FetchMain:
-			System.out.println(ch.getName() + " got smses: " + smsTask.getSmslist());
 			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
 				chans.smsSave(smsTask.getSmslist());
-				Callable<State> getsms = () -> smsTask.deleteMain(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				descr.setStage("queued for DeleteMain");
+				addTask(() -> smsTask.deleteMain(telnetHandler), descr);
 			} else if (smsTask.getPair() != null) {
-				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				descr.setStage("queued for Fetch Pair");
+				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case DeleteMain:	
-			System.out.println(ch.getName() + " delete main smses completed: ");
 			if (smsTask.getPair() != null) {
-				Callable<State> getsms = () -> smsTask.fetchPair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				descr.setStage("queued for Fetch Pair");
+				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case FetchPair:	
-			System.out.println(pair.getName() + " got pair smses: " 
-					+ smsTask.getPairSmslist() + smsTask.getPairCard().getName());
 			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
 				chans.smsSave(smsTask.getPairSmslist());
-				Callable<State> getsms = () -> smsTask.deletePair(telnetHandler);
-				addTask(getsms, ch.getState(chans));
+				descr.setStage("queued for Delete Pair");
+				addTask(() -> smsTask.deletePair(telnetHandler), descr);
 			} else {
-				System.out.println("Disconnect from " + smsTask.getPhase());
+				st.setStatus(Status.Ready);
+				if (pairSt != null) pairSt.setStatus(Status.Ready);
 				smsTask.disconnect();
 			}	
 			break;
 		case DeletePair:	
-			System.out.println(pair.getName() + " delete pair smses completed: ");
+			st.setStatus(Status.Ready);
+			if (pairSt != null) pairSt.setStatus(Status.Ready);
 			break;
 		default:
 			break;

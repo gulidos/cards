@@ -3,6 +3,7 @@ package ru.rik.cardsnew.web;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -40,8 +41,9 @@ import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
-import ru.rik.cardsnew.service.Switcher;
+import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.TaskDescr;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -60,7 +62,7 @@ public class ChannController {
 	@Autowired ChannelRepo chans;
 	@Autowired CardRepo cards;
 	@Autowired Filter filter;
-	@Autowired Switcher switcher;
+	@Autowired SwitchTask switcher;
 	@Autowired TaskCompleter taskCompleter;
 	@Autowired private AsteriskEvents astMngr;
 	
@@ -243,7 +245,6 @@ public class ChannController {
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
-			logger.debug("State: {}", state.toString());
 				if (action.equals("cancel")) {
 //					String message = chan.toString() + " edit cancelled";
 //					redirectAttrs.addFlashAttribute("message", message);
@@ -286,12 +287,14 @@ public class ChannController {
 		if (action.equals("install")) {
 			Card newCard = chan.getCard(); 
 			Card persCard = cards.findById(newCard.getId());
-			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard);
-			taskCompleter.addTask(switchCard, st);
+			TaskDescr td = new TaskDescr(SwitchTask.class, st, new Date());
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard, td);
+			taskCompleter.addTask(switchCard, td);
 			
 		} else if (action.equals("clear")) {
-			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null);
-			taskCompleter.addTask(switchCard, st);
+			TaskDescr td = new TaskDescr(SwitchTask.class, st, new Date());
+			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null, td);
+			taskCompleter.addTask(switchCard, td);
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();

@@ -44,7 +44,7 @@ public class SmsTests {
 	private TelnetClient tc;
 	private Channel ch;
 	private Card card;
-	private ChannelState st;
+	private ChannelState st, pairSt;
 	private Channel pair;
 	private Card cardPair;
 	
@@ -71,9 +71,9 @@ public class SmsTests {
 		card = ch.getCard();		
 	
 		pair = chans.switchCard(chans.findById(2), cards.findById(2));
-		st = chans.findStateById(pair.getId());
-		st.setStatus(Status.Ready);
-		st.setStatus(Status.Smsfetch);
+		pairSt = chans.findStateById(pair.getId());
+		pairSt.setStatus(Status.Ready);
+		pairSt.setStatus(Status.Smsfetch);
 		cardPair = pair.getCard();
 	}
 	
@@ -98,11 +98,14 @@ public class SmsTests {
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
 		Assert.assertTrue(cardPair.getChannelId() != 0);
-		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, card, null, null, tc, new ArrayList<Sms>(), Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
 		Thread.sleep(20);
 		Assert.assertEquals(task.getPhase(), Phase.FetchMain);
 		verify(tc, times(1)).disconnect();
+		Assert.assertEquals(st.getStatus(), Status.Ready);
+
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -110,9 +113,11 @@ public class SmsTests {
 		Assert.assertNotNull(ch.getCard());
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
-		Assert.assertTrue(cardPair.getChannelId() != 0);		
-		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain); 
+		Assert.assertTrue(cardPair.getChannelId() != 0);
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, null, pair, null, tc, new ArrayList<Sms>(), Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
+		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
 	
 	@Test 
@@ -124,11 +129,13 @@ public class SmsTests {
 		System.out.println("telnet mock: " + tc);
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
-		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain); 
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
 		Thread.sleep(200);
 		Assert.assertEquals(task.getPhase(), Phase.DeleteMain);
 		verify(tc, times(1)).disconnect();
+		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
 	
 	@Test 
@@ -141,13 +148,15 @@ public class SmsTests {
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
 		((TelnetHelperMock) th).setPairSmses(smslist);
-		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair);
+		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair, td);
 		
 		taskCompleter.handleSms(task);
 		Thread.sleep(300);
 		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
 		verify(tc, times(1)).disconnect();
-		
+		Assert.assertEquals(st.getStatus(), Status.Ready);
+
 
 	}
 }

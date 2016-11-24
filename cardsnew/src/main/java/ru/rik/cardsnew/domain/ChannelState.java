@@ -23,40 +23,36 @@ import ru.rik.cardsnew.service.http.SimSet;
 @EqualsAndHashCode
 public class ChannelState implements MyState {
 	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
-	
-	
 	private long id;
 	private String name;
 	
 	private AtomicInteger priority = new AtomicInteger(1);
 
 	private volatile GsmState gsmstatus;
-	private volatile Date lastGsmUpdate, nextGsmUpdate, lastSimSetUpdate, nextSimSetUpdate; 
+	private volatile Date lastGsmUpdate = new Date();
+	private volatile Date nextGsmUpdate = new Date(); 
+	
 	private volatile SimSet simset;
-	@Getter private volatile Status status;
-	private volatile Date lastStatusChange;
-	@Getter private volatile Date lastSmsFetchDate;
+	private volatile Date lastSimSetUpdate = new Date();
+	private volatile Date nextSimSetUpdate = new Date();
+	
+	@Getter private volatile Status status = Status.Failed;
+	private volatile Date lastStatusChange = new Date();
+	
+	@Getter private volatile Date lastSmsFetchDate = new Date(0);
+	@Getter private volatile Date nextSmsFetchDate = new Date(0);
+	
+	@Getter private volatile Date lastBalanceCheck = new Date(0);
+	@Getter private volatile Date nextBalanceCheck = new Date(0);
 	
 	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
 	public ChannelState () {
-		this.status = Status.Failed;
-		this.lastStatusChange = new Date();
-		this.lastGsmUpdate = new Date(0); // set date the oldest when create State 
-		this.nextGsmUpdate = new Date(0);  
-		this.nextSimSetUpdate = new Date(0);
-		this.lastSimSetUpdate = new Date(0);
-		this.lastSmsFetchDate = new Date(0);
 	}
 	
 	public ChannelState (Status s, Date lastStatusChange ) {
 		this.status = s;
 		this.lastStatusChange = lastStatusChange;
-		this.lastGsmUpdate = new Date(0); // set date the oldest when create State 
-		this.nextGsmUpdate = new Date(0);  
-		this.nextSimSetUpdate = new Date(0);
-		this.lastSimSetUpdate = new Date(0);
-		this.lastSmsFetchDate = new Date(0);
 	}
 	
 	public void applyGsmStatus(GsmState gs) {
@@ -190,6 +186,10 @@ public class ChannelState implements MyState {
 	public boolean isStillHasToBeIniting() {
 		long maxTimeOfReady = lastStatusChange.getTime() + Settings.TIME_FOR_SWITCH * 1000;
 		return isDateFresh(new Date(maxTimeOfReady));
+	}
+	
+	public boolean isSmsFetchDateFresh() {
+		return isDateFresh(nextSmsFetchDate);
 	}
 	
 	private boolean isDateFresh(Date nextdate) {

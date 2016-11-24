@@ -1,5 +1,6 @@
 package ru.rik.cardsnew.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -15,13 +16,17 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
+import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
+import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
 import ru.rik.cardsnew.service.http.SimSet;
+import ru.rik.cardsnew.service.telnet.SmsTask;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
 @Service
 public class PeriodicTasks {
 	private static final Logger logger = LoggerFactory.getLogger(PeriodicTasks.class);		
@@ -31,6 +36,7 @@ public class PeriodicTasks {
 	@Autowired CardRepo cards;
 	@Autowired BankRepo bankRepo;
 	@Autowired HttpHelper httpHelper;
+	@Autowired TelnetHelper telnetHelper;
 	@Autowired TaskCompleter taskCompleter;
 
 	public PeriodicTasks() {
@@ -40,36 +46,33 @@ public class PeriodicTasks {
 	
 	@Scheduled(fixedRate = 15000)
 	public void checkChannels() {
-//		logger.debug("Start checkChannels ...");
-		Set<Channel> simSetJobs = new HashSet<>();
+		Set<Channel> pairsJobs = new HashSet<>();
 		
 		for (Channel ch : chans.findAll()) { 
 			if (!ch.isEnabled()) continue;
 			
 			ChannelState st = chans.findStateById(ch.getId());
-			if (!st.isGsmDateFresh()) {
-				Callable<State> checkGsm = new Callable<State>() {
-					public GsmState call() throws Exception {
-						return GsmState.get(ch);
-					}
-				};
-				taskCompleter.addTask(checkGsm, st);
-			}
+			if (!st.isGsmDateFresh()) 
+				taskCompleter.addTask(()-> GsmState.get(ch),
+						new TaskDescr(GsmState.class, st, new Date()));
 
-			if (simSetJobs.contains(ch)) { // if the channel was already requested as a pair
-				simSetJobs.remove(ch);
+			if (pairsJobs.contains(ch)) { // if the channel was already requested as a pair
+				pairsJobs.remove(ch);
 			} else {
 				Channel pair = ch.getPair(chans);
+				Card pairCard = pair != null ? pair.getCard() : null;
+				ChannelState pairSt = chans.findStateById(pair.getId());
 				if (pair != null)
-					simSetJobs.add(pair);
-				if (!st.isSimSetDateFresh()) {
-					Callable<State> checkSimSet = new Callable<State>() {
-						public SimSet call() throws Exception {
-							return SimSet.get(ch, pair);
-						}
-					};
-					taskCompleter.addTask(checkSimSet, st);
-				}
+					pairsJobs.add(pair);
+				if (!st.isSimSetDateFresh()) 
+					taskCompleter.addTask(()-> SimSet.get(ch, pair), new TaskDescr(SimSet.class, st, new Date()));
+				if (!st.isSmsFetchDateFresh() && ch.getCard() != null) {
+					st.setStatus(Status.Smsfetch);
+					pairSt.setStatus(Status.Smsfetch);
+					TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+					taskCompleter.addTask(() -> 
+						SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pairCard, td), td);
+				}	
 			}
 		}	
 		
@@ -80,8 +83,8 @@ public class PeriodicTasks {
 //		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
-			Callable<State> checkBank = () -> BankStatus.get(b);
-			taskCompleter.addTask(checkBank, st);
+			Callable<State> checkBank = () -> BankStatus.get(b, new TaskDescr(BankStatus.class, st, new Date()));
+			taskCompleter.addTask(checkBank, new TaskDescr(BankStatus.class, st, new Date()));
 		}
 	}
 	

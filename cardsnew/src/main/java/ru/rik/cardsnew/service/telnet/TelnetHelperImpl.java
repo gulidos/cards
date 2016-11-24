@@ -77,14 +77,11 @@ public class TelnetHelperImpl implements TelnetHelper {
 		ArrayList<Sms> result = new ArrayList<>(); 
 		
 		String state = sendCmd(telnet, "state" + module, "]", 10);
-//		System.out.println(state);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 10);
-//			logger.debug("channel {} is not ready", telnet.getRemoteAddress() + " " + telnet.getRemotePort() );
 			return result;    // channel isn't ready
 		}	
 		
-//		System.out.println(state);
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
 		sendCmd(telnet, "AT+CMGF=0", "\n0\r\n", 10);
 		String resp = sendCmd(telnet, "AT+CMGL=4", "\r\n0\r\n", 10);
@@ -110,8 +107,23 @@ public class TelnetHelperImpl implements TelnetHelper {
 //					System.out.println("sms:" + sms.toString());
 				}
 			}
+		if(result.size()==0)
+			sendCmd(telnet, "\u0018", "]", 10);
 		return result;
 
+	}
+	
+	@Override
+	public String sendUssd(TelnetClient telnet, int module, String encodedReq) {
+		String state = sendCmd(telnet, "state" + module, "]", 10);
+		if (!free.matcher(state).matches()) {
+			sendCmd(telnet, "\u0018", "]", 1000);
+			return null;
+		}	
+		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
+		sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
+		String encodedResp = sendCmd(telnet, "AT+CUSD=1,\"" + encodedReq + "\"", "\n0\r\n", 10);
+		return encodedResp;
 	}
 
 	
@@ -189,9 +201,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ru.rik.cardsnew.service.telnet.ITelnetHelper#disconnect(org.apache.commons.net.telnet.TelnetClient)
-	 */
+	
 	public void disconnect(TelnetClient telnet) {
 		try {
 			telnet.disconnect();

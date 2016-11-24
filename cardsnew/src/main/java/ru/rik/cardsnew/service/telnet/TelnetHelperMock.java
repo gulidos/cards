@@ -55,4 +55,9 @@ public class TelnetHelperMock implements TelnetHelper {
 	private void wait(int timeout) {
 		try {Thread.sleep(timeout);} catch (InterruptedException e) {}
 	}
+
+	@Override
+	public String sendUssd(TelnetClient telnet, int module, String s) {
+		return null;
+	}
 }

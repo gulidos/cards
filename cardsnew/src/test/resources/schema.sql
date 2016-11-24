@@ -35,14 +35,14 @@ CREATE TABLE  _GRP  (
   UNIQUE KEY  UK_4h2pb0vx4x8wbx9u7ykpwiq8e  ( name )
 ) ENGINE=InnoDB AUTO_INCREMENT=12 ;
 
-CREATE TABLE  _LIMIT  (
+CREATE TABLE _LIMIT  (
    id  bigint(20) NOT NULL AUTO_INCREMENT,
    descr  varchar(255) DEFAULT NULL,
    f  int(11) NOT NULL,
    name  varchar(255) DEFAULT NULL,
    t  int(11) NOT NULL,
    version  bigint(20) NOT NULL,
-   value  varchar(255) DEFAULT NULL,
+--   value  varchar(255) DEFAULT NULL,
   PRIMARY KEY ( id )
 ) ENGINE=InnoDB AUTO_INCREMENT=3;
 

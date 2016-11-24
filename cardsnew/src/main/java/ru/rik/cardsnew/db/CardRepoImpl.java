@@ -155,8 +155,15 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	@Override
 	public void updateDayLimit() {
 		Random rnd = new Random();
-		int range = rnd.nextInt();
-
-		
+		int range = rnd.nextInt();		
+	}
+	
+	@Override @Transactional
+	public void setChannelToNull(List<Card> list) {
+		list.stream()
+		.filter(c -> c.getChannelId() != 0)
+		.peek(c -> c.setChannelId(0)).peek(c->makePersistent(c))
+		.map(c -> c.getStat(this))
+		.forEach(st -> st.setFree(false, true));
 	}
 }

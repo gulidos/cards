@@ -86,9 +86,10 @@ public class CardsController {
 					card.hashCode();
 				model.addAttribute("cards", list);
 			}	
-		} 		
-		for (Card c: list)
-			c.setStat(cards.findStateById(c.getId()));
+		} 	
+		if (list != null)
+			for (Card c: list)
+				c.setStat(cards.findStateById(c.getId()));
 		return list;
 	}
 	
