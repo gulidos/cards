@@ -3,6 +3,7 @@ package ru.rik.cardsnew.web;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -42,7 +43,9 @@ import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
 import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.TaskDescriptor;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -243,7 +246,6 @@ public class ChannController {
 			Model model,  
 			RedirectAttributes redirectAttrs,
 			@RequestParam(value="action", required=true) String action ) {
-			logger.debug("State: {}", state.toString());
 				if (action.equals("cancel")) {
 //					String message = chan.toString() + " edit cancelled";
 //					redirectAttrs.addFlashAttribute("message", message);
@@ -287,11 +289,11 @@ public class ChannController {
 			Card newCard = chan.getCard(); 
 			Card persCard = cards.findById(newCard.getId());
 			Callable<State> switchCard = () ->  switcher.switchCard(persCh, persCard);
-			taskCompleter.addTask(switchCard, st);
+			taskCompleter.addTask(switchCard, new TaskDescriptor(Switcher.class, st, new Date()));
 			
 		} else if (action.equals("clear")) {
 			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null);
-			taskCompleter.addTask(switchCard, st);
+			taskCompleter.addTask(switchCard, new TaskDescriptor(Switcher.class, st, new Date()));
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();

@@ -1,6 +1,7 @@
 package ru.rik.cardsnew.web.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.service.Switcher;
 import ru.rik.cardsnew.service.TaskCompleter;
+import ru.rik.cardsnew.service.TaskDescriptor;
 
 
 //brew install httpie 
@@ -44,7 +46,8 @@ public class RestChan {
 		if (c == null)
 			return "There aren't more cards for group " + ch.getGroup().getName() + " available";
 		
-		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), ch.getState(chans));
+		taskCompleter.addTask(() ->  switcher.switchCard(ch, c), 
+				new TaskDescriptor(Switcher.class, ch.getState(chans), new Date()));
 		return "Installing " + c.getName() + " card in " + ch.getName() +"  channel";
 	}
 

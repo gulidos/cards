@@ -33,12 +33,13 @@ public class AsteriskEvents implements ManagerEventListener {
 	@Autowired private Cdrs cdrs;
 
 	public AsteriskEvents() {
-		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "myasterisk", "mycode");
-		this.connection = factory.createManagerConnection();
+		
 	}
 
 	public void start() throws IOException, AuthenticationFailedException, TimeoutException, InterruptedException {
 		logger.info("Asterisk managerConnection log in ");
+		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "myasterisk", "mycode");
+		this.connection = factory.createManagerConnection();
 		connection.addEventListener(this);
 		connection.login();
 	}
@@ -84,7 +85,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.date(Util.parseDate(ce.getStartTime(), "yyyy-MM-dd HH:mm:ss"))
 				.src(ce.getSrc())
 				.dst(ce.getDestination())
-				.cardId(card.getId())
+				.cardId(card != null ? card.getId() : 0)
 				.billsec(ce.getBillableSeconds())
 				.trunk(ce.getTrunk())
 				.disp(ce.getDisposition())
@@ -93,8 +94,8 @@ public class AsteriskEvents implements ManagerEventListener {
 				.channelId(chan != null ? chan.getId() : 0)
 				.build();
 			logger.debug("applying {}", cdr);
-			
-		card.getStat(cards).applyCdr(cdr, card, chan, cdrs);
+		if (card != null)	
+			card.getStat(cards).applyCdr(cdr, card, chan, cdrs);
 		} catch (ParseException pe) {
 			logger.error("can not create CdrEvent calldate: " + ce.getStartTime() + " cardname: " + cardname, pe);
 		}			

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -91,10 +93,14 @@ public class RootConfig implements SchedulingConfigurer {
 		executor.setThreadNamePrefix("MyExecutor-");
 		executor.setThreadFactory(threadFactory());
 		executor.initialize();
-		
 		return executor;
 	}
 
+	@Bean
+	public ThreadPoolExecutor executor() {
+		ThreadPoolExecutor e = new ThreadPoolExecutor(5, 15, 10, TimeUnit.SECONDS, null);
+		return e;
+	}
 	
 	@Bean(destroyMethod = "shutdown")
 	public TaskExecutor taskSheduleExecutor() {

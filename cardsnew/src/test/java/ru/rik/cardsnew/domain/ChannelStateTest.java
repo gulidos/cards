@@ -10,6 +10,7 @@ import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.GsmState.GsmApp;
 
+
 public class ChannelStateTest {
 
 	

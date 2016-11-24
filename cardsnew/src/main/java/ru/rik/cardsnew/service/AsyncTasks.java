@@ -16,7 +16,6 @@ import ru.rik.cardsnew.service.http.HttpHelper;
 public class AsyncTasks {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);		
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private static Random random = new Random();
 	
 	@Autowired HttpHelper httpHelper;
@@ -39,7 +38,7 @@ public class AsyncTasks {
 		int rnd = Math.abs(random.nextInt()) % 10000;
 		Date start = new Date();
         try {Thread.sleep(rnd);} catch (InterruptedException e) {e.printStackTrace();}
-        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         System.out.println(Thread.currentThread().getName() +  message + " rnd: " + rnd 
         		+ " started at " +  dateFormat.format(start)
         		+ " ended at " +  dateFormat.format(new Date())

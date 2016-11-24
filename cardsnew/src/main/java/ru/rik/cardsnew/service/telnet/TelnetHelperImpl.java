@@ -200,9 +200,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ru.rik.cardsnew.service.telnet.ITelnetHelper#disconnect(org.apache.commons.net.telnet.TelnetClient)
-	 */
+	
 	public void disconnect(TelnetClient telnet) {
 		try {
 			telnet.disconnect();

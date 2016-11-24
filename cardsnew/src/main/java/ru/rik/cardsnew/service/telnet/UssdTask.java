@@ -23,15 +23,16 @@ public class UssdTask {
 	@Getter @Setter private String encodedResp;
 	@Getter @Setter private String decodedResp;
 	
-	private static final Pattern MSG_PATTERN = Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$", Pattern.MULTILINE);
+	private static final Pattern MSG_PATTERN = 
+			Pattern.compile("^\\+CUSD:\\s+(\\d)(?:,\\s*\"([^\"]*))?(?:\",\\s*(\\d+)\\s*)?\"?\r?$"
+					, Pattern.MULTILINE);
 	private static final Pattern pd = Pattern.compile("(\\d)");
 	private static final Pattern ps = Pattern.compile("(\\*)");
 	private static final Pattern pp = Pattern.compile("(\\#)");
 	
 	private static final Pattern greenBalance = Pattern.compile("(^\\-*\\d{1,4}[.,]\\d\\d)(р.*)", Pattern.MULTILINE);
 	private static final Pattern yellowBalance = 
-//			Pattern.compile("^(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?).*"
-			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?)\\s*(\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
+			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);
 
 	
@@ -57,19 +58,20 @@ public class UssdTask {
 	public UssdTask sendUssd(TelnetHelper h, String request) {
 		String encodedReq = encodeReq(request);
 		encodedResp = h.sendUssd(telnetClient, ch.getLine().getNport() + 1, encodedReq);
-		System.out.println("encodedResp: " + encodedResp);
 		return this;	
 	}
 	
 	
 	public String getDecoded() {
 		if (encodedResp == null)
-			return "";
+			throw new IllegalStateException("there isn't a valid response on ussd request "  + ch.getName() + " " + card.getName());
 		String str = null;
 		Matcher m = MSG_PATTERN.matcher(encodedResp);
 		if (m.find()) {
 			str = m.group(2);
 		} 
+		if (str == null) 
+			throw new IllegalStateException("can't parse ussd response for " + ch.getName() + " " + card.getName());
 		
 		byte[] responded = pduToBytes(str);
 		return decodeUcs2Encoding(null, responded);
@@ -91,22 +93,26 @@ public class UssdTask {
 		return result;
 	}
 	
+	/** Parses response and returns balance. If parsing failed, returns 9999.99.      */
 	public float getBalance() {
 		float balance = 0;
 		String str = null;
 		if (ch.getGroup().getOper() == Oper.GREEN) {
 			Matcher m = greenBalance.matcher(encodedResp);
-			if (m.find())  str = m.group(1);
+			if (m.find())  
+				str = m.group(1);
 		} else {
 			Matcher m = yellowBalance.matcher(encodedResp);
 			if (m.find()) {
 				str = m.group(2);
-				if (m.group(1).contains("Минус") || m.group(1).contains("Minus"))
+				if (m.group(1).contains("Минус") || m.group(1).contains("Minus") || m.group(1).contains("-"))
 					str = "-"+str;
 			}
 		}
-		balance = Float.parseFloat(str);
-		System.out.println("balance: " + str);
+		if (str != null)
+			balance = Float.parseFloat(str);
+		else 
+			balance = 9999.99f; 
 		return balance;
 	}
 	
