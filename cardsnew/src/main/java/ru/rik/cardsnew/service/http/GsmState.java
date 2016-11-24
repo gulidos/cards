@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyState;
+import ru.rik.cardsnew.service.TaskDescr;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class GsmState implements MyState {
@@ -27,10 +28,11 @@ public class GsmState implements MyState {
 	private final String iURL;
 	private final String iName;
 	private final String oMob;
+	private final TaskDescr td;
 	
 	@Builder
 	public GsmState(long id, String name, Date update, GsmApp status, String operator, String sernum, int sigquality, String regstate,
-			String iURL, String iName, String oMob) {
+			String iURL, String iName, String oMob, TaskDescr td) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -43,9 +45,11 @@ public class GsmState implements MyState {
 		this.iURL = iURL;
 		this.iName = iName;
 		this.oMob = oMob;
+		this.td = td;
 	}
 	
-	public static GsmState get(final Channel ch) throws IOException, IllegalAccessException {
+	public static GsmState get(final Channel ch, TaskDescr td) throws IOException, IllegalAccessException {
+		td.setStage("Executing ...");
 		String nport = Integer.toString(ch.getLine().getNport());
 		Connection con = HttpHelper.getCon(ch, "gsmstatus.cgi");
 		

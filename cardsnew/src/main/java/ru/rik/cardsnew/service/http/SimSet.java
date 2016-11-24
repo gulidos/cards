@@ -18,6 +18,7 @@ import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyState;
+import ru.rik.cardsnew.service.TaskDescr;
 
 
 
@@ -48,9 +49,9 @@ public class SimSet implements MyState{
      * @param chPair the pair channel
      * @return SimSet object
      */
-	public static SimSet get(final Channel ch, Channel chPair) throws IOException {
+	public static SimSet get(final Channel ch, Channel chPair, TaskDescr td) throws IOException {
 		Assert.notNull(ch);
-//		if (chPair != null ) logger.debug("chId: {} chName: {}", chPair.getId(), chPair.getName());
+		td.setStage("Executing ...");
 		HttpHelper.getCon(ch, "login.cgi")
 		.timeout(500)
 		.data("cookieexists", "false")

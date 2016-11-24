@@ -48,7 +48,7 @@ public class SwitchTask implements State{
 			if (c!= null)
 				c.engage(cards.findStateById(c.getId()));
 			logger.debug("card {} engaged for channel {}",  c!=null ? c.getName() : "-", ch.getName());
-			SimSet.get(ch, null);
+			SimSet.get(ch, null, td);
 			logger.debug("channel {} available", ch.getName());
 
 			try {

@@ -3,7 +3,6 @@ package ru.rik.cardsnew.service;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
-import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
@@ -44,7 +42,7 @@ public class PeriodicTasks {
 
 	}
 	
-	@Scheduled(fixedRate = 15000)
+	@Scheduled(fixedRate = 15000, initialDelay = 2000)
 	public void checkChannels() {
 		Set<Channel> pairsJobs = new HashSet<>();
 		
@@ -52,9 +50,10 @@ public class PeriodicTasks {
 			if (!ch.isEnabled()) continue;
 			
 			ChannelState st = chans.findStateById(ch.getId());
-			if (!st.isGsmDateFresh()) 
-				taskCompleter.addTask(()-> GsmState.get(ch),
-						new TaskDescr(GsmState.class, st, new Date()));
+			if (!st.isGsmDateFresh())  {
+				TaskDescr td = new TaskDescr(GsmState.class, st, new Date());
+				taskCompleter.addTask(()-> GsmState.get(ch, td), td);
+			}	
 
 			if (pairsJobs.contains(ch)) { // if the channel was already requested as a pair
 				pairsJobs.remove(ch);
@@ -64,8 +63,10 @@ public class PeriodicTasks {
 				ChannelState pairSt = chans.findStateById(pair.getId());
 				if (pair != null)
 					pairsJobs.add(pair);
-				if (!st.isSimSetDateFresh()) 
-					taskCompleter.addTask(()-> SimSet.get(ch, pair), new TaskDescr(SimSet.class, st, new Date()));
+				if (!st.isSimSetDateFresh()) {
+					TaskDescr td = new TaskDescr(SimSet.class, st, new Date());
+					taskCompleter.addTask(()-> SimSet.get(ch, pair, td), td);
+				}	
 				if (!st.isSmsFetchDateFresh() && ch.getCard() != null) {
 					st.setStatus(Status.Smsfetch);
 					pairSt.setStatus(Status.Smsfetch);
@@ -78,13 +79,14 @@ public class PeriodicTasks {
 		
 	}
 	
-	@Scheduled(fixedRate = 600000)
+	@Scheduled(fixedRate = 600000, initialDelay = 3000)
 	public void checkBanks() {
-//		logger.debug("Start checkBanks ...");
+		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
-			Callable<State> checkBank = () -> BankStatus.get(b, new TaskDescr(BankStatus.class, st, new Date()));
-			taskCompleter.addTask(checkBank, new TaskDescr(BankStatus.class, st, new Date()));
+//			TaskDescr td = new TaskDescr(BankStatus.class, st, new Date());
+			taskCompleter.addTask(() -> BankStatus.get(b, new TaskDescr(BankStatus.class, st, new Date())), 
+					new TaskDescr(BankStatus.class, st, new Date()));
 		}
 	}
 	

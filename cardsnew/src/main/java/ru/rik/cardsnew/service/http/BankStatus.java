@@ -8,6 +8,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -16,6 +18,8 @@ import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @Data
 public class BankStatus implements State {
+	private static final Logger logger = LoggerFactory.getLogger(BankStatus.class);		
+
 	private long id;
 	private String name;
 	private int activecards;
@@ -31,8 +35,10 @@ public class BankStatus implements State {
 	}
 
 	public static BankStatus get(final Bank b, TaskDescr td) throws IOException, InterruptedException {
-		if (b == null) throw new NullPointerException("Bank must not be null!");
+		if (b == null) 
+			throw new NullPointerException("Bank must not be null!");
 		td.setStage("Getting bank pages ");
+
 		BankStatus.BankStatusBuilder bld  = BankStatus.builder(); 
 		bld.id(b.getId())
 		.name(b.getName())
@@ -41,7 +47,6 @@ public class BankStatus implements State {
 		String port = Integer.toString(80);
 		String login = Bank.DEF_USER + ":" + Bank.DEF_PASSWORD;
 		String authString = new String(Base64.encodeBase64(login.getBytes()));
-//		http://stackoverflow.com/questions/24772828/how-to-parse-html-table-using-jsoup
 		int totalAct = 0;
 		for (int i = 0; i <= 3; i++) {
 			Document doc = Jsoup.connect("http://" + host + ":" + port + "/" + "SimStatus.cgi")
@@ -56,6 +61,7 @@ public class BankStatus implements State {
 			TimeUnit.SECONDS.sleep(1);
 		}	
 		bld.cardcount(totalAct);
+		logger.debug(td.getName() + " " + td.toString());
 		return bld.build();
 	}
 

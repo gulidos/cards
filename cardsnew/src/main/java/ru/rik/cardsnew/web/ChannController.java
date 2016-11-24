@@ -253,9 +253,9 @@ public class ChannController {
 					Channel ch = chans.findById(state.getId());
 					ChannelState st = ch.getState(chans);
 					try {
-						GsmState gstate = GsmState.get(ch);
+						GsmState gstate = GsmState.get(ch, new TaskDescr(GsmState.class, st, new Date()));
 						st.applyGsmStatus(gstate);
-						SimSet simset = SimSet.get(ch, ch.getPair(chans));
+						SimSet simset = SimSet.get(ch, ch.getPair(chans), new TaskDescr(SimSet.class, st, new Date()));
 						st.applySimSet(simset);
 					} catch (SocketTimeoutException | ConnectException e) {
 						st.setStatus(Status.Unreach);

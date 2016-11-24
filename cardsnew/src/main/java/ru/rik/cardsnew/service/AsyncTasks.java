@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 
-import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
 
 public class AsyncTasks {
@@ -23,16 +21,16 @@ public class AsyncTasks {
 		logger.debug("Instantiate the AsyncTasks ...");
 	}
 	
-	@Async("taskExecutor")
-	public void checkChannel(Channel ch) {
-		try {
-			GsmState.get(ch);
-		} catch (Exception e) {
-			logger.error(e.getMessage() + "trying to check channel " + ch.getName() + " ip: " + ch.getBox().getIp(), e);
-		}
-		
-	}
-	
+//	@Async("taskExecutor")
+//	public void checkChannel(Channel ch) {
+//		try {
+//			GsmState.get(ch);
+//		} catch (Exception e) {
+//			logger.error(e.getMessage() + "trying to check channel " + ch.getName() + " ip: " + ch.getBox().getIp(), e);
+//		}
+//		
+//	}
+//	
 	@Async("taskExecutor")
 	public void printMsg(String message) {
 		int rnd = Math.abs(random.nextInt()) % 10000;

@@ -2,6 +2,7 @@ package ru.rik.cardsnew.service;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
@@ -119,6 +120,7 @@ public class TaskCompleter implements Runnable{
 				} else if (st.getClazz() == BankState.class) {
 					BankState bState = (BankState) st;
 					bState.setAvailable(false);
+					logger.error(e.getMessage(), e);
 				} else
 					logger.error(e.getMessage(), e);
 			} else 
@@ -165,6 +167,7 @@ public class TaskCompleter implements Runnable{
 		ChannelState pairSt = pair != null ? pair.getState(chans) : null;
 		switch (smsTask.getPhase()) {
 		case FetchMain:
+			st.setLastSmsFetchDate(new Date());
 			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
 				chans.smsSave(smsTask.getSmslist());
 				descr.setStage("queued for DeleteMain");
@@ -189,6 +192,7 @@ public class TaskCompleter implements Runnable{
 			}	
 			break;
 		case FetchPair:	
+			pairSt.setLastSmsFetchDate(new Date());
 			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
 				chans.smsSave(smsTask.getPairSmslist());
 				descr.setStage("queued for Delete Pair");

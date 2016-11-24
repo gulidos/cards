@@ -85,7 +85,7 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean
 	public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(5);
+		executor.setCorePoolSize(8);
 //		executor.setMaxPoolSize(30);
 		executor.setQueueCapacity(100);
 		executor.setThreadNamePrefix("MyExecutor-");
