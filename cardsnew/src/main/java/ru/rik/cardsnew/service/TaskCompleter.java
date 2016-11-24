@@ -96,7 +96,7 @@ public class TaskCompleter implements Runnable{
 
 
 	/**
-     * Handles all the exceptions during the task's execution
+     * Handles all exceptions during the task's execution
      */
 	private void execExceptionHandler(Future<State> f, ExecutionException e) {
 		try {

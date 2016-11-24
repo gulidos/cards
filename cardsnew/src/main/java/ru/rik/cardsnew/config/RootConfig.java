@@ -85,7 +85,7 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean
 	public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(3);
+		executor.setCorePoolSize(5);
 //		executor.setMaxPoolSize(30);
 		executor.setQueueCapacity(100);
 		executor.setThreadNamePrefix("MyExecutor-");
@@ -128,7 +128,7 @@ public class RootConfig implements SchedulingConfigurer {
 	// =================== Uncaught Exceptions Handler =====================
 
 	public static class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-		private static final Logger logger = LoggerFactory.getLogger(AsyncTasks.class);
+		private static final Logger logger = LoggerFactory.getLogger(MyUncaughtExceptionHandler.class);
 		private List<String> errors = new LinkedList<>();
 
 		@Override
