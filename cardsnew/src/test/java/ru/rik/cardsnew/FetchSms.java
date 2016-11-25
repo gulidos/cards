@@ -39,19 +39,11 @@ import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = ConfigJpaH2.class)
-@ContextConfiguration(classes = RootConfig.class)
+
 
 public class FetchSms {
 	public FetchSms() {	}
 
-	
-
-
-	
-
-//	public void getSms() throws InterruptedException, ExecutionException {
 	public static void main(String[] args) throws SocketException, IOException, InterruptedException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(RootConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
