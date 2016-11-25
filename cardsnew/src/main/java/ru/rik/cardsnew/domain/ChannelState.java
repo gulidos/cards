@@ -16,6 +16,7 @@ import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -82,10 +83,8 @@ public class ChannelState implements MyState {
 		case Unreach:	setUnreachStatus(s); break;
 		case Inchange: 
 		case PeerInchange: setChangeStatus(s); break;
-		case Smsfetch: 
-			lastSmsFetchDate = new Date(); 
-			setMantainStatus(s); break;
-		case UssdReq:	setMantainStatus(s); break;
+		case Smsfetch: 	setSmsFetchAndUssdStatus(s); break;
+		case UssdReq:	setSmsFetchAndUssdStatus(s); break;
 		default:
 			throw new IllegalArgumentException("Unknown channel's status: " + s.toString());
 		}
@@ -167,12 +166,18 @@ public class ChannelState implements MyState {
 		}
 	}
 	
-	private void setMantainStatus(Status s) {
+	private void setSmsFetchAndUssdStatus(Status s) {
 		if (status == Status.Ready) {
 			this.status = s;
 			lastStatusChange = new Date();
 			nextGsmUpdate = Util.getNowPlusSec(Settings.NORM_INTERVAL);
 		}
+	}
+	
+	public void smsSuccessfullyFetched() {
+		lastSmsFetchDate = new Date();
+		nextSmsFetchDate = new Date(lastSmsFetchDate.getTime() + Settings.MAX_SMS_FETCH_PERIOD * 1000);
+		setStatus(Status.Ready);
 	}
 	
 	public boolean isGsmDateFresh() {

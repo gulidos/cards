@@ -176,8 +176,8 @@ public class TaskCompleter implements Runnable{
 				descr.setStage("queued for Fetch Pair");
 				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
-				st.setStatus(Status.Ready);
-				if (pairSt != null) pairSt.setStatus(Status.Ready);
+				st.smsSuccessfullyFetched();
+				if (pairSt != null) pairSt.smsSuccessfullyFetched();
 				smsTask.disconnect();
 			}	
 			break;
@@ -186,8 +186,8 @@ public class TaskCompleter implements Runnable{
 				descr.setStage("queued for Fetch Pair");
 				addTask(() -> smsTask.fetchPair(telnetHandler), descr);
 			} else {
-				st.setStatus(Status.Ready);
-				if (pairSt != null) pairSt.setStatus(Status.Ready);
+				st.smsSuccessfullyFetched();
+				if (pairSt != null) pairSt.smsSuccessfullyFetched();
 				smsTask.disconnect();
 			}	
 			break;
@@ -198,14 +198,14 @@ public class TaskCompleter implements Runnable{
 				descr.setStage("queued for Delete Pair");
 				addTask(() -> smsTask.deletePair(telnetHandler), descr);
 			} else {
-				st.setStatus(Status.Ready);
-				if (pairSt != null) pairSt.setStatus(Status.Ready);
+				st.smsSuccessfullyFetched();
+				if (pairSt != null) pairSt.smsSuccessfullyFetched();
 				smsTask.disconnect();
 			}	
 			break;
 		case DeletePair:	
-			st.setStatus(Status.Ready);
-			if (pairSt != null) pairSt.setStatus(Status.Ready);
+			st.smsSuccessfullyFetched();
+			if (pairSt != null) pairSt.smsSuccessfullyFetched();
 			break;
 		default:
 			break;

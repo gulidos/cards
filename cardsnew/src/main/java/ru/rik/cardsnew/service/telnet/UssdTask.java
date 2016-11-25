@@ -47,25 +47,29 @@ public class UssdTask {
 	}
 
 	
-	public static UssdTask get(TelnetHelper h, Channel ch, Card card, TaskDescr td) throws SocketException, IOException {
+	public static UssdTask get(TelnetHelper h, Channel ch, Card card, String request, TaskDescr td) throws SocketException, IOException {
 		Assert.assertNotNull(ch);
 		Assert.assertNotNull(card);
+		td.setStage("Connecting to " + ch.getBox().getIp() + ":" + ch.getLine().getTelnetport());
 		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		UssdTask task = new UssdTask(ch, card, tc, td);
 		
+		td.setStage("Sending ussd... ");
+		String encodedResp = h.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
+		task.setEncodedResp(encodedResp);
 		return task;
 	}
+//	
+//	public UssdTask sendUssd(TelnetHelper h, String request) {
+//		String encodedReq = encodeReq(request);
+//		encodedResp = h.sendUssd(telnetClient, ch.getLine().getNport() + 1, encodedReq);
+//		return this;	
+//	}
 	
-	public UssdTask sendUssd(TelnetHelper h, String request) {
-		String encodedReq = encodeReq(request);
-		encodedResp = h.sendUssd(telnetClient, ch.getLine().getNport() + 1, encodedReq);
-		return this;	
-	}
 	
-	
-	public String getDecoded() {
+	public String getDecodedResponse() {
 		if (encodedResp == null)
 			throw new IllegalStateException("there isn't a valid response on ussd request "  + ch.getName() + " " + card.getName());
 		String str = null;
@@ -82,7 +86,7 @@ public class UssdTask {
 		
 	
 	
-	public String encodeReq(String req) {
+	public String encodeRequest(String req) {
 		String result = null;
 		Matcher m = pd.matcher(req);
 		if (m.find())  result = m.replaceAll("003$1");
@@ -98,14 +102,16 @@ public class UssdTask {
 	
 	/** Parses response and returns balance. If parsing failed, returns 9999.99.      */
 	public float getBalance() {
+		if (decodedResp == null)
+			decodedResp = getDecodedResponse();
 		float balance = 0;
 		String str = null;
 		if (ch.getGroup().getOper() == Oper.GREEN) {
-			Matcher m = greenBalance.matcher(encodedResp);
+			Matcher m = greenBalance.matcher(decodedResp);
 			if (m.find())  
 				str = m.group(1);
 		} else {
-			Matcher m = yellowBalance.matcher(encodedResp);
+			Matcher m = yellowBalance.matcher(decodedResp);
 			if (m.find()) {
 				str = m.group(2);
 				if (m.group(1).contains("Минус") || m.group(1).contains("Minus") || m.group(1).contains("-"))

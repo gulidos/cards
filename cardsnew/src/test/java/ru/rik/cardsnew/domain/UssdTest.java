@@ -42,10 +42,11 @@ public class UssdTest {
 	static String decodedYellow = "Баланс 174.60 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#";
 	
 	
+	
 	@Test
 	public void encoderTest() {
 		UssdTask task = new UssdTask();
-		String res = task.encodeReq("*100#");
+		String res = task.encodeRequest("*100#");
 		Assert.assertEquals("002a0031003000300023", res);
 	}
 	
@@ -53,11 +54,11 @@ public class UssdTest {
 	public void encodeFullRespTest() {
 		UssdTask task = new UssdTask();
 		task.setEncodedResp(encodedRespRed);
-		String decodedResp = task.getDecoded();
+		String decodedResp = task.getDecodedResponse();
 		Assert.assertEquals(decodedResp, decodedRed);
 		
 		task.setEncodedResp(encodedRespGreen);
-		decodedResp = task.getDecoded();
+		decodedResp = task.getDecodedResponse();
 		Assert.assertEquals(decodedResp, decodedGreen);
 		System.out.println(decodedResp);
 	}
@@ -68,7 +69,7 @@ public class UssdTest {
 		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.GREEN).build()).build();
 		task.setCh(ch);
 		task.setCard(new Card());
-		task.setEncodedResp(decodedGreen);
+		task.setDecodedResp(decodedGreen);
 		Assert.assertEquals(Float.valueOf(task.getBalance()), 105.99f, 0.1);
 	}
 	
@@ -78,7 +79,7 @@ public class UssdTest {
 		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.GREEN).build()).build();
 		task.setCh(ch);
 		task.setCard(new Card());
-		task.setEncodedResp("-" + decodedGreen);
+		task.setDecodedResp("-" + decodedGreen);
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -105.99f, 0.1);
 	}
 	
@@ -88,9 +89,9 @@ public class UssdTest {
 		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.YELLOW).build()).build();
 		task.setCh(ch);
 		task.setCard(new Card());
-		task.setEncodedResp(decodedYellow);
+		task.setDecodedResp(decodedYellow);
 		Assert.assertEquals(Float.valueOf(task.getBalance()), 174.60f, 0.1);
-		task.setEncodedResp("Balans 174.60 р.Внимание! Похолодание");
+		task.setDecodedResp("Balans 174.60 р.Внимание! Похолодание");
 		Assert.assertEquals(Float.valueOf(task.getBalance()), 174.60f, 0.1);
 	}
 
@@ -100,27 +101,33 @@ public class UssdTest {
 		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.YELLOW).build()).build();
 		task.setCh(ch);
 		task.setCard(new Card());
-		task.setEncodedResp("Минус 174.60 р.Внимание! Похолодание");
+		task.setDecodedResp("Минус 174.60 р.Внимание! Похолодание");
 		System.out.println(task.getBalance());
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
 		
-		task.setEncodedResp("Minus 174.60 р.Внимание! Похолодание");
+		task.setDecodedResp("Minus 174.60 р.Внимание! Похолодание");
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
-		task.setEncodedResp("- 174.60 р.Внимание! Похолодание");
+		task.setDecodedResp("- 174.60 р.Внимание! Похолодание");
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		
+		task.setDecodedResp("Баланс 92.30 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
+		Assert.assertEquals(Float.valueOf(task.getBalance()), 92.30f, 0.1);
+
 	}
 	
 	public static void main(String[] args) throws SocketException, IOException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(JpaConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
-		Channel ch = chans.findByName("bln75");		
+		Channel ch = chans.findByName("bln33");		
 		Card c = ch.getCard();
 		TelnetHelperImpl th = new TelnetHelperImpl();
 		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 
-		UssdTask task = UssdTask.get(th, ch, new Card(), td);
-		task.sendUssd(th, "*100#");
-		
-		System.out.println(task.getDecoded());
+		UssdTask task = UssdTask.get(th, ch, new Card(), "*100#", td);
 
+		
+
+		System.out.println(task.getDecodedResponse());
+		System.out.println(task.getEncodedResp());
+		System.out.println(task.getBalance());
 	}
 }

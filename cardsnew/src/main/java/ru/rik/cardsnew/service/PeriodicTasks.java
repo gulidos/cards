@@ -42,7 +42,7 @@ public class PeriodicTasks {
 
 	}
 	
-	@Scheduled(fixedRate = 15000, initialDelay = 2000)
+	@Scheduled(fixedRate = 15000, initialDelay = 5000)
 	public void checkChannels() {
 		Set<Channel> pairsJobs = new HashSet<>();
 		
@@ -79,7 +79,7 @@ public class PeriodicTasks {
 		
 	}
 	
-	@Scheduled(fixedRate = 600000, initialDelay = 3000)
+	@Scheduled(fixedRate = 600000, initialDelay = 6000)
 	public void checkBanks() {
 		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {

@@ -15,6 +15,7 @@ public class Settings {
     public static volatile int TIME_FOR_SWITCH = 300;
     public static volatile int PERCENT_MSK_PLUS = 30;
     public static volatile int MAX_OFFNET_MIN = 2;
+    public static volatile int MAX_SMS_FETCH_PERIOD = 600;
     
    
 	

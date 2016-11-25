@@ -122,7 +122,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 		}	
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
 		sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
-		String encodedResp = sendCmd(telnet, "AT+CUSD=1,\"" + encodedReq + "\"", "\n0\r\n", 10);
+		String encodedResp = sendCmd(telnet, "AT+CUSD=1,\"" + encodedReq + "\"", "\n0\r\n", 3000);
 		return encodedResp;
 	}
 
@@ -141,7 +141,6 @@ public class TelnetHelperImpl implements TelnetHelper {
 	private String readUntil(TelnetClient telnet, String pattern, int timeout)  {
 		wait(timeout);
 		InputStream in = telnet.getInputStream();
-		
 		StringBuffer sb = null;
 		int numRead = 0;
 		try {
