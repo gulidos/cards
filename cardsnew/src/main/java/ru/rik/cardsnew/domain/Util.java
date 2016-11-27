@@ -45,6 +45,16 @@ public class Util {
 			throw new IllegalStateException("Not unchecked", t);
 	}
 	
+	public static long msecBetween(Date d1, Date d2) {
+		return Math.abs(d2.getTime() - d1.getTime());
+	}
 	
+	public static boolean isApproxEqual(Date d1, Date d2) {
+		return msecBetween(d1, d2) < 10;
+	}
+	
+	public static boolean isApproxEqual(Date d1, Date d2, int delta) {
+		return msecBetween(d1, d2) < delta;
+	}
 	
 }

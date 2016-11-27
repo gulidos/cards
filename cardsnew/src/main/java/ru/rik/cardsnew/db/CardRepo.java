@@ -8,6 +8,7 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
+import ru.rik.cardsnew.domain.Balance;
 
 public interface CardRepo extends GenericRepo<Card, CardStat> {
 
@@ -33,5 +34,7 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 	void init();
 
 	void setChannelToNull(List<Card> list);
+
+	List<Balance> findLastBalances();
 
 }

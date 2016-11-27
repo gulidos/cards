@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
 
@@ -47,5 +48,7 @@ public interface GenericRepo<T extends MyEntity, S extends MyEntity>
 	public ConcurrentMap<Long, S> getStates();
 
 	boolean removeStateIfExists(long id);
+
+	EntityManager getEntityManager();
 }
 

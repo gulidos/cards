@@ -30,6 +30,7 @@ import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
+import ru.rik.cardsnew.service.telnet.UssdTask;
 
 public class TaskCompleter implements Runnable{
 	private static final Logger logger = LoggerFactory.getLogger(TaskCompleter.class);		
@@ -210,7 +211,14 @@ public class TaskCompleter implements Runnable{
 		default:
 			break;
 		}
-		
+	}
+	
+	
+	protected void handleUssd(UssdTask smsTask) {
+		Channel ch = smsTask.getCh();
+		ChannelState st = ch.getState(chans);
+		TaskDescr descr = smsTask.getTd();
+		System.out.println(smsTask.getDecodedResponse());!!!
 	}
 
 

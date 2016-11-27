@@ -16,7 +16,6 @@ import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -43,8 +42,6 @@ public class ChannelState implements MyState {
 	@Getter private volatile Date lastSmsFetchDate = new Date(0);
 	@Getter private volatile Date nextSmsFetchDate = new Date(0);
 	
-	@Getter private volatile Date lastBalanceCheck = new Date(0);
-	@Getter private volatile Date nextBalanceCheck = new Date(0);
 	
 	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 

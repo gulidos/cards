@@ -22,7 +22,7 @@ public class UssdTask {
 	@Getter @Setter private Card card;
 	@Getter @Setter private TelnetClient telnetClient;
 	@Getter @Setter private String encodedResp;
-	@Getter @Setter private String decodedResp;
+	@Setter private String decodedResp;
 	@Getter @Setter private TaskDescr td;
 	
 	private static final Pattern MSG_PATTERN = 
@@ -36,7 +36,7 @@ public class UssdTask {
 	private static final Pattern yellowBalance = 
 			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);
-
+	private static final Pattern smsNeeded = Pattern.compile("^.*SMS.*$", Pattern.MULTILINE);
 	
 	public UssdTask(Channel ch, Card card, TelnetClient telnetClient, TaskDescr td) {
 		super();
@@ -61,12 +61,6 @@ public class UssdTask {
 		task.setEncodedResp(encodedResp);
 		return task;
 	}
-//	
-//	public UssdTask sendUssd(TelnetHelper h, String request) {
-//		String encodedReq = encodeReq(request);
-//		encodedResp = h.sendUssd(telnetClient, ch.getLine().getNport() + 1, encodedReq);
-//		return this;	
-//	}
 	
 	
 	public String getDecodedResponse() {
@@ -101,29 +95,38 @@ public class UssdTask {
 	}
 	
 	/** Parses response and returns balance. If parsing failed, returns 9999.99.      */
-	public float getBalance() {
+	public Float getBalance() {
 		if (decodedResp == null)
 			decodedResp = getDecodedResponse();
-		float balance = 0;
+		Float balance = null;
 		String str = null;
 		if (ch.getGroup().getOper() == Oper.GREEN) {
 			Matcher m = greenBalance.matcher(decodedResp);
 			if (m.find())  
 				str = m.group(1);
+			else if (isSmsNeeded()) 
+				return 9999.99f;
 		} else {
 			Matcher m = yellowBalance.matcher(decodedResp);
 			if (m.find()) {
 				str = m.group(2);
 				if (m.group(1).contains("Минус") || m.group(1).contains("Minus") || m.group(1).contains("-"))
 					str = "-"+str;
-			}
+			} else if (isSmsNeeded()) 
+				return 9999.99f;
 		}
 		if (str != null)
 			balance = Float.parseFloat(str);
-		else 
-			balance = 9999.99f; 
+		
 		return balance;
 	}
+	
+	
+	private boolean isSmsNeeded() {
+		Matcher m = smsNeeded.matcher(decodedResp);
+		return m.find();  
+	}
+ 	
 	
 	// converts a PDU  string to a byte array
 		private byte[] pduToBytes(String s) {

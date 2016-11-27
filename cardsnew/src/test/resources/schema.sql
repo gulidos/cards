@@ -166,3 +166,14 @@ CREATE TABLE cdr (
   gateip varchar(15) NOT NULL DEFAULT '',
   regcode int(2) DEFAULT NULL,
 ) ENGINE=InnoDB;
+
+CREATE TABLE _BALANCE (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  balance float NOT NULL,
+  date datetime DEFAULT NULL,
+  encodedmsg varchar(255) DEFAULT NULL,
+  payment bit(1) NOT NULL,
+  card_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_eo4p2ralgphpfv39p2fuisx5g FOREIGN KEY (card_id) REFERENCES _CARD (id)
+) ENGINE=InnoDB;

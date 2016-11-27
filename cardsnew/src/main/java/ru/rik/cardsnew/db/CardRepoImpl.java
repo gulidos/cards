@@ -3,7 +3,6 @@ package ru.rik.cardsnew.db;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -41,7 +41,13 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 			CardStat s = addStateIfAbsent(c);
 			if (c.getChannelId() != 0)
 				s.setFree(true, false);
-		}	
+		}
+		
+		findLastBalances().forEach(b-> {
+			CardStat st = findStateById(b.getCard().getId());
+			if (st != null)
+				st.applyBalance(b);
+			});
 	}
 
 	
@@ -113,8 +119,8 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	}
 	
 	private boolean isEligible(Card c) {
-		return c.getStat(this).isFree() 
-				&& c.isActive()  
+		return c.isActive() && !c.isBlocked()
+				&& c.getStat(this).isFree() 
 				&& c.getBank().getStat(banks).isAvailable() 
 				&& c.getStat(this).getMinRemains() > 1;
 	}
@@ -151,12 +157,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 //		}	
 	}
 	
-	
-	@Override
-	public void updateDayLimit() {
-		Random rnd = new Random();
-		int range = rnd.nextInt();		
-	}
+
 	
 	@Override @Transactional
 	public void setChannelToNull(List<Card> list) {
@@ -165,5 +166,19 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		.peek(c -> c.setChannelId(0)).peek(c->makePersistent(c))
 		.map(c -> c.getStat(this))
 		.forEach(st -> st.setFree(false, true));
+	}
+
+	
+	@Override
+	public List<Balance> findLastBalances() {
+		return em.createNamedQuery("findAllLastBalance", Balance.class)
+				.setHint("org.hibernate.cacheable", true)
+				.getResultList();
+	}
+
+	@Override
+	public void updateDayLimit() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,6 +1,8 @@
 package ru.rik.cardsnew.service;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -32,10 +34,11 @@ import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.SmsTask.Phase;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 import ru.rik.cardsnew.service.telnet.TelnetHelperMock;
+import ru.rik.cardsnew.service.telnet.UssdTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConfigJpaH2.class)
-public class SmsTests {
+public class SmsAndUssdTests {
 	@Autowired private  CardRepo cards;
 	@Autowired private  ChannelRepo chans;
 	@Autowired private TaskCompleter taskCompleter;
@@ -48,7 +51,7 @@ public class SmsTests {
 	private Channel pair;
 	private Card cardPair;
 	
-	public SmsTests() {	}
+	public SmsAndUssdTests() {	}
 	
 	@Before 
 	@Transactional
@@ -62,7 +65,6 @@ public class SmsTests {
 
 	
 	private void initChannels() throws InterruptedException {
-
 		
 		ch = chans.switchCard(chans.findById(1), cards.findById(1));
 		st = chans.findStateById(ch.getId());
@@ -82,11 +84,6 @@ public class SmsTests {
 	public void destroy () {
 		chans.switchCard(ch, null);
 		chans.switchCard(pair, null);
-//		for (int i = 1; i < 6; i++) chans.removeStateIfExists(i);
-//		chans.init();
-//		
-//		for (int i = 1; i < 16; i++) cards.removeStateIfExists(i);
-//		cards.init();
 	}
 	
 	
@@ -156,7 +153,16 @@ public class SmsTests {
 		Assert.assertEquals(task.getPhase(), Phase.DeletePair);
 		verify(tc, times(1)).disconnect();
 		Assert.assertEquals(st.getStatus(), Status.Ready);
-
-
+	}
+	
+	@Test
+	public void tryToSendUssdButStatusNotAllows() throws SocketException, IOException {
+		TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
+		Card c = cards.findById(1);
+		UssdTask task = UssdTask.get(th, ch, c, "*100#", td);
+		UssdTask SpyTask = spy(task);
+		doReturn("Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS").when(SpyTask).getDecodedResponse();
+		taskCompleter.handleUssd(SpyTask);
+		
 	}
 }

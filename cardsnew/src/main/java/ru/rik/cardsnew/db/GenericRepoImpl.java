@@ -129,7 +129,8 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 		Cache cache = em.getEntityManagerFactory().getCache();
 		cache.evictAll();
 	}
-
+	
+	@Override
 	public EntityManager getEntityManager() {
 		return em;
 	}

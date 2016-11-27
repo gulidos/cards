@@ -1,6 +1,8 @@
 package ru.rik.cardsnew.domain;
 
 import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +28,7 @@ public class CardStat implements State {
 	@Getter @Setter private CardRepo repo;
 	private String name;
 	private AtomicBoolean free = new AtomicBoolean(true);
+	private static Random rnd = new Random(); 
 	
 	@Getter	private volatile int asr;
 	@Getter private volatile double acd;
@@ -35,12 +38,17 @@ public class CardStat implements State {
 	@Getter private volatile int todayMsk;
 	private volatile AtomicInteger todayCalls = new AtomicInteger(0);
 	
+	@Getter @Setter float balance;
+	@Getter @Setter Date lastBalanceChecked = new Date(0);
+	@Getter @Setter Date nextBalanceCheck = new Date(0);
 
 	public CardStat() {} //needed !! 
 	
 	public CardStat(Card card) {
 		setCard(card);
 	}
+	
+	
 	
 	public void setCard(Card card) {
 		this.id = card.getId();
@@ -167,6 +175,13 @@ public class CardStat implements State {
 		return df.format(acd);
 	}
 
+	public void applyBalance(Balance b) {
+		this.balance = b.getBalance();
+		this.lastBalanceChecked = b.getDate();
+		this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + 
+				Settings.MAX_BALANCE_CHECK_PERIOD * 1000 + rnd.nextInt(60*60*1000));
+		
+	}
 	
 	public int getTodayCalls() {return todayCalls.get();}
 	

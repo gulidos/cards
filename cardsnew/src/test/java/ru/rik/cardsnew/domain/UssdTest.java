@@ -60,7 +60,6 @@ public class UssdTest {
 		task.setEncodedResp(encodedRespGreen);
 		decodedResp = task.getDecodedResponse();
 		Assert.assertEquals(decodedResp, decodedGreen);
-		System.out.println(decodedResp);
 	}
 	
 	@Test
@@ -102,7 +101,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp("Минус 174.60 р.Внимание! Похолодание");
-		System.out.println(task.getBalance());
+
 		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
 		
 		task.setDecodedResp("Minus 174.60 р.Внимание! Похолодание");
@@ -112,8 +111,28 @@ public class UssdTest {
 		
 		task.setDecodedResp("Баланс 92.30 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
 		Assert.assertEquals(Float.valueOf(task.getBalance()), 92.30f, 0.1);
-
 	}
+	
+	@Test
+	public void smsIsNeededTest() {
+		UssdTask task = new UssdTask();
+		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.RED).build()).build();
+		task.setCh(ch);
+		task.setCard(new Card());
+		task.setDecodedResp(decodedRed);
+		Assert.assertEquals(Float.valueOf(task.getBalance()), 9999.99f, 0.1);
+	}
+	
+	@Test
+	public void ifGarbageGotAnswerisNull() {
+		UssdTask task = new UssdTask();
+		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.RED).build()).build();
+		task.setCh(ch);
+		task.setCard(new Card());
+		task.setDecodedResp("dswe;o89hv;aoiho;vihaew;origsmdps'p0t");
+		Assert.assertNull(task.getBalance());
+	}
+	
 	
 	public static void main(String[] args) throws SocketException, IOException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(JpaConfig.class);
