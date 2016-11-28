@@ -19,8 +19,12 @@ import org.springframework.util.Assert;
 import lombok.Getter;
 import lombok.Setter;
 import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.BankState;
+import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
@@ -39,6 +43,7 @@ public class TaskCompleter implements Runnable{
 	private final ThreadPoolTaskExecutor executor;
 	@Getter private final ConcurrentMap<Future<State>, TaskDescr> map;
 	@Autowired @Setter private ChannelRepo chans;
+	@Autowired private CardRepo cards;
 	@Autowired private BankRepo banks;
 	@Autowired @Setter private TelnetHelper telnetHandler;
 
@@ -89,6 +94,8 @@ public class TaskCompleter implements Runnable{
 				}
 				else if (result.getClazz() == SmsTask.class) {
 					handleSms((SmsTask) result);
+				} else if (result.getClazz() == UssdTask.class) {
+					handleUssd((UssdTask) result);
 				}
 			} catch (InterruptedException e) {
 				logger.info("interrupted");
@@ -214,11 +221,20 @@ public class TaskCompleter implements Runnable{
 	}
 	
 	
-	protected void handleUssd(UssdTask smsTask) {
-		Channel ch = smsTask.getCh();
+	protected void handleUssd(UssdTask ussdTask) {
+		Channel ch = ussdTask.getCh();
 		ChannelState st = ch.getState(chans);
-		TaskDescr descr = smsTask.getTd();
-		System.out.println(smsTask.getDecodedResponse());!!!
+		TaskDescr descr = ussdTask.getTd();
+		Card c = ussdTask.getCard();
+		CardStat cs = c.getStat(cards);
+		
+		Balance b = ussdTask.getBalance();
+		System.out.println(b);
+		cs.applyBalance(b);
+		cards.balanceSave(b);
+		
+		
+		st.setStatus(Status.Ready);
 	}
 
 

@@ -69,7 +69,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedGreen);
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 105.99f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 105.99f, 0.1);
 	}
 	
 	@Test
@@ -79,7 +79,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp("-" + decodedGreen);
-		Assert.assertEquals(Float.valueOf(task.getBalance()), -105.99f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -105.99f, 0.1);
 	}
 	
 	@Test
@@ -89,9 +89,9 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedYellow);
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 174.60f, 0.1);
 		task.setDecodedResp("Balans 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 174.60f, 0.1);
 	}
 
 	@Test
@@ -102,25 +102,27 @@ public class UssdTest {
 		task.setCard(new Card());
 		task.setDecodedResp("Минус 174.60 р.Внимание! Похолодание");
 
-		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
 		
 		task.setDecodedResp("Minus 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
 		task.setDecodedResp("- 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
 		
 		task.setDecodedResp("Баланс 92.30 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 92.30f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 92.30f, 0.1);
 	}
 	
 	@Test
 	public void smsIsNeededTest() {
 		UssdTask task = new UssdTask();
-		Channel ch = Channel.builder().group(Grp.builder().oper(Oper.RED).build()).build();
+		Channel ch = Channel.builder()
+				.group(Grp.builder().oper(Oper.RED).build())
+				.build();
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedRed);
-		Assert.assertEquals(Float.valueOf(task.getBalance()), 9999.99f, 0.1);
+		Assert.assertEquals(task.getBalance().isSmsNeeded(), true);
 	}
 	
 	@Test
@@ -130,7 +132,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp("dswe;o89hv;aoiho;vihaew;origsmdps'p0t");
-		Assert.assertNull(task.getBalance());
+		Assert.assertNull(task.getBalance().getBalance());
 	}
 	
 	
@@ -142,8 +144,6 @@ public class UssdTest {
 		TelnetHelperImpl th = new TelnetHelperImpl();
 		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 
 		UssdTask task = UssdTask.get(th, ch, new Card(), "*100#", td);
-
-		
 
 		System.out.println(task.getDecodedResponse());
 		System.out.println(task.getEncodedResp());

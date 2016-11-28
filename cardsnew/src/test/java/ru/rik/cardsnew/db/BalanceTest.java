@@ -58,10 +58,19 @@ public class BalanceTest {
 				.build());
 		Assert.assertEquals(c1.getBalance(), 50, 0.1);
 		Assert.assertTrue(Util.isApproxEqual(c1.getLastBalanceChecked(), new Date(), 10));
+		c1.setBalance(100);
 	}
+	
 	
 	@Test
 	public void paymentReceived() {
-		!!!
+		CardStat c1 = cards.findStateById(3); 
+		Assert.assertEquals(c1.getBalance(), 100, 0.1);
+		c1.applyBalance(Balance.builder().date(new Date()).balance(50f)
+				.card(cards.findById(c1.getId()))
+				.payment(true)
+				.build());
+		
+		c1.setBalance(100);
 	}
 }

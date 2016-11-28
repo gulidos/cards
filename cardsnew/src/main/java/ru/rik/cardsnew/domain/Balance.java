@@ -33,10 +33,10 @@ public class Balance {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter private long id;
 	@Getter @Setter private Date date;
-	@Getter @Setter private String encodedmsg;
-	@Getter @Setter private float balance;
+	@Getter @Setter private String decodedmsg;
+	@Getter @Setter private Float balance;
 	@ManyToOne(optional = false)
 	@Getter @Setter private Card card;
 	@Getter @Setter private boolean payment;
-	
+	@Getter @Setter private boolean smsNeeded;
 }

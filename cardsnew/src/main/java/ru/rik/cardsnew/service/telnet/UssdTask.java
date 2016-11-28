@@ -2,6 +2,7 @@ package ru.rik.cardsnew.service.telnet;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,8 @@ import org.junit.Assert;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Balance.BalanceBuilder;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -95,17 +98,20 @@ public class UssdTask {
 	}
 	
 	/** Parses response and returns balance. If parsing failed, returns 9999.99.      */
-	public Float getBalance() {
+	public Balance getBalance() {
 		if (decodedResp == null)
 			decodedResp = getDecodedResponse();
 		Float balance = null;
 		String str = null;
+		BalanceBuilder b = Balance.builder().card(card)
+				.date(new Date())
+				.decodedmsg(decodedResp);
 		if (ch.getGroup().getOper() == Oper.GREEN) {
 			Matcher m = greenBalance.matcher(decodedResp);
 			if (m.find())  
 				str = m.group(1);
 			else if (isSmsNeeded()) 
-				return 9999.99f;
+				return b.smsNeeded(true).build();
 		} else {
 			Matcher m = yellowBalance.matcher(decodedResp);
 			if (m.find()) {
@@ -113,12 +119,12 @@ public class UssdTask {
 				if (m.group(1).contains("Минус") || m.group(1).contains("Minus") || m.group(1).contains("-"))
 					str = "-"+str;
 			} else if (isSmsNeeded()) 
-				return 9999.99f;
+				return b.smsNeeded(true).build();
 		}
 		if (str != null)
 			balance = Float.parseFloat(str);
 		
-		return balance;
+		return b.smsNeeded(false).balance(balance).build();
 	}
 	
 	

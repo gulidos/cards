@@ -20,6 +20,7 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
+import ru.rik.cardsnew.domain.Sms;
 
 @Repository
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
@@ -180,5 +181,10 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public void updateDayLimit() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override @Transactional
+	public void balanceSave(Balance b) {
+			em.merge(b);
 	}
 }

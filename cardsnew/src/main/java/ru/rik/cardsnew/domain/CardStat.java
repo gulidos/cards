@@ -41,7 +41,8 @@ public class CardStat implements State {
 	@Getter @Setter float balance;
 	@Getter @Setter Date lastBalanceChecked = new Date(0);
 	@Getter @Setter Date nextBalanceCheck = new Date(0);
-
+	@Getter @Setter boolean refilled;
+	
 	public CardStat() {} //needed !! 
 	
 	public CardStat(Card card) {
@@ -176,11 +177,15 @@ public class CardStat implements State {
 	}
 
 	public void applyBalance(Balance b) {
-		this.balance = b.getBalance();
-		this.lastBalanceChecked = b.getDate();
-		this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + 
-				Settings.MAX_BALANCE_CHECK_PERIOD * 1000 + rnd.nextInt(60*60*1000));
-		
+		if (b.isPayment()) {
+			refilled = true;
+		} else {
+			refilled = false;
+			this.balance = b.getBalance();
+			this.lastBalanceChecked = b.getDate();
+			this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + Settings.MAX_BALANCE_CHECK_PERIOD * 1000
+					+ rnd.nextInt(60 * 60 * 1000));
+		}
 	}
 	
 	public int getTodayCalls() {return todayCalls.get();}

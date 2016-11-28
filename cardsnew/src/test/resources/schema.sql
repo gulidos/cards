@@ -169,10 +169,11 @@ CREATE TABLE cdr (
 
 CREATE TABLE _BALANCE (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  balance float NOT NULL,
+  balance float DEFAULT NULL,
   date datetime DEFAULT NULL,
   encodedmsg varchar(255) DEFAULT NULL,
   payment bit(1) NOT NULL,
+  smsNeeded bit(1) NOT NULL,
   card_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT FK_eo4p2ralgphpfv39p2fuisx5g FOREIGN KEY (card_id) REFERENCES _CARD (id)

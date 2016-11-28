@@ -25,11 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Sms;
+import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.service.telnet.SmsTask;
 import ru.rik.cardsnew.service.telnet.SmsTask.Phase;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
@@ -155,14 +158,34 @@ public class SmsAndUssdTests {
 		Assert.assertEquals(st.getStatus(), Status.Ready);
 	}
 	
+	
+	// ==================== Ussd =========================
 	@Test
-	public void tryToSendUssdButStatusNotAllows() throws SocketException, IOException {
+	public void chechBalanceAndCheckCardState() throws SocketException, IOException, InterruptedException {
 		TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
 		Card c = cards.findById(1);
+		CardStat cs = c.getStat(cards);
+		float oldbalance = cs.getBalance();
 		UssdTask task = UssdTask.get(th, ch, c, "*100#", td);
 		UssdTask SpyTask = spy(task);
-		doReturn("Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS").when(SpyTask).getDecodedResponse();
+		Balance b = Balance.builder().date(new Date()).balance(105.99f)
+			.card(c).decodedmsg("105.99р.\n" + "Смотрите самое интересное видео! Трафик бесплатно (8р/д)*213#").payment(false)
+			.build();
+		doReturn(b).when(SpyTask).getBalance();
+		
+		st.setStatus(Status.UssdReq);
 		taskCompleter.handleUssd(SpyTask);
+		Thread.sleep(300);
+		
+		Assert.assertEquals(st.getStatus(), Status.Ready);
+		Assert.assertEquals(cs.getBalance(), 105.99f, 0.1);
+		Assert.assertFalse(cs.isRefilled());
+		Assert.assertTrue(Util.isApproxEqual(cs.getLastBalanceChecked(), new Date(), 1000));
+		cs.setBalance(oldbalance);
+	}
+	
+	@Test
+	public void lastBalanceInTableIsPayment() {
 		
 	}
 }

@@ -37,4 +37,6 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	List<Balance> findLastBalances();
 
+	void balanceSave(Balance b);
+
 }
