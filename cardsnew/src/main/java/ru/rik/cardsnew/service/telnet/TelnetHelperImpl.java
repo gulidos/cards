@@ -4,8 +4,8 @@ package ru.rik.cardsnew.service.telnet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.ConnectException;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,7 +52,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 				telnet.setReaderThread(true); 
 				telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
 				telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
-				telnet.setConnectTimeout(10000);
+				telnet.setConnectTimeout(60000);
 				
 			} catch (InvalidTelnetOptionException e) {
 				logger.error(e.getMessage(), e);
@@ -114,12 +114,13 @@ public class TelnetHelperImpl implements TelnetHelper {
 	}
 	
 	@Override
-	public String sendUssd(TelnetClient telnet, int module, String encodedReq) {
+	public String sendUssd(TelnetClient telnet, int module, String encodedReq) throws ConnectException {
 		String state = sendCmd(telnet, "state" + module, "]", 10);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 1000);
-			return null;
+			throw new ConnectException("channel is not ready");
 		}	
+		
 		sendCmd(telnet, "module" + module, "got!! press 'ctrl-x' to release module " + module + ".", 10);
 		sendCmd(telnet, "AT+CSCS=\"UCS2\"", "\n0\r\n", 10);
 		String encodedResp = sendCmd(telnet, "AT+CUSD=1,\"" + encodedReq + "\"", "\n0\r\n", 3000);
@@ -138,12 +139,12 @@ public class TelnetHelperImpl implements TelnetHelper {
 		return i;
 	}
 
-	private String readUntil(TelnetClient telnet, String pattern, int timeout)  {
+	private String readUntil(TelnetClient telnet, String pattern, int timeout) throws IOException  {
 		wait(timeout);
 		InputStream in = telnet.getInputStream();
 		StringBuffer sb = null;
 		int numRead = 0;
-		try {
+//		try {
 			char lastChar = pattern.charAt(pattern.length() - 1);
 			sb = new StringBuffer();
 			StringBuffer sbI = new StringBuffer();
@@ -166,11 +167,11 @@ public class TelnetHelperImpl implements TelnetHelper {
 				ch = (char) in.read();
 //				System.out.print(ch);
 			}
-		} catch (SocketTimeoutException et) {
-			logger.error(et.getMessage(), et);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+//		} catch (SocketTimeoutException et) {
+//			logger.error(et.getMessage(), et);
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
 		return sb != null ? sb.toString() : "";
 	}
 
@@ -189,15 +190,15 @@ public class TelnetHelperImpl implements TelnetHelper {
 		}
 	}
 
-	private String sendCmd(TelnetClient telnet, String command, String prompt, int timeout) {
+	private String sendCmd(TelnetClient telnet, String command, String prompt, int timeout) throws IOException {
 //		System.out.println("send command" + command);
-		try {
+//		try {
 			write(telnet, command);
 			return readUntil(telnet, prompt, timeout);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return null;
-		}
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//			return null;
+//		}
 	}
 
 	

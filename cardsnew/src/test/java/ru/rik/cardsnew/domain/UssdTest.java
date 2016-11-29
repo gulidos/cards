@@ -139,7 +139,7 @@ public class UssdTest {
 	public static void main(String[] args) throws SocketException, IOException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(JpaConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
-		Channel ch = chans.findByName("bln33");		
+		Channel ch = chans.findByName("mts75");		
 		Card c = ch.getCard();
 		TelnetHelperImpl th = new TelnetHelperImpl();
 		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 

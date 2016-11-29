@@ -51,19 +51,24 @@ public class UssdTask implements State{
 	}
 
 	
-	public static UssdTask get(TelnetHelper h, Channel ch, Card card, String request, TaskDescr td) throws SocketException, IOException {
+	public static UssdTask get(TelnetHelper telnetHelper, Channel ch, Card card, String request, TaskDescr td) throws SocketException, IOException {
 		Assert.assertNotNull(ch);
 		Assert.assertNotNull(card);
 		td.setStage("Connecting to " + ch.getBox().getIp() + ":" + ch.getLine().getTelnetport());
-		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
+		TelnetClient tc  = telnetHelper.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		UssdTask task = new UssdTask(ch, card, tc, td);
 		
 		td.setStage("Sending ussd... ");
-		String encodedResp = h.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
-		task.setEncodedResp(encodedResp);
-		return task;
+		String encodedResp;
+		try {
+			encodedResp = telnetHelper.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
+			task.setEncodedResp(encodedResp);
+			return task;
+		} finally {
+			telnetHelper.disconnect(tc);
+		}
 	}
 	
 	
@@ -76,7 +81,7 @@ public class UssdTask implements State{
 			str = m.group(2);
 		} 
 		if (str == null) 
-			throw new IllegalStateException("can't parse ussd response for " + ch.getName() + " " + card.getName());
+			throw new IllegalStateException("can't parse ussd response for " + ch.getName() + " " + card.getName() + " "+ encodedResp);
 		
 		byte[] responded = pduToBytes(str);
 		return decodeUcs2Encoding(null, responded);
@@ -123,7 +128,7 @@ public class UssdTask implements State{
 				return b.smsNeeded(true).build();
 		}
 		if (str != null)
-			balance = Float.parseFloat(str);
+			balance = Float.parseFloat(str.replace(',', '.'));
 		
 		return b.smsNeeded(false).balance(balance).build();
 	}

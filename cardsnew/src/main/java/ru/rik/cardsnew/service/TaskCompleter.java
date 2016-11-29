@@ -123,7 +123,9 @@ public class TaskCompleter implements Runnable{
 				
 				if (task == SmsTask.class || task == UssdTask.class) {
 					((ChannelState) st).setStatus(Status.Ready);
-					logger.debug("can not telnet to channel {}  ", st.getName());
+					Channel ch = chans.findById(st.getId());
+					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
+							ch.getLine().getTelnetport(), task.getSimpleName());
 				} 
 				else if (task == GsmState.class || task == SimSet.class) 
 						((ChannelState) st).setStatus(Status.Unreach);
