@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -128,9 +129,16 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	
 	
 	@Override @Transactional
-	public void smsSave(List<Sms> list) {
-		for (Sms sms: list)
+	public void smsHandle(List<Sms> list) {
+		for (Sms sms: list) {
 			em.merge(sms);
+			Balance b = sms.getBalance();
+			if (b != null) {
+				cards.balanceSave(b);
+				CardStat cs = b.getCard().getStat(cards);
+				cs.applyBalance(b);
+			}	
+		}	
 	}
 	
 	@Override @Transactional

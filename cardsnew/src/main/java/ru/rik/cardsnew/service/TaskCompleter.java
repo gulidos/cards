@@ -29,6 +29,7 @@ import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.domain.Util;
 import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -92,9 +93,9 @@ public class TaskCompleter implements Runnable{
 					SwitchTask sw = (SwitchTask) result;
 					logger.debug("installing in channel {} card {}", sw.getName(), sw.getCardName());
 				}
-				else if (result.getClazz() == SmsTask.class) {
+				else if (td.getClazz() == SmsTask.class) {
 					handleSms((SmsTask) result);
-				} else if (result.getClazz() == UssdTask.class) {
+				} else if (td.getClazz() == UssdTask.class) {
 					handleUssd((UssdTask) result);
 				}
 			} catch (InterruptedException e) {
@@ -118,18 +119,21 @@ public class TaskCompleter implements Runnable{
 			if (cause instanceof SocketTimeoutException || cause instanceof ConnectException) {
 				TaskDescr descr = map.remove(f);
 				State st = descr.getState();
-				if (st.getClazz() == ChannelState.class) {
-					ChannelState chState = (ChannelState) st;
-					if (chState.getStatus() == Status.Smsfetch) {
-						chState.setStatus(Status.Ready);
-						logger.error("can not telnet to channel {}  ", chState.getName());
-					} else
-						chState.setStatus(Status.Unreach);
-				} else if (st.getClazz() == BankState.class) {
+				Class<?> task = descr.getClazz();
+				
+				if (task == SmsTask.class || task == UssdTask.class) {
+					((ChannelState) st).setStatus(Status.Ready);
+					logger.debug("can not telnet to channel {}  ", st.getName());
+				} 
+				else if (task == GsmState.class || task == SimSet.class) 
+						((ChannelState) st).setStatus(Status.Unreach);
+				
+				else if (task == BankState.class) {
 					BankState bState = (BankState) st;
 					bState.setAvailable(false);
-					logger.error(e.getMessage(), e);
-				} else
+					logger.error("bank {} is unavailable ", bState.getName());
+				} 
+				else
 					logger.error(e.getMessage(), e);
 			} else 
 				logger.error(e.getMessage(), e);
@@ -177,7 +181,7 @@ public class TaskCompleter implements Runnable{
 		case FetchMain:
 			st.setLastSmsFetchDate(new Date());
 			if (smsTask.getSmslist().size() > 0 && smsTask.getCard() != null) {
-				chans.smsSave(smsTask.getSmslist());
+				chans.smsHandle(smsTask.getSmslist());
 				descr.setStage("queued for DeleteMain");
 				addTask(() -> smsTask.deleteMain(telnetHandler), descr);
 			} else if (smsTask.getPair() != null) {
@@ -202,7 +206,7 @@ public class TaskCompleter implements Runnable{
 		case FetchPair:	
 			pairSt.setLastSmsFetchDate(new Date());
 			if (smsTask.getPairSmslist().size() > 0 && smsTask.getPairCard() != null) { 
-				chans.smsSave(smsTask.getPairSmslist());
+				chans.smsHandle(smsTask.getPairSmslist());
 				descr.setStage("queued for Delete Pair");
 				addTask(() -> smsTask.deletePair(telnetHandler), descr);
 			} else {
@@ -224,17 +228,19 @@ public class TaskCompleter implements Runnable{
 	protected void handleUssd(UssdTask ussdTask) {
 		Channel ch = ussdTask.getCh();
 		ChannelState st = ch.getState(chans);
-		TaskDescr descr = ussdTask.getTd();
-		Card c = ussdTask.getCard();
-		CardStat cs = c.getStat(cards);
+		Card card = ussdTask.getCard();
+		CardStat cs = card.getStat(cards);
 		
 		Balance b = ussdTask.getBalance();
-		System.out.println(b);
-		cs.applyBalance(b);
-		cards.balanceSave(b);
-		
-		
-		st.setStatus(Status.Ready);
+		if (b.isSmsNeeded()) {
+			st.setStatus(Status.Smsfetch);
+			st.setNextSmsFetchDate(Util.getNowPlusSec(60));
+		} else {
+			cs.applyBalance(b);
+			cards.balanceSave(b);
+			st.setStatus(Status.Ready);
+		}
+	
 	}
 
 

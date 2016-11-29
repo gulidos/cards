@@ -17,12 +17,12 @@ import lombok.experimental.Builder;
 import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.MyState;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 
 
 
-public class SimSet implements MyState{
+public class SimSet implements State{
 	private static final Logger logger = LoggerFactory.getLogger(SimSet.class);		
 
 	@Getter private final Channel ch;

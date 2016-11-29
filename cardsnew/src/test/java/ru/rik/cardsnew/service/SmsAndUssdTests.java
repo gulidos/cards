@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.ConfigJpaH2;
+import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Balance;
@@ -44,6 +45,7 @@ import ru.rik.cardsnew.service.telnet.UssdTask;
 public class SmsAndUssdTests {
 	@Autowired private  CardRepo cards;
 	@Autowired private  ChannelRepo chans;
+	@Autowired private  BankRepo banks; 
 	@Autowired private TaskCompleter taskCompleter;
 	
 	private TelnetHelper th;
@@ -126,7 +128,7 @@ public class SmsAndUssdTests {
 		Assert.assertNotNull(pair.getCard());
 		Assert.assertTrue(card.getChannelId() != 0);
 		Assert.assertTrue(cardPair.getChannelId() != 0);
-		System.out.println("telnet mock: " + tc);
+
 		List<Sms> smslist = new ArrayList<Sms>();
 		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
 		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
@@ -166,10 +168,13 @@ public class SmsAndUssdTests {
 		Card c = cards.findById(1);
 		CardStat cs = c.getStat(cards);
 		float oldbalance = cs.getBalance();
+		Assert.assertEquals(oldbalance, 112, 0.1);
+
 		UssdTask task = UssdTask.get(th, ch, c, "*100#", td);
 		UssdTask SpyTask = spy(task);
 		Balance b = Balance.builder().date(new Date()).balance(105.99f)
-			.card(c).decodedmsg("105.99р.\n" + "Смотрите самое интересное видео! Трафик бесплатно (8р/д)*213#").payment(false)
+			.card(c).decodedmsg("105.99р.\n" + "Смотрите самое интересное видео! Трафик бесплатно (8р/д)*213#")
+			.payment(false)
 			.build();
 		doReturn(b).when(SpyTask).getBalance();
 		
@@ -185,7 +190,42 @@ public class SmsAndUssdTests {
 	}
 	
 	@Test
-	public void lastBalanceInTableIsPayment() {
+	public void lastBalanceInTableIsPayment() throws SocketException, IOException, InterruptedException {
+		TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
+		Card c = cards.findById(4);
+		CardStat cs = c.getStat(cards);
+		Assert.assertFalse(c.isEligibleToInstall(cards, banks));
+		
+		UssdTask SpyTask = spy(UssdTask.get(th, ch, c, "*100#", td));
+		Balance b = Balance.builder().date(new Date()).balance(0.99f)
+				.card(c).decodedmsg("0.99р. ").payment(true).build();
+		doReturn(b).when(SpyTask).getBalance();
+
+		st.setStatus(Status.UssdReq);
+		taskCompleter.handleUssd(SpyTask);
+		Thread.sleep(300);
+		
+		Assert.assertEquals(cs.getBalance(), 0, 0.1);
+		Assert.assertTrue(cs.isRefilled());
+		Assert.assertTrue(c.isEligibleToInstall(cards, banks));
+	}
+	
+	@Test
+	public void getUssdAdnNeedSmsIsTrue() throws SocketException, IOException, InterruptedException {
+		UssdTask SpyTask = spy(UssdTask.get(th, ch, card, "*100#", new TaskDescr(UssdTask.class, st, new Date())));
+		Balance b = Balance.builder().date(new Date()).balance(0.99f)
+				.card(card).decodedmsg("Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS")
+				.payment(false).smsNeeded(true)
+				.build();
+		doReturn(b).when(SpyTask).getBalance();
+		
+		st.setStatus(Status.UssdReq);
+		taskCompleter.handleUssd(SpyTask);
+		Thread.sleep(300);
+		Assert.assertEquals(st.getStatus(), Status.Smsfetch);
+		Assert.assertTrue(Util.isApproxEqual(st.getNextSmsFetchDate(), Util.getNowPlusSec(60), 2000));
+		
 		
 	}
+	
 }

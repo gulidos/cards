@@ -11,11 +11,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.MyState;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GsmState implements MyState {
+public class GsmState implements State {
 	private final long id;
 	private final String name;
 	private final Date update;

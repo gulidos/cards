@@ -21,7 +21,7 @@ import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 @Data
 @EqualsAndHashCode
-public class ChannelState implements MyState {
+public class ChannelState implements State {
 	private static final Logger logger = LoggerFactory.getLogger(ChannelState.class);		
 	private long id;
 	private String name;

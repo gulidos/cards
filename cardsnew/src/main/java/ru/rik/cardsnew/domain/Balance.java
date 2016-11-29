@@ -16,11 +16,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Builder;
 
 @Entity @Table(name="_BALANCE")
-@NoArgsConstructor  @AllArgsConstructor @Builder @ToString(exclude = {"card"}) 
+@NoArgsConstructor  @AllArgsConstructor @Builder 
 @EqualsAndHashCode(exclude = {"card"})
 @NamedQueries({ 
 	@NamedQuery(name = "findAllBalance", query = "SELECT u FROM Balance u "),
@@ -39,4 +38,11 @@ public class Balance {
 	@Getter @Setter private Card card;
 	@Getter @Setter private boolean payment;
 	@Getter @Setter private boolean smsNeeded;
+	
+	@Override
+	public String toString() {
+		return "Balance [id=" + id + ", date=" + date + ", decodedmsg=" + decodedmsg + ", balance=" + balance
+				+ ", card=" + card.getId() + ", payment=" + payment + ", smsNeeded=" + smsNeeded + "]";
+	}
+	
 }

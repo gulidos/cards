@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,10 +22,8 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import ru.rik.cardsnew.ConfigJpaH2;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ConfigJpaH2.class, WebConfig.class })
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = { ConfigJpaH2.class, WebConfig.class })
 @WebAppConfiguration
 public class UITest {
 
@@ -53,7 +47,7 @@ public class UITest {
 //	https://spring.io/blog/2014/03/19/introducing-spring-test-mvc-htmlunit
 	
 //	https://dzone.com/articles/spring-test-thymeleaf-views
-	@Test
+//	@Test
 	public void getSettings() throws Exception {
 		ResultActions result =  mockMvc.perform(get("/"));
                 result.andDo(print())
@@ -75,7 +69,7 @@ public class UITest {
 //		.andExpect(redirectedUrl("/settings"));
 //	}
 	
-	@Test
+//	@Test
 	public void useWebClient() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		
 		HtmlPage createMsgFormPage =   webClient.getPage("http://localhost/cards");

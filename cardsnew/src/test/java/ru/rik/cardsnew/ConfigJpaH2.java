@@ -40,9 +40,11 @@ import ru.rik.cardsnew.config.RootConfig.MyUncaughtExceptionHandler;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.repo.CardsStates;
 import ru.rik.cardsnew.domain.repo.Cdrs;
+import ru.rik.cardsnew.service.PeriodicTasks;
 import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.http.HttpHelper;
 import ru.rik.cardsnew.service.telnet.TelnetHelper;
 import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 
@@ -167,6 +169,12 @@ public class ConfigJpaH2 {
 	public TaskCompleter taskCompleter() {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}
+	
+	@Bean
+	public PeriodicTasks periodicTasks() {return new PeriodicTasks();}
+	
+	@Bean
+	public HttpHelper httpHelper() {return new HttpHelper();}
 
 //	 @Bean (initMethod="init")
 //	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
@@ -174,7 +182,6 @@ public class ConfigJpaH2 {
 	
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public AsteriskEvents asteriskEvents() {
-//		return new AsteriskEvents();
 		return mock(AsteriskEvents.class);
 	}
 	

@@ -14,11 +14,11 @@ import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.MyState;
 import ru.rik.cardsnew.domain.Sms;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 
-public class SmsTask implements MyState {
+public class SmsTask implements State {
 	private static final Logger logger = LoggerFactory.getLogger(SmsTask.class);		
 
 	@Getter private final Channel ch;

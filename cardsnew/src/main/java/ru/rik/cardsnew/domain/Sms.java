@@ -1,6 +1,8 @@
 package ru.rik.cardsnew.domain;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +24,9 @@ import lombok.experimental.Builder;
 @NoArgsConstructor  @AllArgsConstructor @Builder @ToString(exclude = {"card", "channel"}) 
 @EqualsAndHashCode(exclude = {"card", "channel"})
 public class Sms {
+	private static final Pattern balance = 
+			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?):\\s*(-*\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
+					, Pattern.MULTILINE);
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter @Setter private long id;
 	@Getter @Setter private int num;
@@ -35,5 +40,17 @@ public class Sms {
 	@Getter @Setter private Card card;
 	@ManyToOne
 	@Getter @Setter private Channel channel;
+	
+	public Balance getBalance() {
+		if (decodedmsg == null)
+			return null;
+		Matcher m = balance.matcher(decodedmsg);
+		if (m.find()) 
+			return Balance.builder().card(card).date(new Date()).decodedmsg(decodedmsg)
+					.balance(Float.parseFloat(m.group(2).replace(',', '.')))
+					.build();
+		 else 	
+			return null;
+	}
 	
 }

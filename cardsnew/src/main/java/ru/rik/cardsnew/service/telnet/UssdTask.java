@@ -18,9 +18,10 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @NoArgsConstructor
-public class UssdTask {
+public class UssdTask implements State{
 	@Getter @Setter private Channel ch;
 	@Getter @Setter private Card card;
 	@Getter @Setter private TelnetClient telnetClient;
@@ -151,4 +152,13 @@ public class UssdTask {
 				throw new RuntimeException(e);
 			}
 		}
+
+
+		@Override public long getId() {return ch.getId();	}
+		@Override public void setId(long id) {}
+
+		@Override public String getName() {return ch.getName();}
+		@Override public void setName(String name) {}
+
+		@Override public Class<?> getClazz() {return SmsTask.class;}
 }
