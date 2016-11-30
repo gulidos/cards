@@ -14,12 +14,12 @@ public interface TelnetHelper {
 	TelnetClient getConnection(String server, int port, String user, String password)
 			throws IOException, SocketException;
 
-	List<Sms> FetchSmsFromChannel(TelnetClient telnet, int module);
+	List<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) throws IOException;
 
-	int deleteSms(TelnetClient telnet, List<Sms> arr);
+	int deleteSms(TelnetClient telnet, List<Sms> arr) throws IOException;
 
 	void disconnect(TelnetClient telnet);
 
-	String sendUssd(TelnetClient telnet, int module, String encodedReq) throws ConnectException;
+	String sendUssd(TelnetClient telnet, int module, String encodedReq) throws ConnectException, IOException;
 
 }

@@ -131,13 +131,16 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	@Override @Transactional
 	public void smsHandle(List<Sms> list) {
 		for (Sms sms: list) {
+			
 			em.merge(sms);
 			Balance b = sms.getBalance();
 			if (b != null) {
+				logger.debug("This is balance: " + sms.toString() + " balance: " + b.toString());
 				cards.balanceSave(b);
 				CardStat cs = b.getCard().getStat(cards);
 				cs.applyBalance(b);
-			}	
+			} else 
+				logger.debug(sms.toString());
 		}	
 	}
 	

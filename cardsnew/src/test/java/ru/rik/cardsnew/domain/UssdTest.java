@@ -41,6 +41,9 @@ public class UssdTest {
 	"2E043104350441043F043B00210020041F043E0434043A043B003A002A0033003000390023\",72";
 	static String decodedYellow = "Баланс 174.60 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#";
 	
+//	+CMGR: 0,,160
+//	07919761980612F2400ED0C2303BEC1E971B0008611103220364618C050003ED020104110430043B0430043D0441003A003100380036002C003200300440002C041B0438043C04380442003A0030002C003000310440002004230437043D0430043904420435002C00200433043404350020041204300448043800200431043B04380437043A0438043500200438043B043800200434044004430437044C044F0020043D04300020
+//	0
 	
 	
 	@Test
@@ -80,6 +83,9 @@ public class UssdTest {
 		task.setCard(new Card());
 		task.setDecodedResp("-" + decodedGreen);
 		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -105.99f, 0.1);
+		
+		task.setDecodedResp("-105.99р.\n" + "Смотрите самое интересное видео!");
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -105.99f, 0.1);
 	}
 	
 	@Test
@@ -111,6 +117,15 @@ public class UssdTest {
 		
 		task.setDecodedResp("Баланс 92.30 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
 		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 92.30f, 0.1);
+		
+		task.setDecodedResp("Balance:200,10r,Limit:0,01r");
+		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 200.10f, 0.1);
+		
+		task.setDecodedResp("Баланс -123.38 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
+		Balance b = task.getBalance();
+		System.out.println(b);
+		float value = b.getBalance();
+		Assert.assertEquals(value, -123.38f, 0.1);
 	}
 	
 	@Test
@@ -139,7 +154,7 @@ public class UssdTest {
 	public static void main(String[] args) throws SocketException, IOException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(JpaConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
-		Channel ch = chans.findByName("mts75");		
+		Channel ch = chans.findByName("bln44");		
 		Card c = ch.getCard();
 		TelnetHelperImpl th = new TelnetHelperImpl();
 		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 

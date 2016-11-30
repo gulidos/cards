@@ -17,11 +17,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Builder;
 
 @Entity @Table(name="_SMS")
-@NoArgsConstructor  @AllArgsConstructor @Builder @ToString(exclude = {"card", "channel"}) 
+@NoArgsConstructor  @AllArgsConstructor @Builder 
 @EqualsAndHashCode(exclude = {"card", "channel"})
 public class Sms {
 	private static final Pattern balance = 
@@ -32,8 +31,8 @@ public class Sms {
 	@Getter @Setter private int num;
 	@Getter @Setter private String origAddress;
 	@Getter @Setter private Date date;
-	@Transient
 	@Getter @Setter private String decodedmsg;
+	@Transient
 	@Getter @Setter private String encodedmsg;
 	
 	@ManyToOne
@@ -51,6 +50,12 @@ public class Sms {
 					.build();
 		 else 	
 			return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Sms [id=" + id + ", num=" + num + ", origAddress=" + origAddress + ", date=" + date + ", decodedmsg="
+				+ decodedmsg + ",  card=" + card.getName() + ", channel=" + channel.getName() + "]";
 	}
 	
 }

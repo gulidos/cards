@@ -74,7 +74,7 @@ public class SmsTask implements State {
 	}
 
 	
-	public SmsTask deleteMain(TelnetHelper h) {
+	public SmsTask deleteMain(TelnetHelper h) throws IOException {
 		phase = Phase.DeleteMain;
 		td.setStage("Deleting main " + smslist.size() + " smses");	
 		h.deleteSms(telnetClient, smslist);
@@ -82,7 +82,7 @@ public class SmsTask implements State {
 	}
 	
 	
-	public SmsTask fetchPair(TelnetHelper h) {
+	public SmsTask fetchPair(TelnetHelper h) throws IOException {
 		phase = Phase.FetchPair;
 		if (pair != null) {
 			td.setStage("Fetching pair");	
@@ -93,7 +93,7 @@ public class SmsTask implements State {
 	}
 	
 	
-	public SmsTask deletePair(TelnetHelper h){
+	public SmsTask deletePair(TelnetHelper h) throws IOException{
 		phase = Phase.DeletePair;
 		if (pair != null)
 			td.setStage("Deleting pair " + pairSmslist.size() + " smses");	

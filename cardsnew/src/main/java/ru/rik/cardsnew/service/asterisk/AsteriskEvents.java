@@ -93,7 +93,7 @@ public class AsteriskEvents implements ManagerEventListener {
 				.uniqueid(ce.getUniqueId())
 				.channelId(chan != null ? chan.getId() : 0)
 				.build();
-			logger.debug("applying {}", cdr);
+//			logger.debug("applying {}", cdr);
 		if (card != null)	
 			card.getStat(cards).applyCdr(cdr, card, chan, cdrs);
 		} catch (ParseException pe) {

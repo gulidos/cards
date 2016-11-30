@@ -31,6 +31,7 @@ import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
+import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
@@ -39,6 +40,7 @@ import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.Place;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Trunk;
 import ru.rik.cardsnew.service.SwitchTask;
@@ -301,6 +303,41 @@ public class ChannController {
 
 		 return "redirect:/channels/stat" + "?id=" + chan.getId();
 
+	}
+	
+	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
+	public String refreshCards() {
+		logger.debug("====================================  Cleaning cards=================");
+		chans.setCardToNull(chans.findAll());
+		logger.debug("====================================  Cleaning channels=================");
+		cards.setChannelToNull(cards.findAll());
+		
+		logger.debug("====================================  Switching tasks begind=================");
+
+		
+		chans.findAll().stream().map(ch -> ch.getState(chans))
+			.peek(st -> logger.debug("channel: " + st.getName()+ " "))
+			.filter(st -> st.getSimset() != null)
+//			.map(st -> st.getSimset())
+			.forEach(st -> {
+				Place place = Place.getInstance(st.getSimset().getCardPos());
+				Bank bank = banks.findByName(st.getSimset().getBankIp()) ;
+				Card c = cards.findCardsByPlace(place, bank);
+				logger.debug("place: " + (place!=null ? place : null)+ " bank: " + (bank!=null?bank.getName():null) + 
+						" card: " + (c != null ? c.getName() : null));
+				try {
+					Channel ch = chans.findById(st.getId());
+					logger.debug("in channel " + (ch != null ? ch.getName() : null) + 
+							" inst card: " + (c != null ? c.getName() : null));
+					if (ch!= null)
+						chans.switchCard(ch, c);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+
+		
+		return "redirect:/channels/chanstats";
 	}
 	
 	

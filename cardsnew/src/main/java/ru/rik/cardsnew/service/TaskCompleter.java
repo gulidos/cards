@@ -124,8 +124,8 @@ public class TaskCompleter implements Runnable{
 				if (task == SmsTask.class || task == UssdTask.class) {
 					((ChannelState) st).setStatus(Status.Ready);
 					Channel ch = chans.findById(st.getId());
-					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
-							ch.getLine().getTelnetport(), task.getSimpleName());
+//					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
+//							ch.getLine().getTelnetport(), task.getSimpleName());
 				} 
 				else if (task == GsmState.class || task == SimSet.class) 
 						((ChannelState) st).setStatus(Status.Unreach);
@@ -234,9 +234,17 @@ public class TaskCompleter implements Runnable{
 		CardStat cs = card.getStat(cards);
 		
 		Balance b = ussdTask.getBalance();
+		
+		if (b == null)
+			throw new IllegalStateException("handling ussd answer " + ussdTask.getTd().toString() + " Balance is null!");
+		logger.debug("!!! got ussd " + b.toString());
 		if (b.isSmsNeeded()) {
 			st.setStatus(Status.Smsfetch);
 			st.setNextSmsFetchDate(Util.getNowPlusSec(60));
+			//waiting for getting balance in Sms and setting next time check in 1 hour
+			cs.setLastBalanceChecked(b.getDate());
+			Date next = new Date(cs.getLastBalanceChecked().getTime() + 60 * 60 * 1000);
+			cs.setNextBalanceCheck(next);
 		} else {
 			cs.applyBalance(b);
 			cards.balanceSave(b);

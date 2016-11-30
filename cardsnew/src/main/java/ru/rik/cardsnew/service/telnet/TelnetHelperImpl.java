@@ -73,7 +73,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 
 	
 	
-	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module)  {
+	public ArrayList<Sms> FetchSmsFromChannel(TelnetClient telnet, int module) throws IOException, NumberFormatException  {
 		ArrayList<Sms> result = new ArrayList<>(); 
 		
 		String state = sendCmd(telnet, "state" + module, "]", 10);
@@ -93,14 +93,14 @@ public class TelnetHelperImpl implements TelnetHelper {
 					Sms sms = new Sms();
 					sms.setNum(Integer.parseInt(matcher.group(1)));
 					String msgstr = matcher.group(2);
-					sms.setDecodedmsg(msgstr);
+					sms.setEncodedmsg(msgstr);
 					int smscInfoLength = Convert.hexToInt(msgstr.substring(0, 2));
 					msgstr = msgstr.substring(2);
 					msgstr = msgstr.substring(smscInfoLength * 2);
 					
 					SMSDeliver decoder = new SMSDeliver(msgstr);
 					decoder.decode();
-					sms.setEncodedmsg(decoder.getMessage());
+					sms.setDecodedmsg(decoder.getMessage());
 					sms.setOrigAddress(decoder.getOriginatingAddress().getNumber());
 					sms.setDate(decoder.getServiceCentreTimeStamp().getDate().getTime());
 					result.add(sms);
@@ -114,7 +114,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 	}
 	
 	@Override
-	public String sendUssd(TelnetClient telnet, int module, String encodedReq) throws ConnectException {
+	public String sendUssd(TelnetClient telnet, int module, String encodedReq) throws IOException {
 		String state = sendCmd(telnet, "state" + module, "]", 10);
 		if (!free.matcher(state).matches()) {
 			sendCmd(telnet, "\u0018", "]", 1000);
@@ -128,7 +128,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 	}
 
 	
-	public int deleteSms(TelnetClient telnet, List<Sms> arr) {
+	public int deleteSms(TelnetClient telnet, List<Sms> arr) throws IOException {
 		int i = 0;
 		for (Sms sms : arr) {
 			sendCmd(telnet, "AT+CMGD=" + sms.getNum(), "0\r\n", 10);
@@ -142,6 +142,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 	private String readUntil(TelnetClient telnet, String pattern, int timeout) throws IOException  {
 		wait(timeout);
 		InputStream in = telnet.getInputStream();
+		
 		StringBuffer sb = null;
 		int numRead = 0;
 //		try {

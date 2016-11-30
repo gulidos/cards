@@ -21,6 +21,7 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
+import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.service.http.BankStatus;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
@@ -60,7 +61,8 @@ public class PeriodicTasks {
 
 			checsForPairs(pairsJobs, ch, st);
 			
-			checkChannelsCard(ch, st);
+			if (st.getStatus() == Status.Ready)
+				checkChannelsCard(ch, st);
 		}		
 	}
 
@@ -72,7 +74,8 @@ public class PeriodicTasks {
 			if (cs.isTimeToBalanceCheck()) {
 				st.setStatus(Status.UssdReq);
 				TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
-				taskCompleter.addTask(()-> UssdTask.get(telnetHelper, ch, card, Settings.CHECK_BALANCE_USSD, td), td);
+				String cmd = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
+				taskCompleter.addTask(()-> UssdTask.get(telnetHelper, ch, card, cmd, td), td);
 			}
 		}
 	}

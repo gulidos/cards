@@ -25,6 +25,10 @@ public class SmsParseTest {
 		
 		sms.setDecodedmsg("Баланс: -169.11 р , Лимит:0,01р Приятная музыка, интересные истории, ");
 		Assert.assertEquals(sms.getBalance().getBalance(), -169.11f, 0.1);
+		
+		sms.setDecodedmsg("Баланс:579,24р Телевизор у Вас в кармане! Смотрите прямо сейчас! Тр");
+		Assert.assertEquals(sms.getBalance().getBalance(), 579.24f, 0.1);
+		
 	}
 
 }
