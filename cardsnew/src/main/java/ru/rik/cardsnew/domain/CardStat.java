@@ -180,12 +180,22 @@ public class CardStat implements State {
 		if (b.isPayment()) {
 			refilled = true;
 			this.nextBalanceCheck =  new Date();
+			
 		} else {
-			refilled = false;
-			this.balance = b.getBalance();
-			this.lastBalanceChecked = b.getDate();
-			this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + Settings.MAX_BALANCE_CHECK_PERIOD * 1000
-					+ rnd.nextInt(60 * 60 * 1000));
+			if (b.isSmsNeeded()) {
+				//waiting for getting balance in Sms and setting next time check in 2 hour
+				setLastBalanceChecked(b.getDate());
+				Date next = new Date(b.getDate().getTime() + 120 * 60 * 1000);
+				setNextBalanceCheck(next);
+				
+			} else {
+				refilled = false;
+				this.balance = b.getBalance();
+				this.lastBalanceChecked = b.getDate();
+				this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + Settings.MAX_BALANCE_CHECK_PERIOD * 1000
+						+ rnd.nextInt(60 * 60 * 1000));
+			}
+			
 		}
 	}
 	

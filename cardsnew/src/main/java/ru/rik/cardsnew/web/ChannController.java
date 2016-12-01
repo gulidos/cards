@@ -311,7 +311,6 @@ public class ChannController {
 		chans.setCardToNull(chans.findAll());
 		logger.debug("====================================  Cleaning channels=================");
 		cards.setChannelToNull(cards.findAll());
-		
 		logger.debug("====================================  Switching tasks begind=================");
 
 		
@@ -332,7 +331,7 @@ public class ChannController {
 					if (ch!= null)
 						chans.switchCard(ch, c);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			});
 

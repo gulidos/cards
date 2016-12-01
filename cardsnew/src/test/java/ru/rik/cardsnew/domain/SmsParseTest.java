@@ -29,6 +29,8 @@ public class SmsParseTest {
 		sms.setDecodedmsg("Баланс:579,24р Телевизор у Вас в кармане! Смотрите прямо сейчас! Тр");
 		Assert.assertEquals(sms.getBalance().getBalance(), 579.24f, 0.1);
 		
+		sms.setDecodedmsg("Телевизор у Вас в кармане! Смотрите прямо сейчас! Тр");
+		Assert.assertNull(sms.getBalance());
 	}
 
 }

@@ -93,7 +93,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 					Sms sms = new Sms();
 					sms.setNum(Integer.parseInt(matcher.group(1)));
 					String msgstr = matcher.group(2);
-					sms.setEncodedmsg(msgstr);
+//					sms.setEncodedmsg(msgstr);
 					int smscInfoLength = Convert.hexToInt(msgstr.substring(0, 2));
 					msgstr = msgstr.substring(2);
 					msgstr = msgstr.substring(smscInfoLength * 2);

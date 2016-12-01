@@ -10,10 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.domain.Card;
@@ -31,15 +29,16 @@ public class SmsTest {
 	public SmsTest() {	}
 
 	@Test
-	@Transactional
-	@Rollback(false)
 	public void getSms() throws InterruptedException {
 		List<Sms> list = new ArrayList<>();
-		Sms sms = Sms.builder().decodedmsg("привет").date(new Date()).build();
+		Sms sms = Sms.builder().decodedmsg("привет").channel(chans.findById(1))
+				.card(cards.findById(1)).date(new Date()).build();
 		list.add(sms);
 		chans.smsHandle(list);
 	}
 	
+	
+	@Test
 	public void handleSmsWithBalance() {
 		List<Sms> list = new ArrayList<>();
 		Channel ch = chans.findById(1);
@@ -47,14 +46,13 @@ public class SmsTest {
 		Sms sms = Sms.builder()
 				.channel(ch)
 				.card(card)
-				.decodedmsg("Баланс: 200.11 р , Лимит:0,01р Приятная музыка, ")
+				.decodedmsg("Баланс: -200.11 р , Лимит:0,01р Приятная музыка, ")
 				.date(new Date())
 				.build();
 		list.add(sms);
 		chans.smsHandle(list);
-		
 		CardStat st = card.getStat(cards);
-		Assert.assertEquals(st.getBalance(), 200.11, 0.1);
+		Assert.assertEquals(st.getBalance(), -200.11, 0.1);
 		
 	}
 }

@@ -17,7 +17,7 @@ public class Settings {
     public static volatile int MAX_OFFNET_MIN = 2;
     public static volatile int MAX_SMS_FETCH_PERIOD = 600;
     
-    public static volatile int MAX_BALANCE_CHECK_PERIOD = 24*60*60;
+    public static volatile int MAX_BALANCE_CHECK_PERIOD = 36*60*60;
     public static volatile float MIN_AVAILABLE_BALANCE = 10;
     
     public static volatile String CHECK_BALANCE_USSD = "*100#";

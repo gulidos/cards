@@ -32,8 +32,8 @@ public class Sms {
 	@Getter @Setter private String origAddress;
 	@Getter @Setter private Date date;
 	@Getter @Setter private String decodedmsg;
-	@Transient
-	@Getter @Setter private String encodedmsg;
+//	@Transient
+//	@Getter @Setter private String encodedmsg;
 	
 	@ManyToOne
 	@Getter @Setter private Card card;

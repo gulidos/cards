@@ -130,7 +130,7 @@ public class SmsAndUssdTests {
 		Assert.assertTrue(cardPair.getChannelId() != 0);
 
 		List<Sms> smslist = new ArrayList<Sms>();
-		smslist.add(new Sms(1, 1, "test", new Date(), "test", "test", card, ch));
+		smslist.add(new Sms(1, 1, "test", new Date(),  "test", card, ch));
 		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
@@ -148,7 +148,7 @@ public class SmsAndUssdTests {
 		Assert.assertTrue(cardPair.getChannelId() != 0);
 		
 		List<Sms> smslist = new ArrayList<Sms>();
-		smslist.add(new Sms(2, 2, "test", new Date(), "test", "test", cardPair, ch));
+		smslist.add(new Sms(2, 2, "test", new Date(), "test", cardPair, ch));
 		((TelnetHelperMock) th).setPairSmses(smslist);
 		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair, td);

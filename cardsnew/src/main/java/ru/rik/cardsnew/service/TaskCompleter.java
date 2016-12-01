@@ -232,25 +232,20 @@ public class TaskCompleter implements Runnable{
 		ChannelState st = ch.getState(chans);
 		Card card = ussdTask.getCard();
 		CardStat cs = card.getStat(cards);
-		
 		Balance b = ussdTask.getBalance();
 		
 		if (b == null)
 			throw new IllegalStateException("handling ussd answer " + ussdTask.getTd().toString() + " Balance is null!");
 		logger.debug("!!! got ussd " + b.toString());
+		
+		cs.applyBalance(b);
 		if (b.isSmsNeeded()) {
-			st.setStatus(Status.Smsfetch);
 			st.setNextSmsFetchDate(Util.getNowPlusSec(60));
-			//waiting for getting balance in Sms and setting next time check in 1 hour
-			cs.setLastBalanceChecked(b.getDate());
-			Date next = new Date(cs.getLastBalanceChecked().getTime() + 60 * 60 * 1000);
-			cs.setNextBalanceCheck(next);
+			st.setStatus(Status.Smsfetch);
 		} else {
-			cs.applyBalance(b);
 			cards.balanceSave(b);
 			st.setStatus(Status.Ready);
-		}
-	
+		}	
 	}
 
 
