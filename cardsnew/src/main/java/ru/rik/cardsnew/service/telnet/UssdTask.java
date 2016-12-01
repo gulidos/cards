@@ -18,9 +18,10 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Oper;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @NoArgsConstructor
-public class UssdTask {
+public class UssdTask implements State{
 	@Getter @Setter private Channel ch;
 	@Getter @Setter private Card card;
 	@Getter @Setter private TelnetClient telnetClient;
@@ -37,7 +38,7 @@ public class UssdTask {
 	
 	private static final Pattern greenBalance = Pattern.compile("(^\\-*\\d{1,4}[.,]\\d\\d)(р.*)", Pattern.MULTILINE);
 	private static final Pattern yellowBalance = 
-			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
+			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(-*\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);
 	private static final Pattern smsNeeded = Pattern.compile("^.*SMS.*$", Pattern.MULTILINE);
 	
@@ -50,19 +51,24 @@ public class UssdTask {
 	}
 
 	
-	public static UssdTask get(TelnetHelper h, Channel ch, Card card, String request, TaskDescr td) throws SocketException, IOException {
+	public static UssdTask get(TelnetHelper telnetHelper, Channel ch, Card card, String request, TaskDescr td) throws SocketException, IOException {
 		Assert.assertNotNull(ch);
 		Assert.assertNotNull(card);
 		td.setStage("Connecting to " + ch.getBox().getIp() + ":" + ch.getLine().getTelnetport());
-		TelnetClient tc  = h.getConnection(ch.getBox().getIp() ,
+		TelnetClient tc  = telnetHelper.getConnection(ch.getBox().getIp() ,
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		UssdTask task = new UssdTask(ch, card, tc, td);
 		
 		td.setStage("Sending ussd... ");
-		String encodedResp = h.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
-		task.setEncodedResp(encodedResp);
-		return task;
+		String encodedResp;
+		try {
+			encodedResp = telnetHelper.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
+			task.setEncodedResp(encodedResp);
+			return task;
+		} finally {
+			telnetHelper.disconnect(tc);
+		}
 	}
 	
 	
@@ -75,7 +81,7 @@ public class UssdTask {
 			str = m.group(2);
 		} 
 		if (str == null) 
-			throw new IllegalStateException("can't parse ussd response for " + ch.getName() + " " + card.getName());
+			throw new IllegalStateException("can't parse ussd response for " + ch.getName() + " " + card.getName() + " "+ encodedResp);
 		
 		byte[] responded = pduToBytes(str);
 		return decodeUcs2Encoding(null, responded);
@@ -122,7 +128,7 @@ public class UssdTask {
 				return b.smsNeeded(true).build();
 		}
 		if (str != null)
-			balance = Float.parseFloat(str);
+			balance = Float.parseFloat(str.replace(',', '.'));
 		
 		return b.smsNeeded(false).balance(balance).build();
 	}
@@ -151,4 +157,13 @@ public class UssdTask {
 				throw new RuntimeException(e);
 			}
 		}
+
+
+		@Override public long getId() {return ch.getId();	}
+		@Override public void setId(long id) {}
+
+		@Override public String getName() {return ch.getName();}
+		@Override public void setName(String name) {}
+
+		@Override public Class<?> getClazz() {return SmsTask.class;}
 }

@@ -14,7 +14,7 @@
 --Remove indexes on BLOBS, CLOBS and TEXT fields
 --Make all index names unique
 --Use the MySQL compatibility mode (jdbc:h2:~/test;MODE=MySQL)
-
+DROP TABLE if EXISTS _BANK;
 CREATE TABLE  _BANK  (
    id  bigint(20) NOT NULL AUTO_INCREMENT,
    location  varchar(255)  NOT NULL,
@@ -25,6 +25,7 @@ CREATE TABLE  _BANK  (
   UNIQUE KEY  UK_ci45miw0qwvswhtgr3d6t4ajs  ( name )
 ) ENGINE=InnoDB AUTO_INCREMENT=11 ;
 
+DROP TABLE if EXISTS _GRP;
 CREATE TABLE  _GRP  (
    id  bigint(20) NOT NULL AUTO_INCREMENT,
    name  varchar(255) NOT NULL,
@@ -35,6 +36,7 @@ CREATE TABLE  _GRP  (
   UNIQUE KEY  UK_4h2pb0vx4x8wbx9u7ykpwiq8e  ( name )
 ) ENGINE=InnoDB AUTO_INCREMENT=12 ;
 
+DROP TABLE if EXISTS _LIMIT;
 CREATE TABLE _LIMIT  (
    id  bigint(20) NOT NULL AUTO_INCREMENT,
    descr  varchar(255) DEFAULT NULL,
@@ -46,6 +48,7 @@ CREATE TABLE _LIMIT  (
   PRIMARY KEY ( id )
 ) ENGINE=InnoDB AUTO_INCREMENT=3;
 
+DROP TABLE if EXISTS _CARD;
 CREATE TABLE  _CARD  (
    id  bigint(20) NOT NULL AUTO_INCREMENT,
    name  varchar(20) NOT NULL,
@@ -77,6 +80,7 @@ CREATE TABLE  _CARD  (
   CONSTRAINT  FK_mjw84130h3p7ljclyv7bfwc5g  FOREIGN KEY ( limit_id ) REFERENCES  _LIMIT  ( id )
 ) ENGINE=InnoDB AUTO_INCREMENT=99 ;
 
+DROP TABLE if EXISTS _BOX;
 CREATE TABLE _BOX (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   capacity int(11) NOT NULL,
@@ -89,7 +93,7 @@ CREATE TABLE _BOX (
   UNIQUE KEY UK_9cjw5ax9u5ynkh21t415gpsx9 (disposition)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT ;
 
-
+DROP TABLE if EXISTS _CHANNEL;
 CREATE TABLE _CHANNEL (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   enabled bit(1) NOT NULL,
@@ -108,6 +112,7 @@ CREATE TABLE _CHANNEL (
   CONSTRAINT FK_m4rnxpbpjmy0uhj6jje0rl7v8 FOREIGN KEY (card) REFERENCES _CARD (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=148;
 
+DROP TABLE if EXISTS _TRUNK;
 CREATE TABLE _TRUNK (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   descr varchar(255) DEFAULT NULL,
@@ -118,6 +123,7 @@ CREATE TABLE _TRUNK (
   UNIQUE KEY UK_9jkkstux5m9k4rupwtvew3f6p (name)
 ) ENGINE=InnoDB AUTO_INCREMENT=5;
 
+DROP TABLE if EXISTS _CHANNEL__TRUNK;
 CREATE TABLE _CHANNEL__TRUNK (
   channels_id bigint(20) NOT NULL,
   trunks_id bigint(20) NOT NULL,
@@ -126,6 +132,7 @@ CREATE TABLE _CHANNEL__TRUNK (
   CONSTRAINT FK_5pib1fihst04tikff5uui3o7n FOREIGN KEY (trunks_id) REFERENCES _TRUNK (id)
 ) ENGINE=InnoDB ;	
 
+DROP TABLE if EXISTS numberplan;
 CREATE TABLE numberplan (
   fromd bigint(20) DEFAULT NULL,
   tod bigint(20) DEFAULT NULL,
@@ -134,6 +141,7 @@ CREATE TABLE numberplan (
   mnc int(2) DEFAULT NULL
 ) ENGINE=InnoDB;
 
+DROP TABLE if EXISTS cdr;
 CREATE TABLE cdr (
   calldate datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   clid varchar(80) NOT NULL DEFAULT '',
@@ -167,6 +175,7 @@ CREATE TABLE cdr (
   regcode int(2) DEFAULT NULL,
 ) ENGINE=InnoDB;
 
+DROP TABLE if EXISTS _BALANCE;
 CREATE TABLE _BALANCE (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   balance float DEFAULT NULL,

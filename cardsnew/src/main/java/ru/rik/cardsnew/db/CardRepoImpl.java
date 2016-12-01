@@ -20,7 +20,6 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.Sms;
 
 @Repository
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
@@ -99,7 +98,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	@Override
 	public List<Card> findAllAvailableForChannel(Grp g) {
 		return g.getCards().stream()
-		.filter(c->isEligible(c))
+		.filter(c->c.isEligibleToInstall(this, banks))
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.collect(Collectors.toList());
@@ -109,7 +108,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	@Override
 	public Card findTheBestInGroupForInsert(Grp g) {
 		Optional<Card> oc = g.getCards().stream()
-		.filter(c->isEligible(c))
+		.filter(c->c.isEligibleToInstall(this, banks))
 		.peek(c -> System.out.println(c.getName() + " " + c.getStat(this).getMinRemains()))
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
@@ -119,12 +118,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		else return null;
 	}
 	
-	private boolean isEligible(Card c) {
-		return c.isActive() && !c.isBlocked()
-				&& c.getStat(this).isFree() 
-				&& c.getBank().getStat(banks).isAvailable() 
-				&& c.getStat(this).getMinRemains() > 1;
-	}
+
 	
 	@Override
 	public List<Card> findAll() {

@@ -14,11 +14,11 @@ import lombok.experimental.Builder;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
-import ru.rik.cardsnew.domain.MyState;
 import ru.rik.cardsnew.domain.Sms;
+import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 
-public class SmsTask implements MyState {
+public class SmsTask implements State {
 	private static final Logger logger = LoggerFactory.getLogger(SmsTask.class);		
 
 	@Getter private final Channel ch;
@@ -74,7 +74,7 @@ public class SmsTask implements MyState {
 	}
 
 	
-	public SmsTask deleteMain(TelnetHelper h) {
+	public SmsTask deleteMain(TelnetHelper h) throws IOException {
 		phase = Phase.DeleteMain;
 		td.setStage("Deleting main " + smslist.size() + " smses");	
 		h.deleteSms(telnetClient, smslist);
@@ -82,7 +82,7 @@ public class SmsTask implements MyState {
 	}
 	
 	
-	public SmsTask fetchPair(TelnetHelper h) {
+	public SmsTask fetchPair(TelnetHelper h) throws IOException {
 		phase = Phase.FetchPair;
 		if (pair != null) {
 			td.setStage("Fetching pair");	
@@ -93,7 +93,7 @@ public class SmsTask implements MyState {
 	}
 	
 	
-	public SmsTask deletePair(TelnetHelper h){
+	public SmsTask deletePair(TelnetHelper h) throws IOException{
 		phase = Phase.DeletePair;
 		if (pair != null)
 			td.setStage("Deleting pair " + pairSmslist.size() + " smses");	

@@ -179,6 +179,7 @@ public class CardStat implements State {
 	public void applyBalance(Balance b) {
 		if (b.isPayment()) {
 			refilled = true;
+			this.nextBalanceCheck =  new Date();
 		} else {
 			refilled = false;
 			this.balance = b.getBalance();
@@ -186,6 +187,10 @@ public class CardStat implements State {
 			this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + Settings.MAX_BALANCE_CHECK_PERIOD * 1000
 					+ rnd.nextInt(60 * 60 * 1000));
 		}
+	}
+	
+	public boolean isTimeToBalanceCheck() {
+		return !Util.isDateFresh(nextBalanceCheck);
 	}
 	
 	public int getTodayCalls() {return todayCalls.get();}

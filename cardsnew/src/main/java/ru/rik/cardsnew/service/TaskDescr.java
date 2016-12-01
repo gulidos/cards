@@ -5,12 +5,11 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import ru.rik.cardsnew.domain.State;
 
 
 @NoArgsConstructor
-@ToString
+
 public class TaskDescr {
 	@Getter @Setter Class<?> clazz;
 	@Getter @Setter State state;
@@ -26,8 +25,15 @@ public class TaskDescr {
 		this.state = state;
 		this.lastChangeDate = startDate;
 	}
+	
 	public void setStage(String str) {
 		this.stage = str;
 		this.lastChangeDate = new Date();
 	}
+	@Override
+	public String toString() {
+		return "TaskDescr [clazz=" + clazz + ", state=" + state.getName() + ", lastChangeDate=" + lastChangeDate + ", stage="
+				+ stage + "]";
+	}
+	
 }

@@ -57,4 +57,11 @@ public class Util {
 		return msecBetween(d1, d2) < delta;
 	}
 	
+	
+	public static boolean isDateFresh(Date nextdate) {
+		long now = new Date().getTime();
+		return now - nextdate.getTime() < 0;
+	}
+	
+	
 }

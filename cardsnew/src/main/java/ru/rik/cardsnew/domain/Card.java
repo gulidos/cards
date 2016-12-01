@@ -31,6 +31,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
+import ru.rik.cardsnew.config.Settings;
+import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 
 @NamedQueries({ 
@@ -125,6 +127,16 @@ public class Card implements MyEntity {
     public void refreshDayLimit( ) {
     	Random rnd = new Random();
     	dlimit = limit.getF() + rnd.nextInt(limit.getT() - limit.getF());
+    }
+    
+    
+    public boolean isEligibleToInstall(CardRepo cards, BankRepo banks) {
+    	CardStat st = getStat(cards);
+    	return isActive() && !isBlocked()
+    			&& getBank().getStat(banks).isAvailable() 
+				&& st.isFree() 
+				&& (st.getBalance() > Settings.MIN_AVAILABLE_BALANCE || st.isRefilled())
+				&& st.getMinRemains() > 1;
     }
     
    
