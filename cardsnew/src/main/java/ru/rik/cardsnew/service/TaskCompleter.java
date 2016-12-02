@@ -30,7 +30,7 @@ import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Util;
-import ru.rik.cardsnew.service.http.BankStatus;
+import ru.rik.cardsnew.service.http.BankStatusTask;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 import ru.rik.cardsnew.service.telnet.SmsTask;
@@ -86,8 +86,8 @@ public class TaskCompleter implements Runnable{
 				else if (result.getClazz() == SimSet.class) {
 					applySimSet(result);
 				} 
-				else if (result.getClazz() == BankStatus.class) {
-					applyBankStatus((BankStatus) result);
+				else if (result.getClazz() == BankStatusTask.class) {
+					applyBankStatus((BankStatusTask) result);
 				} 
 				else if (result.getClazz() == SwitchTask.class) {
 					SwitchTask sw = (SwitchTask) result;
@@ -116,11 +116,10 @@ public class TaskCompleter implements Runnable{
 	private void execExceptionHandler(Future<State> f, ExecutionException e) {
 		try {
 			Throwable cause = e.getCause();
+			TaskDescr descr = map.remove(f);
+			State st = descr.getState();
+			Class<?> task = descr.getClazz();
 			if (cause instanceof SocketTimeoutException || cause instanceof ConnectException) {
-				TaskDescr descr = map.remove(f);
-				State st = descr.getState();
-				Class<?> task = descr.getClazz();
-				
 				if (task == SmsTask.class || task == UssdTask.class) {
 					((ChannelState) st).setStatus(Status.Ready);
 					Channel ch = chans.findById(st.getId());
@@ -130,15 +129,15 @@ public class TaskCompleter implements Runnable{
 				else if (task == GsmState.class || task == SimSet.class) 
 						((ChannelState) st).setStatus(Status.Unreach);
 				
-				else if (task == BankState.class) {
-					BankState bState = (BankState) st;
-					bState.setAvailable(false);
-					logger.error("bank {} is unavailable ", bState.getName());
+				else if (task == BankStatusTask.class) {
+					BankState bs = (BankState) st;
+					bs.setAvailable(false);
+					logger.error("bank {} is unavailable ", bs.getName());
 				} 
 				else
-					logger.error(e.getMessage(), e);
+					logger.error(e.getMessage() + cause + descr.toString(), e);
 			} else 
-				logger.error(e.getMessage(), e);
+				logger.error(e.getMessage() + cause + descr.toString() , e);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
 
@@ -167,7 +166,7 @@ public class TaskCompleter implements Runnable{
 	}
 	
 	
-	private void applyBankStatus(BankStatus g) {		
+	private void applyBankStatus(BankStatusTask g) {		
 		BankState st = banks.findStateById(g.getId());
 		st.applyBankStatus(g);
 	}

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import ru.rik.cardsnew.service.http.BankStatus;
+import ru.rik.cardsnew.service.http.BankStatusTask;
 
 @EqualsAndHashCode(of={"id", "name"})
 public class BankState implements State {
@@ -16,7 +16,7 @@ public class BankState implements State {
 
 	private long id;
 	private String name;
-	@Getter @Setter private volatile BankStatus bankstatus;
+	@Getter @Setter private volatile BankStatusTask bankstatus;
 	@Getter @Setter private volatile Date lastUpdate;
 	@Getter @Setter private volatile Date nextUpdate;
 
@@ -35,7 +35,7 @@ public class BankState implements State {
 		this.lastStatusChange = new Date();
 	}
 
-	public void applyBankStatus(BankStatus s) {
+	public void applyBankStatus(BankStatusTask s) {
 		bankstatus = s;
 		setAvailable(true);
 		lastUpdate = new Date();

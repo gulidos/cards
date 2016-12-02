@@ -17,8 +17,8 @@ import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @Data
-public class BankStatus implements State {
-	private static final Logger logger = LoggerFactory.getLogger(BankStatus.class);		
+public class BankStatusTask implements State {
+	private static final Logger logger = LoggerFactory.getLogger(BankStatusTask.class);		
 
 	private long id;
 	private String name;
@@ -26,7 +26,7 @@ public class BankStatus implements State {
 	private TaskDescr taskDescr;
 	
 	@Builder
-	public BankStatus(long id, String name, int cardcount, TaskDescr td) {
+	public BankStatusTask(long id, String name, int cardcount, TaskDescr td) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -34,12 +34,12 @@ public class BankStatus implements State {
 		this.taskDescr = td;
 	}
 
-	public static BankStatus get(final Bank b, TaskDescr td) throws IOException, InterruptedException {
+	public static BankStatusTask get(final Bank b, TaskDescr td) throws IOException, InterruptedException {
 		if (b == null) 
 			throw new NullPointerException("Bank must not be null!");
 		td.setStage("Getting bank pages ");
 
-		BankStatus.BankStatusBuilder bld  = BankStatus.builder(); 
+		BankStatusTaskBuilder bld  = BankStatusTask.builder(); 
 		bld.id(b.getId())
 		.name(b.getName())
 		.td(td);
@@ -85,7 +85,7 @@ public class BankStatus implements State {
 	
 //	http://stackoverflow.com/questions/24772828/how-to-parse-html-table-using-jsoup
 	@Override
-	public Class<?> getClazz() {return BankStatus.class;}
+	public Class<?> getClazz() {return BankStatusTask.class;}
 	
 //	public static void main(String[] args) throws IOException, InterruptedException {
 //		Bank b = Bank.builder().name("72.0.202.21").id(1).build();
