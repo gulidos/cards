@@ -53,10 +53,15 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	
 	@Override
 	public List<Card> findGroupCards(Grp grp) {
-		return em.createNamedQuery("findAllCardsInGrp", Card.class)
-				.setParameter("g", grp)
-				.setHint("org.hibernate.cacheable", true)
-				.getResultList();
+		return grp.getCards().stream()
+				.filter(c -> !c.isBlocked())
+				.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
+				.collect(Collectors.toList());
+		
+//		return em.createNamedQuery("findAllCardsInGrp", Card.class)
+//				.setParameter("g", grp)
+//				.setHint("org.hibernate.cacheable", true)
+//				.getResultList();
     }
 	
 	@Override

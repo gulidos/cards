@@ -23,6 +23,7 @@ import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.http.BankRebootTask;
 import ru.rik.cardsnew.service.http.BankStatusTask;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.HttpHelper;
@@ -112,9 +113,8 @@ public class PeriodicTasks {
 		logger.debug("Start checkBanks ...");
 		for (Bank b: bankRepo.findAll()) {
 			BankState st = bankRepo.findStateById(b.getId());
-//			TaskDescr td = new TaskDescr(BankStatus.class, st, new Date());
-			taskCompleter.addTask(() -> BankStatusTask.get(b, new TaskDescr(BankStatusTask.class, st, new Date())), 
-					new TaskDescr(BankStatusTask.class, st, new Date()));
+			TaskDescr td = new TaskDescr(BankStatusTask.class, st, new Date());
+			taskCompleter.addTask(() -> BankStatusTask.get(b, td), td);
 		}
 	}
 	
@@ -125,6 +125,12 @@ public class PeriodicTasks {
 		.peek((c-> c.getStat(cards).resetDaylyCounters()))
 		.peek(c-> c.refreshDayLimit())
 		.forEach(c-> cards.makePersistent(c));
+				
+		bankRepo.findAll().forEach(b -> {
+			BankState st = bankRepo.findStateById(b.getId());
+			TaskDescr td = new TaskDescr(BankRebootTask.class, st, new Date());
+			taskCompleter.addTask(() -> BankRebootTask.doIt(b, td), td);
+		});
 	}
 	
 	

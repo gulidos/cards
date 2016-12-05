@@ -1,7 +1,6 @@
 package ru.rik.cardsnew.web;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +35,6 @@ import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
-import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
@@ -246,33 +244,25 @@ public class ChannController {
 			BindingResult result,
 			Model model,  
 			RedirectAttributes redirectAttrs,
-			@RequestParam(value="action", required=true) String action ) {
-				if (action.equals("cancel")) {
-//					String message = chan.toString() + " edit cancelled";
-//					redirectAttrs.addFlashAttribute("message", message);
-					
-				} else if (action.equals("gsmreq") && state != null) {
-					Channel ch = chans.findById(state.getId());
-					ChannelState st = ch.getState(chans);
-					try {
-						GsmState gstate = GsmState.get(ch, new TaskDescr(GsmState.class, st, new Date()));
-						st.applyGsmStatus(gstate);
-						SimSet simset = SimSet.get(ch, ch.getPair(chans), new TaskDescr(SimSet.class, st, new Date()));
-						st.applySimSet(simset);
-					} catch (SocketTimeoutException | ConnectException e) {
-						st.setStatus(Status.Unreach);
-						logger.debug("channel {} is unreachable", st.getName());
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-					}	
-					
-					return "redirect:/channels/stat" + "?id=" + state.getId();
-				} 
-				
-				if (!filter.getUrl().isEmpty())
-					return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
+			@RequestParam(value="action", required=true) String action ) throws IllegalAccessException, IOException {
+		if (action.equals("cancel")) {
+		}
 
-				return "redirect:/channels/chanstats";		
+		else if (action.equals("gsmreq") && state != null) {
+			Channel ch = chans.findById(state.getId());
+			ChannelState st = ch.getState(chans);
+
+			GsmState gstate = GsmState.get(ch, new TaskDescr(GsmState.class, st, new Date()));
+			st.applyGsmStatus(gstate);
+			SimSet simset = SimSet.get(ch, ch.getPair(chans), new TaskDescr(SimSet.class, st, new Date()));
+			st.applySimSet(simset);
+			return "redirect:/channels/stat" + "?id=" + state.getId();
+		}
+
+		if (!filter.getUrl().isEmpty())
+			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();
+
+		return "redirect:/channels/chanstats";
 	}
 			
 	

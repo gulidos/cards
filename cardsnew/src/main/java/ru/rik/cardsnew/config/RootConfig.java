@@ -66,12 +66,14 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean
 	public AsyncTasks asyncTasks() {return new AsyncTasks();}
 
-	@Bean(initMethod = "init")
+	@Bean
+	(initMethod = "init")
 	public Cdrs cdrs() {return new Cdrs();}
 	
 	@Bean public TelnetHelper telnetHelper() {return new TelnetHelperImpl();}
 
-	 @Bean (initMethod="init")
+	 @Bean 
+//	 (initMethod="init")
 	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")

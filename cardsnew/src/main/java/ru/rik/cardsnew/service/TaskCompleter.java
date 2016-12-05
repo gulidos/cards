@@ -30,6 +30,7 @@ import ru.rik.cardsnew.domain.ChannelState;
 import ru.rik.cardsnew.domain.ChannelState.Status;
 import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.domain.Util;
+import ru.rik.cardsnew.service.http.BankRebootTask;
 import ru.rik.cardsnew.service.http.BankStatusTask;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
@@ -97,7 +98,11 @@ public class TaskCompleter implements Runnable{
 					handleSms((SmsTask) result);
 				} else if (td.getClazz() == UssdTask.class) {
 					handleUssd((UssdTask) result);
-				}
+				} else if (td.getClazz() == BankRebootTask.class) {
+					if (!((BankRebootTask) result).isSuccess())
+						logger.error("attempt to reboot bank {} was unsuccessful");
+					
+				}	
 			} catch (InterruptedException e) {
 				logger.info("interrupted");
 				Thread.currentThread().interrupt();
@@ -129,7 +134,7 @@ public class TaskCompleter implements Runnable{
 				else if (task == GsmState.class || task == SimSet.class) 
 						((ChannelState) st).setStatus(Status.Unreach);
 				
-				else if (task == BankStatusTask.class) {
+				else if (task == BankStatusTask.class || task == BankRebootTask.class) {
 					BankState bs = (BankState) st;
 					bs.setAvailable(false);
 					logger.error("bank {} is unavailable ", bs.getName());

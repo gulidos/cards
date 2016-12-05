@@ -82,16 +82,36 @@ public class BankStatusTask implements State {
 				return activeCards;
 	}
 	
+	public static boolean reboot(Bank b, TaskDescr td) throws IOException  {
+		if (b == null) 
+			throw new NullPointerException("Bank must not be null!");
+		td.setStage("Rebooting bank ");
+		String host = b.getName();
+		String port = Integer.toString(80);
+		String login = Bank.DEF_USER + ":" + Bank.DEF_PASSWORD;
+		String authString = new String(Base64.encodeBase64(login.getBytes()));
+		Document doc = Jsoup.connect("http://" + host + ":" + port + "/" + "rebootsys.cgi")
+				.header("Authorization", "Basic " + authString)
+				.timeout(10000).followRedirects(true)
+				.data("cookieexists", "false")
+				.data("submit", "Reboot")
+				.post();
+		if (doc.html().contains("Please wait for a moment while rebooting"))
+			return true;
+		else 
+			return false;
+	}
+	
 	
 //	http://stackoverflow.com/questions/24772828/how-to-parse-html-table-using-jsoup
 	@Override
 	public Class<?> getClazz() {return BankStatusTask.class;}
 	
-//	public static void main(String[] args) throws IOException, InterruptedException {
-//		Bank b = Bank.builder().name("72.0.202.21").id(1).build();
-//		BankStatus bs = BankStatus.get(b);
-//		System.out.println(bs.toString());
-//	}
+	public static void main(String[] args) throws IOException, InterruptedException {
+		Bank b = Bank.builder().name("72.0.202.19").id(1).build();
+		reboot(b, new TaskDescr());
+				
+	}
 
 
 }
