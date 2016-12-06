@@ -73,7 +73,7 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean public TelnetHelper telnetHelper() {return new TelnetHelperImpl();}
 
 	 @Bean 
-//	 (initMethod="init")
+	 (initMethod="init")
 	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")

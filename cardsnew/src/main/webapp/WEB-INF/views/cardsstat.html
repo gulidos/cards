@@ -19,18 +19,20 @@
 				<tr>
 					<th class="col-sm-1">name</th>
 					<th class="col-sm-1">chan/free</th>
-					<th class="col-sm-1">a/a</th>
-					<th class="col-sm-1">tot/rem</th>
-
+					<th class="col-sm-1">a/a/cnt</th>
+					<th class="col-sm-1">lim/tot/rem/msk</th>
+					<th class="col-sm-1">bal/date</th>
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="card : ${cards}">
 					<td th:text="${card.name}+ ' / ' + ${card.number}"></td>
 					<td th:text="${card.stat.free} + ' / ' + ${card.channelId}"></td>
-					<td th:text="${card.stat.asr} + ' / ' + ${card.stat.acdFormatted}"></td>
-					<td th:text="${card.dlimit} + ' / ' + ${card.stat.minRemains} +  ' / ' + ${card.stat.todayMin}"></td>
-					<td style="text-align: center;">
-					<a th:href="@{/cards/edit(id=${card.id})}">
+					<td th:text="${card.stat.asr} + ' / ' + ${card.stat.acdFormatted} +  ' / ' + ${card.stat.todayCalls}"></td>
+					<td th:text="${card.dlimit} + ' / ' + ${card.stat.todayMin} +  ' / ' + ${card.stat.minRemains} +
+					' / ' +${card.stat.todayMsk} " ></td>
+					<td th:text="${card.stat.balance} + ' / ' + ${#dates.format(card.stat.lastBalanceChecked, 'dd/MMM HH:mm:ss')}"></td>
+					<td style="text-align: center;"> 
+					<a th:href="@{/cards/stat(id=${card.id})}">
 							<button type="button" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-pencil"></span>
 							</button>

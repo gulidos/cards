@@ -8,7 +8,7 @@
 		<encoder>
 			<pattern>
 				<charset>UTF-8</charset>
-				%d{HH:mm:ss.SSS} %-5level [%thread] %logger{35}:%method:%line %msg%n
+				%d{HH:mm:ss.SSS} %-5level [%thread] %logger{15}:%method:%line %msg%n
 			</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

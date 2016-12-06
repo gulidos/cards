@@ -25,6 +25,7 @@ import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.Place;
@@ -212,7 +213,7 @@ public class CardsController {
 //	}
 
 	
-	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	@RequestMapping(value = "/stats", method = {RequestMethod.GET, RequestMethod.POST})
 	public String stat(
 			@RequestParam(value = "id", defaultValue = "0") long id, 
 			@RequestParam(value = "url", defaultValue = "") String url, 
@@ -232,5 +233,16 @@ public class CardsController {
 	public String refreshLimits(Model model) {
 		cards.refreshLimits();
 		return "redirect:/cards/stats";
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/stat", method = RequestMethod.GET)
+	public String statPage(@RequestParam(value = "id", required = true) long id, Model model) {
+		Card card = cards.findById(id);
+		CardStat st = cards.findStateById(id);
+		model.addAttribute("chan", channels.findById(card.getChannelId()));
+		model.addAttribute("state", st);
+		model.addAttribute("card", card);
+		return "card-stat";
 	}
 }

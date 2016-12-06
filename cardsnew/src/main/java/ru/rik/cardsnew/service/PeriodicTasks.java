@@ -64,8 +64,8 @@ public class PeriodicTasks {
 
 			checsForPairs(pairsJobs, ch, st);
 			
-//			if (st.getStatus() == Status.Ready || !st.isInUse(astMngr))
-//				checkChannelsCard(ch, st);
+			if (st.getStatus() == Status.Ready && ch.getCard() != null && !st.isInUse(astMngr))
+				checkChannelsCard(ch, st);
 		}		
 	}
 
@@ -74,6 +74,8 @@ public class PeriodicTasks {
 		Card card = ch.getCard();
 		if (card != null) {
 			CardStat cs = card.getStat(cards);
+			if (cs == null)
+				throw new IllegalStateException("card " + card.getName() + " in channel " + ch.getName() + " doesn't have State");
 			if (cs.isTimeToBalanceCheck()) {
 				st.setStatus(Status.UssdReq);
 				TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
@@ -97,7 +99,7 @@ public class PeriodicTasks {
 				TaskDescr td = new TaskDescr(SimSet.class, st, new Date());
 				taskCompleter.addTask(()-> SimSet.get(ch, pair, td), td);
 			}	
-			if (!st.isSmsFetchDateFresh() && ch.getCard() != null) {
+			if (st.getStatus() == Status.Ready && !st.isSmsFetchDateFresh() && ch.getCard() != null) {
 				st.setStatus(Status.Smsfetch);
 				pairSt.setStatus(Status.Smsfetch);
 				TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());

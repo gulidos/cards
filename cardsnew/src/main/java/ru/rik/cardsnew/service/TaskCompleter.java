@@ -128,8 +128,13 @@ public class TaskCompleter implements Runnable{
 				if (task == SmsTask.class || task == UssdTask.class) {
 					((ChannelState) st).setStatus(Status.Ready);
 					Channel ch = chans.findById(st.getId());
-//					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
-//							ch.getLine().getTelnetport(), task.getSimpleName());
+					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
+							ch.getLine().getTelnetport(), task.getSimpleName());
+					if (task == UssdTask.class) {
+						CardStat cs = cards.findStateById(ch.getCard().getId());
+						cs.setNextBalanceCheck(Util.getNowPlusSec((int) (st.getId() % 10) * 30));
+					}	
+					
 				} 
 				else if (task == GsmState.class || task == SimSet.class) 
 						((ChannelState) st).setStatus(Status.Unreach);
@@ -236,11 +241,18 @@ public class TaskCompleter implements Runnable{
 		ChannelState st = ch.getState(chans);
 		Card card = ussdTask.getCard();
 		CardStat cs = card.getStat(cards);
-		Balance b = ussdTask.getBalance();
+		
+		Balance b = null;
+		try {
+			b = ussdTask.getBalance();
+		} catch (Exception e) {
+			cs.setNextBalanceCheck(Util.getNowPlusSec(600));
+		}
 		
 		if (b == null)
 			throw new IllegalStateException("handling ussd answer " + ussdTask.getTd().toString() + " Balance is null!");
-		logger.debug("!!! got ussd " + b.toString());
+		
+		logger.debug("!!! got ussd channel " + ch.getName() + " card " + card.getName() + b.toString());
 		
 		cs.applyBalance(b);
 		if (b.isSmsNeeded()) {

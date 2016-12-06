@@ -72,7 +72,7 @@ public class UssdTask implements State{
 	}
 	
 	
-	public String getDecodedResponse() {
+	public String getDecodedResponse() throws IllegalStateException {
 		if (encodedResp == null)
 			throw new IllegalStateException("there isn't a valid response on ussd request "  + ch.getName() + " " + card.getName());
 		String str = null;

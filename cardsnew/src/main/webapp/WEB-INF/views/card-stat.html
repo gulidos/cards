@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>Title</title>
+
+<!-- Include the plugin's CSS and JS: -->
+
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+
+</head>
+<body>
+	    
+	<div class="container">
+	<ul class="nav nav-tabs">
+		<li><a th:href="@{/cards/edit(id=*{state.id})}">Properties</a></li>
+		<li class="active"><a th:href="@{/cards/stat}">Statistic</a></li>
+		<li><a th:href="@{/cards/stat(id=*{state.id})}">Maint</a></li>
+	</ul>
+
+	
+		<h4 >Statistic</h4>
+		<form class="form-horizontal" th:object="${state}" th:action="@{/cards/stats}" th:method="post" >
+			<div class="row">
+			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
+			<div class="col-lg-6 col-sm-6 ">
+			<!-- 	<pre  th:text="${stateText}">
+				</pre> -->
+				<p th:text="${state.name}"></p>
+				<p th:text="'free: ' + ${state.free}"></p>
+				<!-- <p th:text="'Channel: ' + ${chan}"></p> -->
+				<p th:text="'ASR: ' + ${state.asr}"></p>
+				<p th:text="'ACD: ' + ${#numbers.formatDecimal(state.acd,1,2)}"></p>
+				<p th:text="'Today Minutes round: ' + ${state.todayMinTotal}"></p>
+				<p th:text="'Today Minutes: ' + ${state.todayMin}"></p>
+				<p th:text="'Today Offnet: ' + ${state.todayOffnet}"></p>
+				<p th:text="'Today Msk: ' + ${state.todayMsk}"></p>
+				<p th:text="'Today Calls: ' + ${state.todayCalls}"></p>
+				<h2 th:text="------------------------------------------" ></h2>
+				<p th:text="'Balance: ' + ${#numbers.formatDecimal(state.balance,1,2)}"></p>
+				<p th:text="'Balance updated: ' + ${#dates.format(state.lastBalanceChecked, 'dd/MMM HH:mm:ss')}"></p>
+				<p th:text="'Balance next check: ' + ${#dates.format(state.nextBalanceCheck, 'dd/MMM HH:mm:ss')}"></p>
+				<p th:text="'Refilled: ' + ${state.refilled}"></p>
+	
+				<!-- <label class="col-md-4" th:text="${state.toWeb()}" ></label> -->
+				
+			</div>
+ 		</div>
+			 <div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action" th:value="gsmreq" th:text="GsmRequest">	</button>
+					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+				</div>
+			</div> 
+			
+		</form>
+	
+		 <hr />
+
+		<hr />
+		</div>
+		<div class="col-sm-3"></div>
+
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#example-getting-started').multiselect();
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#channel-select').multiselect();
+	});
+</script>
+</html>
+

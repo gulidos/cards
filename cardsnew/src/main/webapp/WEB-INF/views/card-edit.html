@@ -17,7 +17,13 @@
 	
 </head>
 <body>
+
 	<div class="container">
+		<ul class="nav nav-tabs">
+		<li class="active"><a th:href="@{/cards/edit(id=*{card.id})}">Properties</a></li>
+		<li><a th:href="@{/cards/stat(id=*{card.id})}">Statistic</a></li>
+		<li><a th:href="@{/cards/stat(id=*{card.id})}">Maint</a></li>
+	</ul>
 	<div class="panel panel-default" >
 		<div class="panel-heading">card</div>
 		<form class="form-horizontal" th:object="${card}" th:action="@{/cards/edit}" th:method="post" >

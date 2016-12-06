@@ -52,7 +52,7 @@ public class TelnetHelperImpl implements TelnetHelper {
 				telnet.setReaderThread(true); 
 				telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
 				telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
-				telnet.setConnectTimeout(60000);
+				telnet.setConnectTimeout(10000);
 				
 			} catch (InvalidTelnetOptionException e) {
 				logger.error(e.getMessage(), e);
