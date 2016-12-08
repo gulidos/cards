@@ -33,5 +33,6 @@ public interface ChannelRepo extends GenericRepo<Channel, ChannelState>{
 	
 	@Transactional void smsHandle(List<Sms> list);
 	void setCardToNull(List<Channel> list);
+	ChannelState getPairsState(long id);
 
 }

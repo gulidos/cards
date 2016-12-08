@@ -128,11 +128,13 @@ public class TaskCompleter implements Runnable{
 				if (task == SmsTask.class || task == UssdTask.class) {
 					((ChannelState) st).setStatus(Status.Ready);
 					Channel ch = chans.findById(st.getId());
+					ChannelState pairSt = chans.getPairsState(st.getId());
+					pairSt.setStatus(Status.Ready);
 					logger.debug("{} channel {} {} {} task {} ", e.getMessage(), st.getName(), ch.getBox().getIp(), 
 							ch.getLine().getTelnetport(), task.getSimpleName());
 					if (task == UssdTask.class) {
 						CardStat cs = cards.findStateById(ch.getCard().getId());
-						cs.setNextBalanceCheck(Util.getNowPlusSec((int) (st.getId() % 10) * 30));
+						cs.setNextBalanceCheck(Util.getNowPlusSec(750));
 					}	
 					
 				} 
@@ -261,10 +263,8 @@ public class TaskCompleter implements Runnable{
 		} else {
 			cards.balanceSave(b);
 			st.setStatus(Status.Ready);
+			ChannelState pairSt = chans.getPairsState(st.getId());
+			pairSt.setStatus(Status.Ready);
 		}	
-	}
-
-
-
-	
+	}	
 }

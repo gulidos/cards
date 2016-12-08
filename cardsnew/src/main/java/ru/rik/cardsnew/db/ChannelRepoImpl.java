@@ -151,4 +151,11 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		.peek(ch-> ch.setCard(null))
 		.forEach(ch-> makePersistent(ch));
 	}
+	
+	@Override
+	public ChannelState getPairsState(long id) {
+		Channel ch = findById(id);
+		Channel pair= ch.getPair(this);
+		return findStateById(pair.getId());
+	}
 }

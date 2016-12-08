@@ -61,16 +61,18 @@ public class PeriodicTasks {
 				TaskDescr td = new TaskDescr(GsmState.class, st, new Date());
 				taskCompleter.addTask(()-> GsmState.get(ch, td), td);
 			}	
-
-			checsForPairs(pairsJobs, ch, st);
+			Channel pair = ch.getPair(chans);
+			ChannelState pairSt = chans.findStateById(pair.getId());
+			checsForPairs(pairsJobs, ch, st, pair, pairSt);
 			
-			if (st.getStatus() == Status.Ready && ch.getCard() != null && !st.isInUse(astMngr))
-				checkChannelsCard(ch, st);
+			if (st.getStatus() == Status.Ready && pairSt.getStatus() == Status.Ready 
+					&& ch.getCard() != null && !st.isInUse(astMngr))
+				checkChannelsCard(ch, st, pairSt);
 		}		
 	}
 
 
-	public void checkChannelsCard(Channel ch, ChannelState st) {
+	public void checkChannelsCard(Channel ch, ChannelState st, ChannelState pairSt) {
 		Card card = ch.getCard();
 		if (card != null) {
 			CardStat cs = card.getStat(cards);
@@ -78,6 +80,7 @@ public class PeriodicTasks {
 				throw new IllegalStateException("card " + card.getName() + " in channel " + ch.getName() + " doesn't have State");
 			if (cs.isTimeToBalanceCheck()) {
 				st.setStatus(Status.UssdReq);
+				pairSt.setStatus(Status.UssdReq);
 				TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
 				String cmd = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
 				taskCompleter.addTask(()-> UssdTask.get(telnetHelper, ch, card, cmd, td), td);
@@ -86,13 +89,13 @@ public class PeriodicTasks {
 	}
 
 	
-	private void checsForPairs(Set<Channel> pairsJobs, Channel ch, ChannelState st) {
+	private void checsForPairs(Set<Channel> pairsJobs, Channel ch, ChannelState st, Channel pair, ChannelState pairSt) {
 		if (pairsJobs.contains(ch)) { // if the channel was already requested as a pair
 			pairsJobs.remove(ch);
 		} else {
-			Channel pair = ch.getPair(chans);
+			
 			Card pairCard = (pair != null ? pair.getCard() : null);
-			ChannelState pairSt = chans.findStateById(pair.getId());
+			
 			if (pair != null)
 				pairsJobs.add(pair);
 			if (!st.isSimSetDateFresh()) {

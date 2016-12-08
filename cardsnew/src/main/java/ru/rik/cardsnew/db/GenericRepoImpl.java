@@ -19,10 +19,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
+import org.asteriskjava.live.ChannelState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyEntity;
 import ru.rik.cardsnew.domain.State;
 
