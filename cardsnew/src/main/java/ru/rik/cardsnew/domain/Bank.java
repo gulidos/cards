@@ -27,6 +27,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 import ru.rik.cardsnew.db.BankRepo;
+import ru.rik.cardsnew.db.ChannelRepo;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 @Entity
@@ -57,11 +58,18 @@ public class Bank implements MyEntity {
     @OneToMany(mappedBy = "bank", fetch=FetchType.LAZY)
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Card> cards = new HashSet<>();
-    
+
+    @Transient
+	@Getter @Setter private BankState state;
+
     public BankState getStat (BankRepo repo) {
     	return repo.findStateById(id);
     }
-    
+
+	
+	public ChannelState getState(ChannelRepo chans) {
+		return chans.findStateById(getId());
+	}
 //    @Override public String getName() {return getIp();}
 //	@Override public void setName(String name) {this.ip = name;}
 }

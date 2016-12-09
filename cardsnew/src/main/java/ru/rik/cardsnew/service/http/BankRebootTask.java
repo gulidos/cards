@@ -1,15 +1,10 @@
 package ru.rik.cardsnew.service.http;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -18,7 +13,6 @@ import ru.rik.cardsnew.domain.State;
 import ru.rik.cardsnew.service.TaskDescr;
 @Data
 public class BankRebootTask implements State {
-	private static final Logger logger = LoggerFactory.getLogger(BankRebootTask.class);		
 
 	private long id;
 	private String name;

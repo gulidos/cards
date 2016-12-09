@@ -23,16 +23,17 @@
 					<th class="col-sm-1">available</th>
 					<th class="col-sm-1">last check</th>
 					<th class="col-sm-1">last change</th>
-					<th class="col-sm-1">in use</th>
+					<th class="col-sm-1">in use web/eng</th>
 					<th class="col-sm-1">Action</th>
 				</tr>
 				<tr th:each="bank : ${banks}"> 
 					<td th:text="${bank.name}"></td>
 					<td th:text="${bank.location}"></td>
-					<td th:text="${bank.stat.available}"></td>
-					<td th:text="${bank.stat.lastUpdate != null} ? ${#dates.format(bank.stat.lastUpdate, 'MMM/dd HH:mm')} : '-' "></td>
-					<td th:text="${#dates.format(bank.stat.lastStatusChange, 'MMM/dd HH:mm')}"></td>
-					<td th:text="${bank.stat.lastUpdate != null} ? ${bank.stat.bankstatus.activecards} : '-'"></td>
+					<td th:text="${bank.state.available}"></td>
+					<td th:text="${bank.state.lastUpdate != null} ? ${#dates.format(bank.state.lastUpdate, 'MMM/dd HH:mm')} : '-' "></td>
+					<td th:text="${#dates.format(bank.state.lastStatusChange, 'MMM/dd HH:mm')}"></td>
+					<td th:text="${bank.state.lastUpdate != null} ? ${bank.state.bankstatus.activecards} + 
+								'/' + ${bank.state.bankstatus.engaged}: '-'"></td>
 					
 					<td style="text-align: center;">
 					<a th:href="@{/banks/edit(id=${bank.id})}">

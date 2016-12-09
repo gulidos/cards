@@ -22,6 +22,7 @@ import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -178,9 +179,10 @@ public class TaskCompleter implements Runnable{
 	}
 	
 	
-	private void applyBankStatus(BankStatusTask g) {		
-		BankState st = banks.findStateById(g.getId());
-		st.applyBankStatus(g);
+	private void applyBankStatus(BankStatusTask status) {		
+		BankState st = banks.findStateById(status.getId());
+		status.setEngaged(banks.getCardsInUse(st.getId()).size());
+		st.applyBankStatus(status);
 	}
 	
 	

@@ -37,7 +37,7 @@ public class BankController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String banks(Model model) {
 		List<Bank> list = banks.findAll();	
-		
+		list.forEach(b -> b.setState(banks.findStateById(b.getId())));
 		model.addAttribute("banks", list);
 		return "banks";
 	}

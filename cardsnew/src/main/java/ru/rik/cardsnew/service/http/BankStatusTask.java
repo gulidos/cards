@@ -24,6 +24,7 @@ public class BankStatusTask implements State {
 	private String name;
 	private int activecards;
 	private TaskDescr taskDescr;
+	private int engaged;
 	
 	@Builder
 	public BankStatusTask(long id, String name, int cardcount, TaskDescr td) {

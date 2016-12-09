@@ -45,6 +45,7 @@ import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.TaskDescr;
 import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
+import ru.rik.cardsnew.service.http.ChannelRebootTask;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
 
@@ -224,6 +225,8 @@ public class ChannController {
 		model.addAttribute("state", st);
 		model.addAttribute("chan", chan);
 		model.addAttribute("stateText", st.toWeb(cards, chans, banks, astMngr));
+		model.addAttribute("card", chan.getCard());
+		model.addAttribute("cardState", chan.getCard() != null ? chan.getCard().getStat(cards) : null);
 		
 		Channel peer = chan.getPair(chans);
 		model.addAttribute("peerText", peer.getState(chans).toWeb(cards, chans, banks, astMngr));
@@ -270,7 +273,7 @@ public class ChannController {
 	public String switchCardWeb(
 			@ModelAttribute Channel chan,
 			Model model, RedirectAttributes redirectAttrs,
-			@RequestParam(value = "action", required = true) String action) {
+			@RequestParam(value = "action", required = true) String action) throws IOException {
 		Assert.notNull(chan);
 		logger.debug("Channel: {} ", chan.toString() );
 		Channel persCh = chans.findById(chan.getId());
@@ -287,6 +290,9 @@ public class ChannController {
 			TaskDescr td = new TaskDescr(SwitchTask.class, st, new Date());
 			Callable<State> switchCard = () ->  switcher.switchCard(persCh, null, td);
 			taskCompleter.addTask(switchCard, td);
+			
+		} else if (action.equals("reboot")) {
+			ChannelRebootTask.doIt(persCh, null);
 		}
 		if (!filter.getUrl().isEmpty()) 
 			return "redirect:/channels/chanstats/?url=" + filter.getUrl() + "&id=" + filter.getId();

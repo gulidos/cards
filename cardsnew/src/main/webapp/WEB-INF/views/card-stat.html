@@ -32,9 +32,7 @@
 			<div class="row">
 			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
 			<div class="col-lg-6 col-sm-6 ">
-			<!-- 	<pre  th:text="${stateText}">
-				</pre> -->
-				<p th:text="${state.name}"></p>
+				<pre th:utext="${state.name} + '&lt;br&gt;' + ${state.free}"></pre>
 				<p th:text="'free: ' + ${state.free}"></p>
 				<!-- <p th:text="'Channel: ' + ${chan}"></p> -->
 				<p th:text="'ASR: ' + ${state.asr}"></p>
@@ -44,19 +42,14 @@
 				<p th:text="'Today Offnet: ' + ${state.todayOffnet}"></p>
 				<p th:text="'Today Msk: ' + ${state.todayMsk}"></p>
 				<p th:text="'Today Calls: ' + ${state.todayCalls}"></p>
-				<h2 th:text="------------------------------------------" ></h2>
 				<p th:text="'Balance: ' + ${#numbers.formatDecimal(state.balance,1,2)}"></p>
 				<p th:text="'Balance updated: ' + ${#dates.format(state.lastBalanceChecked, 'dd/MMM HH:mm:ss')}"></p>
 				<p th:text="'Balance next check: ' + ${#dates.format(state.nextBalanceCheck, 'dd/MMM HH:mm:ss')}"></p>
-				<p th:text="'Refilled: ' + ${state.refilled}"></p>
-	
-				<!-- <label class="col-md-4" th:text="${state.toWeb()}" ></label> -->
-				
+				<p th:text="'Refilled: ' + ${state.refilled}"></p>				
 			</div>
  		</div>
 			 <div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
-					<button type="submit" class="btn btn-primary" name="action" th:value="gsmreq" th:text="GsmRequest">	</button>
 					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
 				</div>
 			</div> 
