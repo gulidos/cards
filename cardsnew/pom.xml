@@ -254,11 +254,23 @@
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
 		</dependency>
-<!-- 		<dependency>
-    <groupId>org.smslib</groupId>
-    <artifactId>smslib</artifactId>
-    <version>3.5.4</version>
-</dependency> -->
-		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-beanutils</groupId>
+					<artifactId>commons-beanutils</artifactId>
+				</exclusion>
+			</exclusions>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>org.smslib</groupId> <artifactId>smslib</artifactId> 
+			<version>3.5.4</version> </dependency> -->
+
 	</dependencies>
 </project>
