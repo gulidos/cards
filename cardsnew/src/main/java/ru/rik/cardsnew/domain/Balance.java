@@ -25,7 +25,8 @@ import lombok.experimental.Builder;
 	@NamedQuery(name = "findAllBalance", query = "SELECT u FROM Balance u "),
 	@NamedQuery(name = "findAllLastBalance", 
 	query = "SELECT b FROM Balance b WHERE b.date = "
-			+ "(SELECT MAX(b1.date) FROM Balance b1 WHERE b1.card = b.card)")
+			+ "(SELECT MAX(b1.date) FROM Balance b1 WHERE b1.card = b.card)"),
+	@NamedQuery(name = "findCardBalance", query = "SELECT u FROM Balance u ")
 	}
 )
 public class Balance {

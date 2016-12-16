@@ -186,4 +186,5 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public void balanceSave(Balance b) {
 			em.merge(b);
 	}
+
 }

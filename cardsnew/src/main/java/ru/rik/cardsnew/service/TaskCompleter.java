@@ -22,7 +22,6 @@ import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.domain.Balance;
-import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.BankState;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;

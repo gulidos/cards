@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ru.rik.cardsnew.db.BalanceRepo;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.BoxRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
+import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
@@ -300,6 +302,30 @@ public class ChannController {
 		 return "redirect:/channels/stat" + "?id=" + chan.getId();
 
 	}
+	
+	
+	@Autowired BalanceRepo bals;
+
+	//============ State's methods ================
+	@Transactional
+	@RequestMapping(value = "/events", method = RequestMethod.GET)
+	public String eventsPage(@RequestParam(value = "id", required = true) long id, Model model) {
+		Channel chan = chans.findById(id);
+		ChannelState st = chans.findStateById(id);
+		model.addAttribute("state", st);
+		model.addAttribute("chan", chan);
+		Card card = chan.getCard();
+		model.addAttribute("card", card);
+		model.addAttribute("cardState", chan.getCard() != null ? chan.getCard().getStat(cards) : null);
+		
+		
+		List<Balance> balances = bals.findByCard(card);
+		model.addAttribute("balances", balances);
+		return "chan-events";
+	}
+	
+	
+	
 	
 	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
 	public String refreshCards() {
