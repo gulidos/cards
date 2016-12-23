@@ -71,6 +71,7 @@ public class CardRepoTest {
 		
 		Grp g = groups.findById(7);
 		
+		System.out.println(g);
 		Card c = cards.findTheBestInGroupForInsert(g);
 		System.out.println(c);
 		Assert.assertTrue(c.equals(c1));		

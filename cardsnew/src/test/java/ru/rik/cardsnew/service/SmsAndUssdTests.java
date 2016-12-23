@@ -130,7 +130,9 @@ public class SmsAndUssdTests {
 		Assert.assertTrue(cardPair.getChannelId() != 0);
 
 		List<Sms> smslist = new ArrayList<Sms>();
-		smslist.add(new Sms(1, 1, "test", new Date(),  "test", card, ch));
+		smslist.add(Sms.builder().id(1).date(new Date()).channel(ch).card(card).decodedmsg("test")
+				.build());
+//		smslist.add(new Sms(1, 1, "test", new Date(),  "test", card, ch));
 		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 		SmsTask task = new SmsTask(ch, card, null, null, tc, smslist, Phase.FetchMain, td); 
 		taskCompleter.handleSms(task);
@@ -148,7 +150,9 @@ public class SmsAndUssdTests {
 		Assert.assertTrue(cardPair.getChannelId() != 0);
 		
 		List<Sms> smslist = new ArrayList<Sms>();
-		smslist.add(new Sms(2, 2, "test", new Date(), "test", cardPair, ch));
+//		smslist.add(new Sms(2, 2, "test", new Date(), "test", cardPair, ch));
+		smslist.add(Sms.builder().id(2).date(new Date()).channel(ch).card(cardPair).decodedmsg("test")
+				.build());
 		((TelnetHelperMock) th).setPairSmses(smslist);
 		TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
 		SmsTask task = SmsTask.get(th, ch, card, pair, cardPair, td);
@@ -224,8 +228,6 @@ public class SmsAndUssdTests {
 		Thread.sleep(300);
 		Assert.assertEquals(st.getStatus(), Status.Smsfetch);
 		Assert.assertTrue(Util.isApproxEqual(st.getNextSmsFetchDate(), Util.getNowPlusSec(60), 2000));
-		
-		
 	}
 	
 }

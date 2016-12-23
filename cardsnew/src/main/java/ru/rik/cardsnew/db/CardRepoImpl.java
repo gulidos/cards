@@ -114,7 +114,7 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	public Card findTheBestInGroupForInsert(Grp g) {
 		Optional<Card> oc = g.getCards().stream()
 		.filter(c->c.isEligibleToInstall(this, banks))
-		.peek(c -> System.out.println(c.getName() + " " + c.getStat(this).getMinRemains()))
+		.peek(c -> System.out.println("!! " + c.getName() + " " + c.getStat(this).getMinRemains()))
 		.sorted((c1, c2) -> Long.compare(c1.getId(), c2.getId()))
 		.sorted((c1, c2) -> Integer.compare(c2.getStat(this).getMinRemains(), c1.getStat(this).getMinRemains()))
 		.findFirst();
@@ -171,7 +171,8 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 	
 	@Override
 	public List<Balance> findLastBalances() {
-		return em.createNamedQuery("findAllLastBalance", Balance.class)
+//		return em.createNamedQuery("findAllLastBalance", Balance.class)
+		return em.createNamedQuery("findAllBalance", Balance.class)
 				.setHint("org.hibernate.cacheable", true)
 				.getResultList();
 	}
