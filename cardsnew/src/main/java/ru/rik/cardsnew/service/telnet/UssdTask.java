@@ -60,12 +60,14 @@ public class UssdTask implements State{
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		UssdTask task = new UssdTask(ch, card, tc, td);
 		
-		td.setStage("Sending ussd... ");
+		td.setStage("Sending ussd... " + request);
 		String encodedResp;
 		try {
 			encodedResp = telnetHelper.sendUssd(tc, ch.getLine().getNport() + 1, task.encodeRequest(request));
 			task.setEncodedResp(encodedResp);
 			return task;
+		} catch (Exception e) {
+			throw e;
 		} finally {
 			telnetHelper.disconnect(tc);
 		}
@@ -95,10 +97,10 @@ public class UssdTask implements State{
 		if (m.find())  result = m.replaceAll("003$1");
 		
 		m = ps.matcher(result);
-		if (m.find())  result = m.replaceFirst("002a");
+		if (m.find())  result = m.replaceAll("002a");
 
 		m = pp.matcher(result);
-		if (m.find())  result = m.replaceFirst("0023");
+		if (m.find())  result = m.replaceAll("0023");
 
 		return result;
 	}

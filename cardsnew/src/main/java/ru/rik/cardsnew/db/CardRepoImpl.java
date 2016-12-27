@@ -183,9 +183,9 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 		
 	}
 	
-	@Override @Transactional
-	public void balanceSave(Balance b) {
-			em.merge(b);
-	}
+//	@Override @Transactional
+//	public void balanceSave(Balance b) {
+//			em.merge(b);
+//	}
 
 }

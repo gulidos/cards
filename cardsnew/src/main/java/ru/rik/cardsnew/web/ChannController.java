@@ -24,19 +24,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ru.rik.cardsnew.db.BalanceRepo;
+import ru.rik.cardsnew.config.Settings;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.BoxRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
+import ru.rik.cardsnew.db.EventRepo;
 import ru.rik.cardsnew.db.GroupRepo;
 import ru.rik.cardsnew.db.TrunkRepo;
-import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.ChannelState;
+import ru.rik.cardsnew.domain.ChannelState.Status;
+import ru.rik.cardsnew.domain.Event;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Line;
 import ru.rik.cardsnew.domain.Oper;
@@ -50,6 +52,9 @@ import ru.rik.cardsnew.service.asterisk.AsteriskEvents;
 import ru.rik.cardsnew.service.http.ChannelRebootTask;
 import ru.rik.cardsnew.service.http.GsmState;
 import ru.rik.cardsnew.service.http.SimSet;
+import ru.rik.cardsnew.service.telnet.SmsTask;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
+import ru.rik.cardsnew.service.telnet.UssdTask;
 
 @Controller
 @RequestMapping("/channels")
@@ -304,7 +309,7 @@ public class ChannController {
 	}
 	
 	
-	@Autowired BalanceRepo bals;
+	@Autowired EventRepo eventRepo;
 
 	//============ State's methods ================
 	@Transactional
@@ -319,11 +324,41 @@ public class ChannController {
 		model.addAttribute("cardState", chan.getCard() != null ? chan.getCard().getStat(cards) : null);
 		
 		
-		List<Balance> balances = bals.findByCard(card);
-		model.addAttribute("balances", balances);
+		List<Event> events = eventRepo.findByCard(card);
+		model.addAttribute("events", events);
 		return "chan-events";
 	}
 	
+	@Autowired TelnetHelper telnetHelper;
+	@RequestMapping(value = "/events", method = RequestMethod.POST)
+	public String eventActions(
+			@ModelAttribute Channel chan,
+			Model model, RedirectAttributes redirectAttrs,
+			@RequestParam(value = "action", required = true) String action,
+			@RequestParam(value = "ussd", required = false, defaultValue = "") String ussd) throws IOException {
+		
+		Channel persCh = chans.findById(chan.getId());
+		Card card = persCh != null ? persCh.getCard() : null;
+		ChannelState st = chans.findStateById(persCh.getId());
+		ChannelState pairSt = chans.getPairsState(st.getId());
+		model.addAttribute("chan", chan);
+		
+		if (action.equals("smsreq")) {
+			st.setStatus(Status.Smsfetch);
+			pairSt.setStatus(Status.Smsfetch);
+			TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
+			taskCompleter.addTask(() ->
+				SmsTask.get(telnetHelper, persCh, card, null, null, td), td);
+		} else if (action.equals("ussdreq")) {
+			st.setStatus(Status.UssdReq);
+			pairSt.setStatus(Status.UssdReq);
+			TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
+			String cmd = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
+			taskCompleter.addTask(()-> UssdTask.get(telnetHelper, persCh, card, cmd, td), td);
+		}
+		return "redirect:/channels/events" + "?id=" + chan.getId();
+	}
+			
 	
 	
 	
@@ -339,7 +374,6 @@ public class ChannController {
 		chans.findAll().stream().map(ch -> ch.getState(chans))
 			.peek(st -> logger.debug("channel: " + st.getName()+ " "))
 			.filter(st -> st.getSimset() != null)
-//			.map(st -> st.getSimset())
 			.forEach(st -> {
 				Place place = Place.getInstance(st.getSimset().getCardPos());
 				Bank bank = banks.findByName(st.getSimset().getBankIp()) ;

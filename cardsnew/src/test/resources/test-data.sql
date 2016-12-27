@@ -85,7 +85,7 @@ VALUES
 	(143, 1, 0, 'mgf37', 1, 6, NULL, 7),
 	(144, 1, 2, 'mgf38', 3, 6, NULL, 7),
 	(145, 1, 3, 'mgf93', 3, 7, NULL, 7),
-	(146, 1, 2, 'mgf74', 14, 8, NULL, 7);	
+	(146, 1, 4, 'mgf74', 1, 10, NULL, 7);	
 	
 INSERT INTO _TRUNK (id, descr, name, version)
 VALUES
@@ -119,17 +119,33 @@ VALUES
 	(9030000000, 9030199999, 'mBEELINE', 77, 99),
 	(9618200000, 9618259999, 'mBEELINE', 15, 99);
 	
-INSERT INTO _BALANCE (balance, date, encodedmsg, payment, smsNeeded, card_id)
+INSERT INTO hibernate_sequences (sequence_name, sequence_next_hi_value)
 VALUES
-	(62, DATEADD('MONTH', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 28),
-	(0, DATEADD('HOUR', -19, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 4),
-	(100, DATEADD('HOUR', -19, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 3),
-	(162, DATEADD('HOUR', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
-	(152, DATEADD('HOUR', -4, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
-	(142, DATEADD('HOUR', -3, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
-	(162, DATEADD('HOUR', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
-	(152, DATEADD('HOUR', -4, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
-	(142, DATEADD('HOUR', -3, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
-	(132, DATEADD('HOUR', -2, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
-	(122, DATEADD('HOUR', -1, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
-	(112, CURRENT_TIMESTAMP() , '1213123  ', 0, 0, 1);	
+	('Event', 1);
+	
+INSERT INTO _BALANCE (id , balance, date, encodedmsg, payment, smsNeeded, card_id)
+VALUES
+	(1, 62, DATEADD('MONTH', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 28),
+	(2, 0, DATEADD('HOUR', -19, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 4),
+	(3, 100, DATEADD('HOUR', -19, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 3),
+	(4, 162, DATEADD('HOUR', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
+	(5, 152, DATEADD('HOUR', -4, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
+	(6, 142, DATEADD('HOUR', -3, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 2),
+	(7, 162, DATEADD('HOUR', -5, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
+	(8, 152, DATEADD('HOUR', -4, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
+	(9, 142, DATEADD('HOUR', -3, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
+	(10, 132, DATEADD('HOUR', -2, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
+	(11, 122, DATEADD('HOUR', -1, CURRENT_TIMESTAMP()), '1213123 ', 0, 0, 1),
+	(12, 112, CURRENT_TIMESTAMP() , '1213123  ', 0, 0, 1);	
+	
+	
+INSERT INTO _SMS (id, date, decodedmsg, num, origAddress, card_id, channel_id)
+VALUES
+	(101, '2016-12-02 08:45:14', 'Этот абонент снова в сети. Вы можете позвонить ему. \"Билайн\"', 1, '79057779009', 1, 1),
+	(102, '2016-12-02 08:37:32', 'Этот абонент снова в сети. Вы можете позвонить ему. \"Билайн\"', 1, '79067372212', 1, 1),
+	(103, '2016-12-01 10:12:22', 'Абонент снова в сети.', 1, '79284747580', 1, 1),
+	(104, '2016-12-01 17:44:22', 'Этот абонент снова в сети. Вы можете позвонить ему. \"Билайн\"', 2, '79684648036', 1, 1),
+	(105, '2016-12-02 08:02:46', 'Абонент снова в сети.', 1, '79282961975', 1, 1),
+	(106, '2016-12-02 08:10:10', 'Баланс:200,10р,Лимит:0,01р Новые выпуски журналов «Maxim», «Vogue»,', 1, 'Balance\r', 1, 1),
+	(119, '2016-12-01 09:11:06', 'хит-парад от Деда Мороза вместо скучных гудков! Выбирайте и ', 4, '79888386601', 1, 1);
+	

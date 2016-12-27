@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.rik.cardsnew.db.BalanceRepo;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
@@ -238,32 +239,33 @@ public class TaskCompleter implements Runnable{
 		}
 	}
 	
-	
+	@Autowired BalanceRepo balRepo;
 	protected void handleUssd(UssdTask ussdTask) {
 		Channel ch = ussdTask.getCh();
 		ChannelState st = ch.getState(chans);
 		Card card = ussdTask.getCard();
 		CardStat cs = card.getStat(cards);
 		
-		Balance b = null;
+		Balance balance = null;
 		try {
-			b = ussdTask.getBalance();
+			balance = ussdTask.getBalance();
 		} catch (Exception e) {
 			cs.setNextBalanceCheck(Util.getNowPlusSec(600));
 		}
 		
-		if (b == null)
+		if (balance == null)
 			throw new IllegalStateException("handling ussd answer " + ussdTask.getTd().toString() + " Balance is null!");
 		
-		logger.debug("!!! got ussd channel " + ch.getName() + " card " + card.getName() + b.toString());
+		logger.debug("!!! got ussd channel: " + ch.getName() + " card " + card.getName() + " " + balance.toString());
 		
-		cs.applyBalance(b);
-		if (b.isSmsNeeded()) {
+		cs.applyBalance(balance);
+		if (balance.isSmsNeeded()) {
 			st.setNextSmsFetchDate(Util.getNowPlusSec(60));
 			st.setStatus(Status.Smsfetch);
 		} else {
-			cards.balanceSave(b);
+			balRepo.save(balance);
 			st.setStatus(Status.Ready);
+
 			ChannelState pairSt = chans.getPairsState(st.getId());
 			pairSt.setStatus(Status.Ready);
 		}	

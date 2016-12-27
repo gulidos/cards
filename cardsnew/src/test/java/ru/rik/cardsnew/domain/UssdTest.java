@@ -4,6 +4,7 @@ package ru.rik.cardsnew.domain;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.Date;
+import java.util.concurrent.Future;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import ru.rik.cardsnew.config.RootConfig;
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.db.JpaConfig;
+import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.TaskDescr;
-import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
+import ru.rik.cardsnew.service.telnet.TelnetHelper;
 import ru.rik.cardsnew.service.telnet.UssdTask;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = ConfigJpaH2.class)
 public class UssdTest {
-	@Autowired private  ChannelRepo chans;
+	
 	static String encoded = "0421043F0430044104380431043E0020043704300020043E04310440043004490435043D0438043500210020041C044B0020043D0430043F0440043004320438043C0020043E04420432043504420020043D04300020041204300448002004370430043F0440043E04410020043200200053004D0053";
 	static String decodedRed = "Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS";
 
@@ -51,6 +53,8 @@ public class UssdTest {
 		UssdTask task = new UssdTask();
 		String res = task.encodeRequest("*100#");
 		Assert.assertEquals("002a0031003000300023", res);
+		
+		Assert.assertEquals("00230031003000300023", task.encodeRequest("#100#"));
 	}
 	
 	@Test
@@ -150,18 +154,30 @@ public class UssdTest {
 		Assert.assertNull(task.getBalance().getBalance());
 	}
 	
+	@Autowired private  ChannelRepo chans;
 	
-	public static void main(String[] args) throws SocketException, IOException {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(JpaConfig.class);
+	public static void main(String[] args) throws SocketException, IOException, InterruptedException {
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(RootConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
-		Channel ch = chans.findByName("bln44");		
+		TaskCompleter taskCompleter = ctx.getBean(TaskCompleter.class);
+		Channel ch = chans.findByName("bln75");		
 		Card c = ch.getCard();
-		TelnetHelperImpl th = new TelnetHelperImpl();
-		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date()); 
-		UssdTask task = UssdTask.get(th, ch, new Card(), "*100#", td);
+		TelnetHelper th = ctx.getBean(TelnetHelper.class);
+		
+		TaskDescr td = new TaskDescr(UssdTask.class, ch.getState(chans), new Date());
+		System.out.println("Connecting to ...");
+//		UssdTask task = UssdTask.get(th, ch, new Card(), "*100#", td);
+		Future<State> f = taskCompleter.addTask(()-> UssdTask.get(th, ch, c, "*100#", td), td);
+		
+		while (!f.isDone()) {
+			System.out.println("waiting ...");
+			Thread.sleep(1000);
+		}
+		
+		System.out.println("got it");
 
-		System.out.println(task.getDecodedResponse());
-		System.out.println(task.getEncodedResp());
-		System.out.println(task.getBalance());
+//		System.out.println(task.getDecodedResponse());
+//		System.out.println(task.getEncodedResp());
+//		System.out.println(task.getBalance());
 	}
 }

@@ -127,7 +127,7 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 		return makePersistent(chan);
 	}
 	
-	
+	@Autowired EventRepo events;
 	@Override @Transactional
 	public void smsHandle(List<Sms> list) {
 		for (Sms sms: list) {
@@ -136,7 +136,8 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 			Balance b = sms.getBalance();
 			if (b != null) {
 				logger.debug("This is balance: " + sms.toString() + " balance: " + b.toString());
-				cards.balanceSave(b);
+				events.save(b);
+//				cards.balanceSave(b);
 				CardStat cs = b.getCard().getStat(cards);
 				cs.applyBalance(b);
 			} else 
@@ -156,6 +157,9 @@ public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> impl
 	public ChannelState getPairsState(long id) {
 		Channel ch = findById(id);
 		Channel pair= ch.getPair(this);
+		System.out.println("Pair : " + pair);
+		if (pair == null)
+			return null;
 		return findStateById(pair.getId());
 	}
 }

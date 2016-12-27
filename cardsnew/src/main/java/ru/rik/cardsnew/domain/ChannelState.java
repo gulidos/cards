@@ -164,7 +164,7 @@ public class ChannelState implements State {
 	}
 	
 	private void setSmsFetchAndUssdStatus(Status s) {
-		if (status == Status.Ready) {
+		if (status != Status.Failed && status != Status.Unreach) {
 			this.status = s;
 			lastStatusChange = new Date();
 			nextGsmUpdate = Util.getNowPlusSec(Settings.NORM_INTERVAL);

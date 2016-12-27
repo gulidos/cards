@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.rik.cardsnew.ConfigJpaH2;
+import ru.rik.cardsnew.db.BalanceRepo;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
@@ -42,6 +43,7 @@ import ru.rik.cardsnew.service.telnet.UssdTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConfigJpaH2.class)
+
 public class SmsAndUssdTests {
 	@Autowired private  CardRepo cards;
 	@Autowired private  ChannelRepo chans;
@@ -77,7 +79,7 @@ public class SmsAndUssdTests {
 		st.setStatus(Status.Smsfetch);
 		card = ch.getCard();		
 	
-		pair = chans.switchCard(chans.findById(2), cards.findById(2));
+		pair = chans.switchCard(chans.findById(146), cards.findById(2));
 		pairSt = chans.findStateById(pair.getId());
 		pairSt.setStatus(Status.Ready);
 		pairSt.setStatus(Status.Smsfetch);
@@ -193,19 +195,24 @@ public class SmsAndUssdTests {
 		cs.setBalance(oldbalance);
 	}
 	
+	@Autowired BalanceRepo balances;
 	@Test
 	public void lastBalanceInTableIsPayment() throws SocketException, IOException, InterruptedException {
 		TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
 		Card c = cards.findById(4);
 		CardStat cs = c.getStat(cards);
 		Assert.assertFalse(c.isEligibleToInstall(cards, banks));
-		
+		Assert.assertNotNull(ch);
+		Assert.assertNotNull(st);
+		Assert.assertNotNull(pair);
+		Assert.assertNotNull(pairSt);
 		UssdTask SpyTask = spy(UssdTask.get(th, ch, c, "*100#", td));
 		Balance b = Balance.builder().date(new Date()).balance(0.99f)
 				.card(c).decodedmsg("0.99р. ").payment(true).build();
 		doReturn(b).when(SpyTask).getBalance();
 
-		st.setStatus(Status.UssdReq);
+		st.setStatus(Status.UssdReq);		
+		
 		taskCompleter.handleUssd(SpyTask);
 		Thread.sleep(300);
 		
@@ -215,9 +222,9 @@ public class SmsAndUssdTests {
 	}
 	
 	@Test
-	public void getUssdAdnNeedSmsIsTrue() throws SocketException, IOException, InterruptedException {
+	public void getUssdAndNeedSmsIsTrue() throws SocketException, IOException, InterruptedException {
 		UssdTask SpyTask = spy(UssdTask.get(th, ch, card, "*100#", new TaskDescr(UssdTask.class, st, new Date())));
-		Balance b = Balance.builder().date(new Date()).balance(0.99f)
+		Balance b = Balance.builder().date(new Date())
 				.card(card).decodedmsg("Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS")
 				.payment(false).smsNeeded(true)
 				.build();

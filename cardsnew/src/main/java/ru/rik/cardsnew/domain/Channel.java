@@ -41,7 +41,7 @@ import ru.rik.cardsnew.db.ChannelRepo;
 	@NamedQuery(name = "findByBox", query = "SELECT c FROM Channel c WHERE c.box = :box")
 	}
 )
-@NoArgsConstructor @AllArgsConstructor @Builder @ToString (exclude = {"box",  "group"})
+@NoArgsConstructor @AllArgsConstructor @Builder @ToString (exclude = {"box",  "group", "trunks", "card"})
 @EqualsAndHashCode (exclude = {"box", "trunks", "group", "card"}, callSuper = false)
 @Entity @Cacheable
 @Table(name="_CHANNEL", uniqueConstraints=@UniqueConstraint(columnNames={"box_id", "line"}))

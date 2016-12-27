@@ -59,7 +59,13 @@ public class SmsTask implements State {
 				ch.getLine().getTelnetport(),
 				Box.DEF_USER, Box.DEF_PASSWORD);
 		
-		List<Sms> allsms = h.FetchSmsFromChannel(tc, ch.getLine().getNport() + 1);
+		List<Sms> allsms;
+		try {
+			allsms = h.FetchSmsFromChannel(tc, ch.getLine().getNport() + 1);
+		} catch (Exception e) {
+			h.disconnect(tc);
+			throw e;
+		} 
 		td.setStage("Fetching main ");	
 		SmsTask smstask = SmsTask.builder()
 			.ch(ch).pair(pair)
@@ -77,7 +83,12 @@ public class SmsTask implements State {
 	public SmsTask deleteMain(TelnetHelper h) throws IOException {
 		phase = Phase.DeleteMain;
 		td.setStage("Deleting main " + smslist.size() + " smses");	
-		h.deleteSms(telnetClient, smslist);
+		try {
+			h.deleteSms(telnetClient, smslist);
+		} catch (Exception e) {
+			disconnect();
+			throw e;
+		} 
 		return this;
 	}
 	
@@ -86,7 +97,12 @@ public class SmsTask implements State {
 		phase = Phase.FetchPair;
 		if (pair != null) {
 			td.setStage("Fetching pair");	
-			pairSmslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
+			try {
+				pairSmslist = h.FetchSmsFromChannel(telnetClient, pair.getLine().getNport() + 1);
+			} catch (Exception e) {
+				disconnect();
+				throw e;
+			} 
 		}	
 		pairSmslist.stream().forEach(s -> {s.setChannel(pair);	s.setCard(pairCard);});
 		return this;
@@ -97,8 +113,13 @@ public class SmsTask implements State {
 		phase = Phase.DeletePair;
 		if (pair != null)
 			td.setStage("Deleting pair " + pairSmslist.size() + " smses");	
-			h.deleteSms(telnetClient, pairSmslist);
-		disconnect();
+			try {
+				h.deleteSms(telnetClient, pairSmslist);
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				disconnect();
+			}
 		return this;
 	}
 	

@@ -177,7 +177,7 @@ CREATE TABLE cdr (
 
 DROP TABLE if EXISTS _BALANCE;
 CREATE TABLE _BALANCE (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
+  id bigint(20) NOT NULL,
   balance float DEFAULT NULL,
   date datetime DEFAULT NULL,
   encodedmsg varchar(255) DEFAULT NULL,
@@ -187,3 +187,23 @@ CREATE TABLE _BALANCE (
   PRIMARY KEY (id),
   CONSTRAINT FK_eo4p2ralgphpfv39p2fuisx5g FOREIGN KEY (card_id) REFERENCES _CARD (id)
 ) ENGINE=InnoDB;
+
+DROP TABLE if EXISTS  _SMS;
+CREATE TABLE _SMS (
+  id bigint(20) NOT NULL,
+  date datetime DEFAULT NULL,
+  decodedmsg varchar(255) DEFAULT NULL,
+  num int(11) NOT NULL,
+  origAddress varchar(255) DEFAULT NULL,
+  card_id bigint(20) DEFAULT NULL,
+  channel_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_d6560gg7vb3m9pu532ipj4q88 FOREIGN KEY (channel_id) REFERENCES _CHANNEL (id),
+  CONSTRAINT FK_906vorjdutqbe0vee42bp1l15 FOREIGN KEY (card_id) REFERENCES _CARD (id)
+) ENGINE=InnoDB AUTO_INCREMENT=279;
+
+DROP TABLE if EXISTS  hibernate_sequences;
+CREATE TABLE hibernate_sequences (
+  sequence_name varchar(255) DEFAULT NULL,
+  sequence_next_hi_value int(11) DEFAULT NULL
+) ENGINE=InnoDB ;

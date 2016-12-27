@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.rik.cardsnew.ConfigJpaH2;
 import ru.rik.cardsnew.domain.Balance;
 import ru.rik.cardsnew.domain.Card;
+import ru.rik.cardsnew.domain.Event;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConfigJpaH2.class)
@@ -25,6 +26,7 @@ public class BalanceRepoTest {
 	}
 	@Autowired BalanceRepo balances;
 	@Autowired CardRepo cards; 
+	@Autowired EventRepo events;
 	
 	@Test
 	public void findBalances() {
@@ -34,13 +36,13 @@ public class BalanceRepoTest {
 	}
 	
 	@Test
-	public void getPage() {
-		Pageable page = new PageRequest(0, 4, Sort.Direction.DESC , "id");
-		for (Balance b: balances.findByCard(page, cards.findById(1)))
-			System.out.println(b);
-		System.out.println("=====");
-		for (Balance b: balances.findByCard(new PageRequest(1, 4, Sort.Direction.DESC , "id"), cards.findById(1)))
-			System.out.println(b);
+	public void getEvents() {
+		Card c = cards.findById(1);
+		for (Event  e: events.findByCard(c))
+			System.out.println(e);
+			
 	}
+	
+
 
 }
