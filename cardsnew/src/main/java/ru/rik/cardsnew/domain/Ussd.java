@@ -17,13 +17,13 @@ import lombok.experimental.Builder;
 @NoArgsConstructor  
 @EqualsAndHashCode( callSuper = true)
 @NamedQueries({ 
-	@NamedQuery(name = "findAllBalance", query = "SELECT u FROM Balance u "),
-	@NamedQuery(name = "findAllLastBalance", query = "SELECT b FROM Balance b WHERE b.date = "
-			+ "(SELECT MAX(b1.date) FROM Balance b1 WHERE b1.card = b.card)"),
-	@NamedQuery(name = "findCardBalance", query = "SELECT u FROM Balance u ")
+	@NamedQuery(name = "findAllBalance", query = "SELECT u FROM Ussd u "),
+	@NamedQuery(name = "findAllLastBalance", query = "SELECT b FROM Ussd b WHERE b.date = "
+			+ "(SELECT MAX(b1.date) FROM Ussd b1 WHERE b1.card = b.card) and b.balance <> NULL"),
+	@NamedQuery(name = "findCardBalance", query = "SELECT u FROM Ussd u ")
 	}
 )
-public class Balance extends Event{
+public class Ussd extends Event{
 //	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
 //	@Getter @Setter private long id;
 //	@Getter @Setter private Date date;
@@ -31,7 +31,7 @@ public class Balance extends Event{
 	@Getter @Setter private Float balance;
 //	@ManyToOne(optional = false)
 //	@Getter @Setter private Card card;
-	@Getter @Setter private boolean payment;
+	@Getter @Setter private boolean payment; //seting up manually via web ui
 	@Getter @Setter private boolean smsNeeded;
 	
 	@Override
@@ -41,7 +41,7 @@ public class Balance extends Event{
 	}
 
 	@Builder
-	public Balance(long id, Date date, Card card, Channel channel, String decodedmsg, Float balance, boolean payment,
+	public Ussd(long id, Date date, Card card, Channel channel, String decodedmsg, Float balance, boolean payment,
 			boolean smsNeeded) {
 		super(id, date, card, channel);
 		this.decodedmsg = decodedmsg;

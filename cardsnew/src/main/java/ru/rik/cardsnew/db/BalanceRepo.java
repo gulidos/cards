@@ -1,7 +1,7 @@
 package ru.rik.cardsnew.db;
 
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 
-public interface BalanceRepo extends EventBaseRepo<Balance> {
+public interface BalanceRepo extends EventBaseRepo<Ussd> {
 
 }

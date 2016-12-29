@@ -8,7 +8,7 @@ import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 
 public interface CardRepo extends GenericRepo<Card, CardStat> {
 
@@ -35,7 +35,7 @@ public interface CardRepo extends GenericRepo<Card, CardStat> {
 
 	void setChannelToNull(List<Card> list);
 
-	List<Balance> findLastBalances();
+	List<Ussd> findLastBalances();
 
 //	void balanceSave(Balance b);
 

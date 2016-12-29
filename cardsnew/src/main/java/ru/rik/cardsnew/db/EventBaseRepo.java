@@ -12,6 +12,6 @@ import ru.rik.cardsnew.domain.Event;
 @NoRepositoryBean
 public interface EventBaseRepo<T extends Event> extends JpaRepository<T , Long> {
 
-	List<T> findByCard(Card c);
+	List<T> findByCardOrderByDateDesc(Card c);
 	Page<T> findByCard(Pageable p, Card c);
 }

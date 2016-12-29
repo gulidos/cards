@@ -27,7 +27,7 @@ import ru.rik.cardsnew.db.BalanceRepo;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Channel;
@@ -178,11 +178,11 @@ public class SmsAndUssdTests {
 
 		UssdTask task = UssdTask.get(th, ch, c, "*100#", td);
 		UssdTask SpyTask = spy(task);
-		Balance b = Balance.builder().date(new Date()).balance(105.99f)
+		Ussd b = Ussd.builder().date(new Date()).balance(105.99f)
 			.card(c).decodedmsg("105.99р.\n" + "Смотрите самое интересное видео! Трафик бесплатно (8р/д)*213#")
 			.payment(false)
 			.build();
-		doReturn(b).when(SpyTask).getBalance();
+		doReturn(b).when(SpyTask).getUssd();
 		
 		st.setStatus(Status.UssdReq);
 		taskCompleter.handleUssd(SpyTask);
@@ -207,9 +207,9 @@ public class SmsAndUssdTests {
 		Assert.assertNotNull(pair);
 		Assert.assertNotNull(pairSt);
 		UssdTask SpyTask = spy(UssdTask.get(th, ch, c, "*100#", td));
-		Balance b = Balance.builder().date(new Date()).balance(0.99f)
+		Ussd b = Ussd.builder().date(new Date()).balance(0.99f)
 				.card(c).decodedmsg("0.99р. ").payment(true).build();
-		doReturn(b).when(SpyTask).getBalance();
+		doReturn(b).when(SpyTask).getUssd();
 
 		st.setStatus(Status.UssdReq);		
 		
@@ -224,11 +224,11 @@ public class SmsAndUssdTests {
 	@Test
 	public void getUssdAndNeedSmsIsTrue() throws SocketException, IOException, InterruptedException {
 		UssdTask SpyTask = spy(UssdTask.get(th, ch, card, "*100#", new TaskDescr(UssdTask.class, st, new Date())));
-		Balance b = Balance.builder().date(new Date())
+		Ussd b = Ussd.builder().date(new Date())
 				.card(card).decodedmsg("Спасибо за обращение! Мы направим ответ на Ваш запрос в SMS")
 				.payment(false).smsNeeded(true)
 				.build();
-		doReturn(b).when(SpyTask).getBalance();
+		doReturn(b).when(SpyTask).getUssd();
 		
 		st.setStatus(Status.UssdReq);
 		taskCompleter.handleUssd(SpyTask);

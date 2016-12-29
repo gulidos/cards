@@ -22,7 +22,7 @@ import ru.rik.cardsnew.db.BalanceRepo;
 import ru.rik.cardsnew.db.BankRepo;
 import ru.rik.cardsnew.db.CardRepo;
 import ru.rik.cardsnew.db.ChannelRepo;
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.BankState;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -246,9 +246,9 @@ public class TaskCompleter implements Runnable{
 		Card card = ussdTask.getCard();
 		CardStat cs = card.getStat(cards);
 		
-		Balance balance = null;
+		Ussd balance = null;
 		try {
-			balance = ussdTask.getBalance();
+			balance = ussdTask.getUssd();
 		} catch (Exception e) {
 			cs.setNextBalanceCheck(Util.getNowPlusSec(600));
 		}
@@ -259,11 +259,12 @@ public class TaskCompleter implements Runnable{
 		logger.debug("!!! got ussd channel: " + ch.getName() + " card " + card.getName() + " " + balance.toString());
 		
 		cs.applyBalance(balance);
+		balRepo.save(balance);
 		if (balance.isSmsNeeded()) {
 			st.setNextSmsFetchDate(Util.getNowPlusSec(60));
 			st.setStatus(Status.Smsfetch);
 		} else {
-			balRepo.save(balance);
+//			balRepo.save(balance);
 			st.setStatus(Status.Ready);
 
 			ChannelState pairSt = chans.getPairsState(st.getId());

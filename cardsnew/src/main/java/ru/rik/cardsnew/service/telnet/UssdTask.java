@@ -12,13 +12,13 @@ import org.junit.Assert;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.rik.cardsnew.domain.Balance;
-import ru.rik.cardsnew.domain.Balance.BalanceBuilder;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.Oper;
 import ru.rik.cardsnew.domain.State;
+import ru.rik.cardsnew.domain.Ussd;
+import ru.rik.cardsnew.domain.Ussd.UssdBuilder;
 import ru.rik.cardsnew.service.TaskDescr;
 @NoArgsConstructor
 public class UssdTask implements State{
@@ -37,8 +37,8 @@ public class UssdTask implements State{
 	private static final Pattern pp = Pattern.compile("(\\#)");
 	
 	private static final Pattern greenBalance = Pattern.compile("(^\\-*\\d{1,4}[.,]\\d\\d)(р.*)", Pattern.MULTILINE);
-	private static final Pattern yellowBalance = 
-			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(-*\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
+	private static final Pattern yellowRedBalance = 
+			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?|\\-)\\s*(-*\\d{1,4}[.,]*\\d{0,2})(\\s*р*.*)"
 					, Pattern.MULTILINE);
 	private static final Pattern smsNeeded = Pattern.compile("^.*SMS.*$", Pattern.MULTILINE);
 	
@@ -105,13 +105,13 @@ public class UssdTask implements State{
 		return result;
 	}
 	
-	/** Parses response and returns balance. If parsing failed, returns 9999.99.      */
-	public Balance getBalance() {
+	/** Parses response and returns USSD. If parsing failed, returns 9999.99.      */
+	public Ussd getUssd() {
 		if (decodedResp == null)
 			decodedResp = getDecodedResponse();
 		Float balance = null;
 		String str = null;
-		BalanceBuilder b = Balance.builder().card(card)
+		UssdBuilder b = Ussd.builder().card(card)
 				.date(new Date())
 				.decodedmsg(decodedResp);
 		if (ch.getGroup().getOper() == Oper.GREEN) {
@@ -121,7 +121,7 @@ public class UssdTask implements State{
 			else if (isSmsNeeded()) 
 				return b.smsNeeded(true).build();
 		} else {
-			Matcher m = yellowBalance.matcher(decodedResp);
+			Matcher m = yellowRedBalance.matcher(decodedResp);
 			if (m.find()) {
 				str = m.group(2);
 				if (m.group(1).contains("Минус") || m.group(1).contains("Minus") || m.group(1).contains("-"))

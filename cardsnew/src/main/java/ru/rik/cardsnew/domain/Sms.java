@@ -34,12 +34,12 @@ public class Sms extends Event{
 //	@ManyToOne
 //	@Getter @Setter private Channel channel;
 	
-	public Balance getBalance() {
+	public Ussd getBalance() {
 		if (decodedmsg == null)
 			return null;
 		Matcher m = balance.matcher(decodedmsg);
 		if (m.find()) 
-			return Balance.builder().card(card).date(new Date()).decodedmsg(decodedmsg)
+			return Ussd.builder().card(card).date(new Date()).decodedmsg(decodedmsg)
 					.balance(Float.parseFloat(m.group(2).replace(',', '.')))
 					.build();
 		 else 	

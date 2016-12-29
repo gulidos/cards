@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import javax.validation.Valid;
 
@@ -324,7 +325,7 @@ public class ChannController {
 		model.addAttribute("cardState", chan.getCard() != null ? chan.getCard().getStat(cards) : null);
 		
 		
-		List<Event> events = eventRepo.findByCard(card);
+		List<Event> events = eventRepo.findByCardOrderByDateDesc(card);
 		model.addAttribute("events", events);
 		return "chan-events";
 	}
@@ -335,7 +336,7 @@ public class ChannController {
 			@ModelAttribute Channel chan,
 			Model model, RedirectAttributes redirectAttrs,
 			@RequestParam(value = "action", required = true) String action,
-			@RequestParam(value = "ussd", required = false, defaultValue = "") String ussd) throws IOException {
+			@RequestParam(value = "ussd", required = false, defaultValue = "") final String ussd) throws IOException, InterruptedException {
 		
 		Channel persCh = chans.findById(chan.getId());
 		Card card = persCh != null ? persCh.getCard() : null;
@@ -347,15 +348,26 @@ public class ChannController {
 			st.setStatus(Status.Smsfetch);
 			pairSt.setStatus(Status.Smsfetch);
 			TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
-			taskCompleter.addTask(() ->
+			Future<State> f = taskCompleter.addTask(() ->
 				SmsTask.get(telnetHelper, persCh, card, null, null, td), td);
+			while (!f.isDone()) 
+				Thread.sleep(500);
+
 		} else if (action.equals("ussdreq")) {
 			st.setStatus(Status.UssdReq);
 			pairSt.setStatus(Status.UssdReq);
 			TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
-			String cmd = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
-			taskCompleter.addTask(()-> UssdTask.get(telnetHelper, persCh, card, cmd, td), td);
+			Future<State> f;
+			if (ussd.isEmpty()) {
+				final String cmd  = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
+				f = taskCompleter.addTask(()-> UssdTask.get(telnetHelper, persCh, card, cmd, td), td);
+			} else {
+				f = taskCompleter.addTask(()-> UssdTask.get(telnetHelper, persCh, card, ussd, td), td);
+			}
+			while (!f.isDone()) 
+				Thread.sleep(500);
 		}
+		
 		return "redirect:/channels/events" + "?id=" + chan.getId();
 	}
 			

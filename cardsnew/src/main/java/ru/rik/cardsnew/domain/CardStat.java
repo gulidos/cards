@@ -176,24 +176,28 @@ public class CardStat implements State {
 		return df.format(acd);
 	}
 
-	public void applyBalance(Balance b) {
-		if (b.isPayment()) {
+	public void applyBalance(Ussd u) {
+		if (u.isPayment()) {
 			refilled = true;
 			this.nextBalanceCheck =  new Date();
 			
 		} else {
-			if (b.isSmsNeeded()) {
-				//waiting for getting balance in Sms and setting next time check in 2 hour
-				setLastBalanceChecked(b.getDate());
-				Date next = new Date(b.getDate().getTime() + 120 * 60 * 1000);
-				setNextBalanceCheck(next);
+			if (u.isSmsNeeded()) {
+				//waiting for receiving balance in Sms and setting the next time check in 2 hour
+				setLastBalanceChecked(u.getDate());
+				setNextBalanceCheck(new Date(u.getDate().getTime() + 120 * 60 * 1000));
 				
 			} else {
 				refilled = false;
-				this.balance = b.getBalance();
-				this.lastBalanceChecked = b.getDate();
-				this.nextBalanceCheck = new Date(lastBalanceChecked.getTime() + Settings.MAX_BALANCE_CHECK_PERIOD * 1000
-						+ rnd.nextInt(60 * 60 * 1000));
+				if (u.getBalance() == null) {
+					this.balance = 0;
+					setNextBalanceCheck(new Date(u.getDate().getTime() + 120 * 60 * 1000));
+				} else {
+					this.balance = u.getBalance();
+					this.lastBalanceChecked = u.getDate();
+					this.nextBalanceCheck = new Date(lastBalanceChecked.getTime()
+							+ Settings.MAX_BALANCE_CHECK_PERIOD * 1000 + rnd.nextInt(60 * 60 * 1000));
+				}
 			}
 			
 		}

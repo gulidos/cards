@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ru.rik.cardsnew.ConfigJpaH2;
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Util;
 
@@ -55,7 +55,7 @@ public class BalanceTest {
 	public void applyBalanceTest() {
 		CardStat c1 = cards.findStateById(3); 
 		Assert.assertEquals(c1.getBalance(), 100, 0.1);
-		c1.applyBalance(Balance.builder().date(new Date()).balance(50f)
+		c1.applyBalance(Ussd.builder().date(new Date()).balance(50f)
 				.card(cards.findById(c1.getId()))
 				.payment(false)
 				.build());
@@ -69,7 +69,7 @@ public class BalanceTest {
 	public void paymentReceived() {
 		CardStat c1 = cards.findStateById(3); 
 		Assert.assertEquals(c1.getBalance(), 100, 0.1);
-		c1.applyBalance(Balance.builder().date(new Date()).balance(50f)
+		c1.applyBalance(Ussd.builder().date(new Date()).balance(50f)
 				.card(cards.findById(c1.getId()))
 				.payment(true)
 				.build());

@@ -76,7 +76,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedGreen);
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 105.99f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 105.99f, 0.1);
 	}
 	
 	@Test
@@ -86,10 +86,10 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp("-" + decodedGreen);
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -105.99f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), -105.99f, 0.1);
 		
 		task.setDecodedResp("-105.99р.\n" + "Смотрите самое интересное видео!");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -105.99f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), -105.99f, 0.1);
 	}
 	
 	@Test
@@ -99,9 +99,9 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedYellow);
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 174.60f, 0.1);
 		task.setDecodedResp("Balans 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 174.60f, 0.1);
 	}
 
 	@Test
@@ -112,21 +112,25 @@ public class UssdTest {
 		task.setCard(new Card());
 		task.setDecodedResp("Минус 174.60 р.Внимание! Похолодание");
 
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), -174.60f, 0.1);
 		
 		task.setDecodedResp("Minus 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), -174.60f, 0.1);
 		task.setDecodedResp("- 174.60 р.Внимание! Похолодание");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), -174.60f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), -174.60f, 0.1);
 		
 		task.setDecodedResp("Баланс 92.30 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 92.30f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 92.30f, 0.1);
 		
 		task.setDecodedResp("Balance:200,10r,Limit:0,01r");
-		Assert.assertEquals(Float.valueOf(task.getBalance().getBalance()), 200.10f, 0.1);
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 200.10f, 0.1);
+		
+		task.setDecodedResp("Balance:105r,Limit:0,01r ");
+		Assert.assertEquals(Float.valueOf(task.getUssd().getBalance()), 105.00f, 0.1);
+
 		
 		task.setDecodedResp("Баланс -123.38 р.Внимание! Похолодание! Прогноз погоды 7дн.беспл! Подкл:*309#");
-		Balance b = task.getBalance();
+		Ussd b = task.getUssd();
 		System.out.println(b);
 		float value = b.getBalance();
 		Assert.assertEquals(value, -123.38f, 0.1);
@@ -141,7 +145,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp(decodedRed);
-		Assert.assertEquals(task.getBalance().isSmsNeeded(), true);
+		Assert.assertEquals(task.getUssd().isSmsNeeded(), true);
 	}
 	
 	@Test
@@ -151,7 +155,7 @@ public class UssdTest {
 		task.setCh(ch);
 		task.setCard(new Card());
 		task.setDecodedResp("dswe;o89hv;aoiho;vihaew;origsmdps'p0t");
-		Assert.assertNull(task.getBalance().getBalance());
+		Assert.assertNull(task.getUssd().getBalance());
 	}
 	
 	@Autowired private  ChannelRepo chans;

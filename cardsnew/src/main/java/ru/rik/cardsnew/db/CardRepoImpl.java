@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.rik.cardsnew.domain.Balance;
+import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -170,9 +170,9 @@ public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements Car
 
 	
 	@Override
-	public List<Balance> findLastBalances() {
+	public List<Ussd> findLastBalances() {
 //		return em.createNamedQuery("findAllLastBalance", Balance.class)
-		return em.createNamedQuery("findAllBalance", Balance.class)
+		return em.createNamedQuery("findAllLastBalance", Ussd.class)
 				.setHint("org.hibernate.cacheable", true)
 				.getResultList();
 	}
