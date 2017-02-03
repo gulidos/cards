@@ -48,7 +48,7 @@ public class JpaConfig {
 	  }
 
 	  @Bean
-	  public DataSource dataSource() {
+	  public DataSource dataSource() { // needs to avoid unnecesary getting connection from the pool when a query result exists in the cache 
 		  LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
 		  dataSourceProxy.setTargetDataSource(dataSourceTarget());
 		  return dataSourceProxy;
