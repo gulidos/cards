@@ -47,6 +47,7 @@ public class RestTrunks {
 		else return null;
 	}
 	
+	
 	@Transactional
 	@RequestMapping(value = "/trunk/clear", method = RequestMethod.POST)
 	public RestTrunk clear() {
@@ -54,6 +55,7 @@ public class RestTrunks {
 		return null;
 	}
 
+	
 	@Data
 	public class RestTrunk {
 		String name;

@@ -19,12 +19,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
-import org.asteriskjava.live.ChannelState;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-
-import ru.rik.cardsnew.domain.Channel;
 import ru.rik.cardsnew.domain.MyEntity;
 import ru.rik.cardsnew.domain.State;
 
@@ -172,8 +170,8 @@ public abstract class GenericRepoImpl<T extends MyEntity, S extends State> imple
 				if (statsByName.putIfAbsent(entity.getName(), state) != null)
 					throw new IllegalStateException("stat with name " + state.getName() 
 					+ " already exists in " +	state.getClazz());
-				state.setName(entity.getName());
 				
+				state.setName(entity.getName());
 			}	
 		}	
 		return state;

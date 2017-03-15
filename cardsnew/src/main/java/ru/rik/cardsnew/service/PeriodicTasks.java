@@ -82,9 +82,12 @@ public class PeriodicTasks {
 				st.setStatus(Status.UssdReq);
 				pairSt.setStatus(Status.UssdReq);
 				TaskDescr td = new TaskDescr(UssdTask.class, st, new Date());
-				String cmd = (card.getGroup().getOper() == Oper.RED ? "#100#" : Settings.CHECK_BALANCE_USSD);
-				logger.debug("sending ussd on  {} command {} operator {}", st.getName(), cmd, card.getGroup().getOper());
-				taskCompleter.addTask(()-> UssdTask.get(telnetHelper, ch, card, cmd, td), td);
+				String cmd = (card.getGroup().getOper() == Oper.RED ? 
+										"#100#" : Settings.CHECK_BALANCE_USSD);
+				logger.debug("sending ussd on  {} command {} operator {}", 
+									st.getName(), cmd, card.getGroup().getOper());
+				taskCompleter.addTask(
+						()-> UssdTask.get(telnetHelper, ch, card, cmd, td), td);
 			}
 		}
 	}
@@ -107,8 +110,8 @@ public class PeriodicTasks {
 				st.setStatus(Status.Smsfetch);
 				pairSt.setStatus(Status.Smsfetch);
 				TaskDescr td = new TaskDescr(SmsTask.class, st, new Date());
-				taskCompleter.addTask(() -> 
-					SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pairCard, td), td);
+				taskCompleter.addTask(
+						() -> SmsTask.get(telnetHelper, ch, ch.getCard(), pair, pairCard, td), td);
 			}	
 		}
 	}
@@ -123,6 +126,7 @@ public class PeriodicTasks {
 			taskCompleter.addTask(() -> BankStatusTask.get(b, td), td);
 		}
 	}
+	
 	
 	@Scheduled(cron = "0 0 0 * * *") 
 	public void midnightReset() {

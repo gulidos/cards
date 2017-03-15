@@ -21,9 +21,6 @@ import ru.rik.cardsnew.service.SwitchTask;
 import ru.rik.cardsnew.service.TaskCompleter;
 import ru.rik.cardsnew.service.TaskDescr;
 
-
-//brew install httpie 
-//http GET http://localhost:8080/cardsnew/rest/cards
 @RestController 
 @RequestMapping("/rest")
 @EnableTransactionManagement
@@ -45,11 +42,14 @@ public class RestChan {
 		Card c = cards.findTheBestInGroupForInsert(ch.getGroup());
 		if (c == null)
 			return "There aren't more cards for group " + ch.getGroup().getName() + " available";
+		
 		TaskDescr td = new TaskDescr(SwitchTask.class, ch.getState(chans), new Date());
 		taskCompleter.addTask(() ->  switcher.switchCard(ch, c, td), td);
+		
 		return "Installing " + c.getName() + " card in " + ch.getName() +"  channel";
 	}
 
+	
 	@Transactional
 	@RequestMapping(value = "/chan/cards/{name}", method = RequestMethod.POST)
 	public List<RestCard> getAllCards(@PathVariable("name") String name) {
@@ -65,11 +65,13 @@ public class RestChan {
 		return result;
 	}
 	
+	
 	@Data
 	public class RestCard {
 		long id;
 		String name, number, sernumber;
 		int total;
+		
 		public RestCard(Card c) {
 			id = c.getId();
 			name = c.getName();
@@ -80,4 +82,4 @@ public class RestChan {
 	}
 	
 	
-	}
+}

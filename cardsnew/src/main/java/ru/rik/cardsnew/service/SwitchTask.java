@@ -62,7 +62,8 @@ public class SwitchTask implements State{
 			try { 
 				if (pair != null)
 					while (pair.getState(chans).isInUse(astMngr)) {
-						td.setStage("in " + ch.getName() +  " installing card " + c.getName() + " awaiting for peer " + pair.getName());
+						td.setStage("in " + ch.getName() +  " installing card " 
+									+ c.getName() + " awaiting for peer " + pair.getName());
 						logger.debug("awaiting for peer chanel {}",  pair.getName());
 						ch.getState(chans).setStatus(Status.AwaitForPeer);
 						TimeUnit.SECONDS.sleep(10);
@@ -84,7 +85,9 @@ public class SwitchTask implements State{
 			logger.error(e.toString(), e);		
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		return new SwitchTask(ch.getId(), ch.getName(), c!= null? c.getId() : 0, c!= null?  c.getName() : "-", td);
+		return new SwitchTask(ch.getId(), ch.getName(), 
+				c!= null ? c.getId() : 0, 
+						c!= null ?  c.getName() : "-", td);
 	}
 
 

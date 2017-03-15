@@ -20,19 +20,10 @@ public class Sms extends Event{
 	private static final Pattern balance = 
 			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?):\\s*(-*\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);
-//	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
-//	@Getter @Setter private long id;
+
 	@Getter @Setter private int num;
 	@Getter @Setter private String origAddress;
-//	@Getter @Setter private Date date;
 	@Getter @Setter private String decodedmsg;
-//	@Transient
-//	@Getter @Setter private String encodedmsg;
-	
-//	@ManyToOne
-//	@Getter @Setter private Card card;
-//	@ManyToOne
-//	@Getter @Setter private Channel channel;
 	
 	public Ussd getBalance() {
 		if (decodedmsg == null)

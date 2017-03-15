@@ -37,8 +37,6 @@ import ru.rik.cardsnew.db.TrunkRepo;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "_TRUNK")
 public class Trunk implements MyEntity {
-//	@Transient
-//	private static final TrunksStates trunksStats = (TrunksStates) AppInitializer.getContext().getBean("trunksStats");
 
 	@Id	@Column(name = "id") @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

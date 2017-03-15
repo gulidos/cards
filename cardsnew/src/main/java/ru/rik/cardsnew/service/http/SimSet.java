@@ -7,8 +7,6 @@ import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import lombok.Getter;
@@ -23,13 +21,11 @@ import ru.rik.cardsnew.service.TaskDescr;
 
 
 public class SimSet implements State{
-	private static final Logger logger = LoggerFactory.getLogger(SimSet.class);		
 
 	@Getter private final Channel ch;
 	@Getter private final String cardPos;
 	@Getter private final String bankIp;
 	@Getter @Setter private SimSet pairData;
-//	@Getter private final String serialnumber;
 	
 	@Builder
 	public SimSet(Channel ch, String cardPos, String bankIp, SimSet pairData) {
@@ -37,7 +33,6 @@ public class SimSet implements State{
 		this.cardPos = cardPos;
 		this.bankIp = bankIp;
 		this.pairData = pairData;
-//		this.serialnumber = snumber;
 	}
 	
 	@Override 	public long getId() {return ch.getId(); }

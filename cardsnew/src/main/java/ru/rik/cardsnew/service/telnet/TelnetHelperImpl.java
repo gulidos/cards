@@ -1,4 +1,3 @@
-// по мотивам http://letrungthang.blogspot.ru/2011/12/telnet-in-java.html
 package ru.rik.cardsnew.service.telnet;
 
 import java.io.IOException;
@@ -30,12 +29,10 @@ public class TelnetHelperImpl implements TelnetHelper {
 	private final Pattern beginP = Pattern.compile("^\\s*(\\d{1,2}),\\d{1,2},,\\d{1,3}\\s*(07.*)\\s*0*\\s*", Pattern.MULTILINE);
 	public final Pattern free = Pattern.compile("\\s*^\\s*.*free\\.\\s*\\]", Pattern.DOTALL);
 	private final int waitTime = 500; 
-	// private static final String NOT_SMS_START = "^\\+CMGL.*|^0$";
 
 	public static void main(String[] args) {
 		String str = "\n module 2: free.\n]";
 		TelnetHelperImpl t = new TelnetHelperImpl();
-//		Matcher matcher = t.free.matcher(str);
 		if (t.free.matcher(str).matches()) {
 			System.out.println("matches");
 		}
@@ -139,69 +136,62 @@ public class TelnetHelperImpl implements TelnetHelper {
 		return i;
 	}
 
-	private String readUntil(TelnetClient telnet, String pattern, int timeout) throws IOException  {
+	private String readUntil(TelnetClient telnet, String pattern, int timeout) throws IOException {
 		wait(timeout);
 		InputStream in = telnet.getInputStream();
-		
+
 		StringBuffer sb = null;
 		int numRead = 0;
-//		try {
-			char lastChar = pattern.charAt(pattern.length() - 1);
-			sb = new StringBuffer();
-			StringBuffer sbI = new StringBuffer();
-			int i = in.read();
-			char ch = (char) i;
+		char lastChar = pattern.charAt(pattern.length() - 1);
+		sb = new StringBuffer();
+		StringBuffer sbI = new StringBuffer();
+		int i = in.read();
+		char ch = (char) i;
 
-			while (true) {
-				numRead++;
-				sb.append(ch);
-				sbI.append(i).append(" ");
+		while (true) {
+			numRead++;
+			sb.append(ch);
+			sbI.append(i).append(" ");
 
-				if (ch == lastChar) {
-					if ( numRead == 3 && pattern.endsWith("0\r\n")) {	
-						pattern = "0\r\n";
-					}	
-					if (sb.toString().endsWith(pattern)) 
-						break;
+			if (ch == lastChar) {
+				if (numRead == 3 && pattern.endsWith("0\r\n")) {
+					pattern = "0\r\n";
 				}
-
-				ch = (char) in.read();
-//				System.out.print(ch);
+				if (sb.toString().endsWith(pattern))
+					break;
 			}
-//		} catch (SocketTimeoutException et) {
-//			logger.error(et.getMessage(), et);
-//		} catch (Exception e) {
-//			logger.error(e.getMessage(), e);
-//		}
+
+			ch = (char) in.read();
+		}
 		return sb != null ? sb.toString() : "";
 	}
 
+	
 	private void wait(int timeout) {
-		try {Thread.sleep(timeout);} catch (InterruptedException e) {logger.error(e.getMessage(), e);}
+		try {
+			Thread.sleep(timeout);
+		} catch (InterruptedException e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 
+	
 	private void write(TelnetClient telnet, String value) {
 		try {
 			PrintStream out = new PrintStream(telnet.getOutputStream());
 			out.print(value + "\r\n");
 			out.flush();
-//			System.out.println("send command: " + value);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
 
 	private String sendCmd(TelnetClient telnet, String command, String prompt, int timeout) throws IOException {
-//		System.out.println("send command" + command);
-//		try {
 			write(telnet, command);
 			return readUntil(telnet, prompt, timeout);
-//		} catch (Exception e) {
-//			logger.error(e.getMessage(), e);
-//			return null;
-//		}
 	}
 
+	
 	@Override
 	public void disconnect(TelnetClient telnet) {
 		try {

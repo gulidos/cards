@@ -105,7 +105,7 @@ public class UssdTask implements State{
 		return result;
 	}
 	
-	/** Parses response and returns USSD. If parsing failed, returns 9999.99.      */
+	/** Parses response and returns USSD.       */
 	public Ussd getUssd() {
 		if (decodedResp == null)
 			decodedResp = getDecodedResponse();
@@ -142,7 +142,7 @@ public class UssdTask implements State{
 	}
  	
 	
-	// converts a PDU  string to a byte array
+	// converts a PDU string to a byte array
 		private byte[] pduToBytes(String s) {
 			byte[] bytes = new byte[s.length() / 2];
 			for (int i = 0; i < s.length(); i += 2) {
@@ -151,6 +151,7 @@ public class UssdTask implements State{
 			return bytes;
 		}
 
+		
 		private String decodeUcs2Encoding(byte[] udhData, byte[] pduData) {
 			try {
 				int udhLength = ((udhData == null) ? 0 : udhData.length);

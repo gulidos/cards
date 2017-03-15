@@ -24,14 +24,9 @@ import lombok.experimental.Builder;
 	}
 )
 public class Ussd extends Event{
-//	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
-//	@Getter @Setter private long id;
-//	@Getter @Setter private Date date;
 	@Getter @Setter private String decodedmsg;
 	@Getter @Setter private Float balance;
-//	@ManyToOne(optional = false)
-//	@Getter @Setter private Card card;
-	@Getter @Setter private boolean payment; //seting up manually via web ui
+	@Getter @Setter private boolean payment; //set up manually via web ui
 	@Getter @Setter private boolean smsNeeded;
 	
 	@Override
