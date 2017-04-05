@@ -126,7 +126,7 @@ public class RootConfig implements SchedulingConfigurer {
 		taskRegistrar.setScheduler(taskSheduleExecutor());
 	}
 
-	@Bean(initMethod = "start")
+	@Bean(initMethod = "start", destroyMethod = "stop")
 	public TaskCompleter taskCompleter() {
 		return new TaskCompleter(completionService(), taskExecutor());
 	}

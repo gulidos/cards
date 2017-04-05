@@ -16,7 +16,7 @@ import lombok.experimental.Builder;
 @Entity @Table(name="_SMS")
 @NoArgsConstructor  
 @EqualsAndHashCode( callSuper = true)
-public class Sms extends Event{
+public class Sms extends Event {
 	private static final Pattern balance = 
 			Pattern.compile("^\\s*(Баланс.?|Минус.?|Balans.?|Balance.?|Minus.?):\\s*(-*\\d{1,4}[.,]\\d\\d)(\\s*р*.*)"
 					, Pattern.MULTILINE);

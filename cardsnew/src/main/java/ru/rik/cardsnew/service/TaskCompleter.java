@@ -61,6 +61,10 @@ public class TaskCompleter implements Runnable{
 	public void start() {
 		executor.submit(this);
 	}
+	
+	public void stop() {
+		Thread.currentThread().interrupt();
+	}
 
 	public Future<State> addTask(Callable<State> task, TaskDescr descr ) {
 		if (descr.getStage() == null)

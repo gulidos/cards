@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,6 +16,7 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -29,37 +31,45 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@PropertySource(ignoreResourceNotFound = true, value = "file:${user.home}/cards.conf")
 @ComponentScan
 @EnableTransactionManagement
 @EnableCaching
 @EnableJpaRepositories(basePackages="ru.rik.cardsnew.db")
 public class JpaConfig {
-//	ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-	private static final String MYSQL_JDBC_HP2 = "jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&ampuseUnicode=true"
-			+ "&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf-8;";
-	  public DataSource dataSourceTarget() {
-		  DriverManagerDataSource ds = new DriverManagerDataSource();
-		  ds.setDriverClassName("com.mysql.jdbc.Driver");
-		  ds.setUrl(MYSQL_JDBC_HP2);
-		  ds.setUsername("root");
-		  ds.setPassword("parallaxtal");
-		  return ds;
-	  }
+	@Value("${db.url:jdbc:mysql://127.0.0.1:3306/asterisk?autoReconnect=true&useSSL=false&ampuseUnicode=true"
+			+ "&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf-8;")
+	private String MYSQL_JDBC_HP2;
 
-	  @Bean
-	  public DataSource dataSource() { // needs to avoid unnecesary getting connection from the pool when a query result exists in the cache 
-		  LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
-		  dataSourceProxy.setTargetDataSource(dataSourceTarget());
-		  return dataSourceProxy;
-	  }
+	@Value("${db.user:root}") 
+	private String dbUser;
+	
+	@Value("${sb.password:password}") 
+	private String dbPassword;
 
+	public DataSource dataSourceTarget() {
+		DriverManagerDataSource ds = new DriverManagerDataSource();
+		ds.setDriverClassName("com.mysql.jdbc.Driver");
+		ds.setUrl(MYSQL_JDBC_HP2);
+		ds.setUsername("root");
+		ds.setPassword("password");
+		return ds;
+	}
+
+	@Bean
+	public DataSource dataSource() { // needs to avoid unnecessary getting
+										// connection from the pool when a query
+										// result exists in the cache
+		LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
+		dataSourceProxy.setTargetDataSource(dataSourceTarget());
+		return dataSourceProxy;
+	}
   
   
 
   private Map<String,?> jpaProperties() {
 	  Map<String,String> jpaPropertiesMap = new HashMap<String,String>(); 
-//	  jpaPropertiesMap.put("hibernate.dialect","org.hibernate.dialect.H2Dialect"); 
 	  jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
 	  jpaPropertiesMap.put("hibernate.cache.use_second_level_cache", "true");
 	  jpaPropertiesMap.put("hibernate.cache.use_query_cache", "true");
@@ -75,6 +85,7 @@ public class JpaConfig {
 
 	  return jpaPropertiesMap;
   }
+  
   
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
