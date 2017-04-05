@@ -20,8 +20,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -42,32 +42,20 @@ public class JpaConfig {
 			+ "&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf-8;")
 	private String MYSQL_JDBC_HP2;
 
-	@Value("${db.user:root}") 
-	private String dbUser;
-	
-	@Value("${sb.password:password}") 
-	private String dbPassword;
 
+	@Bean
 	public DataSource dataSourceTarget() {
-		DriverManagerDataSource ds = new DriverManagerDataSource();
-		ds.setDriverClassName("com.mysql.jdbc.Driver");
-		ds.setUrl(MYSQL_JDBC_HP2);
-		ds.setUsername("root");
-		ds.setPassword("password");
-		return ds;
+		 return new JndiDataSourceLookup().getDataSource("java:comp/env/jdbc/cards");
 	}
 
 	@Bean
-	public DataSource dataSource() { // needs to avoid unnecessary getting
-										// connection from the pool when a query
-										// result exists in the cache
+	public DataSource dataSource() { // needs to avoid unnecessary getting connection from the pool when a query result exists in the cache
 		LazyConnectionDataSourceProxy dataSourceProxy = new LazyConnectionDataSourceProxy();
 		dataSourceProxy.setTargetDataSource(dataSourceTarget());
 		return dataSourceProxy;
 	}
   
   
-
   private Map<String,?> jpaProperties() {
 	  Map<String,String> jpaPropertiesMap = new HashMap<String,String>(); 
 	  jpaPropertiesMap.put("hibernate.hbm2ddl.auto", "update");
@@ -87,22 +75,23 @@ public class JpaConfig {
   }
   
   
-  @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-    LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-    emf.setDataSource(dataSource);
-    emf.setPersistenceUnitName("cards");
-    emf.setJpaVendorAdapter(jpaVendorAdapter);
-    emf.setPackagesToScan("ru.rik.cardsnew.domain");
-    emf.setJpaPropertyMap(jpaProperties());
-    return emf;
-  }
-  
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
+			JpaVendorAdapter jpaVendorAdapter) {
+		LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+		emf.setDataSource(dataSource);
+		emf.setPersistenceUnitName("cards");
+		emf.setJpaVendorAdapter(jpaVendorAdapter);
+		emf.setPackagesToScan("ru.rik.cardsnew.domain");
+		emf.setJpaPropertyMap(jpaProperties());
+		return emf;
+	}
+
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
 		adapter.setDatabase(Database.MYSQL);
-//		adapter.setShowSql(true);
+		// adapter.setShowSql(true);
 		adapter.setGenerateDdl(true);
 		adapter.setDatabasePlatform("org.hibernate.dialect.MySQL5InnoDBDialect");
 		return adapter;
@@ -110,7 +99,7 @@ public class JpaConfig {
 
 	@Bean
 	public BeanPostProcessor persistenceTranslation() {
-	  return new PersistenceExceptionTranslationPostProcessor();
+		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
 	
