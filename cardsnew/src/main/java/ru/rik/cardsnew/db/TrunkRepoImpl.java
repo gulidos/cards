@@ -7,7 +7,6 @@ import ru.rik.cardsnew.domain.TrunkState;
 
 @Repository
 public class TrunkRepoImpl extends GenericRepoImpl<Trunk, TrunkState> implements TrunkRepo {
-	private static final long serialVersionUID = 1L;
 
 
 	public TrunkRepoImpl() {

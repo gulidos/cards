@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.Box;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
@@ -25,10 +24,10 @@ import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Route;
 import ru.rik.cardsnew.domain.Sms;
 import ru.rik.cardsnew.domain.Trunk;
+import ru.rik.cardsnew.domain.Ussd;
 
 @Repository
 public class ChannelRepoImpl extends GenericRepoImpl<Channel, ChannelState> implements ChannelRepo {
-	private static final long serialVersionUID = 1L;
 	static final Logger logger = LoggerFactory.getLogger(ChannelRepoImpl.class);
 	@Autowired private CardRepo cards;
 	

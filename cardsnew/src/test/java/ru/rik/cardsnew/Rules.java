@@ -1,11 +1,13 @@
 package ru.rik.cardsnew;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 
 public class Rules {
-	private List<String[]> rules;
+private volatile List<String[]> rules;
 	
 	public Rules() {
 	}
@@ -13,7 +15,7 @@ public class Rules {
 	public void load(List<String> list) {
 		if (list == null)
 			return;
-		rules = new ArrayList<>();
+		List<String[]> newRules = new ArrayList<>();
 		for (String s: list) {
 			String [] a = s.split("\\s+");
 			if	(a.length == 2) {
@@ -23,7 +25,8 @@ public class Rules {
 				
 			if (isOk(a))
 				rules.add(a);
-		}	
+		}
+		rules = newRules;
 	}
 	
 	
@@ -81,6 +84,5 @@ public class Rules {
 		r.load(list);
 		
 		
-		System.out.println(r.apply("74958757575"));
 	}
 }

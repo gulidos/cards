@@ -7,9 +7,7 @@ import ru.rik.cardsnew.domain.BoxStat;
 
 @Repository
 public class BoxRepoImpl extends GenericRepoImpl<Box, BoxStat> implements BoxRepo  {
-	private static final long serialVersionUID = 1L;
-
-
+	
 	public BoxRepoImpl() {
 		super(Box.class, BoxStat.class);	
 	}

@@ -14,9 +14,6 @@ import ru.rik.cardsnew.domain.Card;
 
 @Repository
 public class BankRepoImpl extends GenericRepoImpl<Bank, BankState> implements BankRepo  {
-	private static final long serialVersionUID = 1L;
-	
-
 
 	public BankRepoImpl() {
 		super(Bank.class, BankState.class);		

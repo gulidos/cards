@@ -1,7 +1,6 @@
 package ru.rik.cardsnew.db;
 
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,8 +11,8 @@ import javax.persistence.criteria.Expression;
 import ru.rik.cardsnew.domain.MyEntity;
 
 
-public interface GenericRepo<T extends MyEntity, S extends MyEntity>
-    extends Serializable {
+//public interface GenericRepo<T extends MyEntity, S extends MyEntity> extends Serializable {
+public interface GenericRepo<T extends MyEntity, S extends MyEntity>  {
 
 //    void joinTransaction();
 

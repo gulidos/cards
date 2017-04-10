@@ -13,18 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.rik.cardsnew.domain.Ussd;
 import ru.rik.cardsnew.domain.Bank;
 import ru.rik.cardsnew.domain.Card;
 import ru.rik.cardsnew.domain.CardStat;
 import ru.rik.cardsnew.domain.Grp;
 import ru.rik.cardsnew.domain.Limit;
 import ru.rik.cardsnew.domain.Place;
+import ru.rik.cardsnew.domain.Ussd;
 
 @Repository
 public class CardRepoImpl extends GenericRepoImpl<Card, CardStat> implements CardRepo  {
 	static final Logger logger = LoggerFactory.getLogger(CardRepoImpl.class);
-	private static final long serialVersionUID = 1L;
 	@Autowired BankRepo banks;
 	
 	public CardRepoImpl() {

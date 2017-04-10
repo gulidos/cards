@@ -28,7 +28,6 @@ import ru.rik.cardsnew.domain.State;
 
 public abstract class GenericRepoImpl<T extends MyEntity, S extends State> implements GenericRepo<T, S> {
 	static final Logger logger = LoggerFactory.getLogger(GenericRepoImpl.class);
-	private static final long serialVersionUID = 1L;
 
 	@PersistenceContext	protected EntityManager em;
 
