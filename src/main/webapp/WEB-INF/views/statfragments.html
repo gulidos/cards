@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<body>
+		<div th:fragment="cardState">
+			<div >
+				<pre th:utext="${cardState.name} + '&lt;br&gt;' +
+					'free: ' + ${cardState.free} + '&lt;br&gt;' +
+					'ASR: ' + ${cardState.asr} + '&lt;br&gt;' +
+					'ACD: ' + ${#numbers.formatDecimal(cardState.acd,1,2)} + '&lt;br&gt;' +
+					'Today Minutes round: ' + ${cardState.todayMinTotal} + '&lt;br&gt;' +
+					'Today Offnet: ' + ${cardState.todayOffnet} + '&lt;br&gt;' +
+					'Today Msk: ' + ${cardState.todayMsk} + '&lt;br&gt;' +
+					'Today Calls: ' + ${cardState.todayCalls} + '&lt;br&gt;' +
+					'Balance: ' + ${#numbers.formatDecimal(cardState.balance,1,2)} + '&lt;br&gt;' +
+					'Balance updated: ' + ${#dates.format(cardState.lastBalanceChecked, 'dd/MMM HH:mm:ss')} + '&lt;br&gt;' +
+					'Balance next check: ' + ${#dates.format(cardState.nextBalanceCheck, 'dd/MMM HH:mm:ss')} + '&lt;br&gt;' +
+					'Refilled: ' + ${cardState.refilled}
+					"></pre>
+	<!-- 			<p th:text="'free: ' + ${cardState.free}"></p>
+				<p th:text="'ASR: ' + ${cardState.asr}"></p>
+				<p th:text="'ACD: ' + ${#numbers.formatDecimal(cardState.acd,1,2)}"></p>
+				<p th:text="'Today Minutes round: ' + ${cardState.todayMinTotal}"></p>
+				<p th:text="'Today Minutes: ' + ${cardState.todayMin}"></p>
+				<p th:text="'Today Offnet: ' + ${cardState.todayOffnet}"></p>
+				<p th:text="'Today Msk: ' + ${cardState.todayMsk}"></p>
+				<p th:text="'Today Calls: ' + ${cardState.todayCalls}"></p>
+				<p th:text="'Balance: ' + ${#numbers.formatDecimal(cardState.balance,1,2)}"></p>
+				<p th:text="'Balance updated: ' + ${#dates.format(cardState.lastBalanceChecked, 'dd/MMM HH:mm:ss')}"></p>
+				<p th:text="'Balance next check: ' + ${#dates.format(cardState.nextBalanceCheck, 'dd/MMM HH:mm:ss')}"></p>
+				<p th:text="'Refilled: ' + ${cardState.refilled}"></p>	 -->			
+			</div>
+		</div>
+</body>
+
+</html>

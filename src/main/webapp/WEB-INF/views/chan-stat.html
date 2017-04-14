@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>Title</title>
+
+<!-- Include the plugin's CSS and JS: -->
+
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+
+</head>
+<body>
+	    
+	<div class="container">
+	<ul class="nav nav-tabs">
+		<li><a th:href="@{/channels/edit(id=*{state.id})}">Properties</a></li>
+		<li class="active"><a th:href="@{/channels/stat}">Statistic</a></li>
+		<li><a th:href="@{/channels/events(id=*{state.id})}">Maintain</a></li>
+	</ul>
+
+	
+		<h4 >Statistic</h4>
+		<form class="form-horizontal" th:object="${state}" th:action="@{/channels/chanstats/statistic}" th:method="post" >
+			<div class="row">
+			<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
+			<div class="col-lg-6 col-sm-6 ">
+				<pre  th:text="${stateText}">
+				</pre>
+				
+				<div  th:if="${cardState!= null}" id="footer" th:include="statfragments :: cardState"></div>
+				<!-- <h2 th:text="${cardState}" ></h2> -->
+				
+			</div>
+ 			<div class="col-lg-6 col-sm-6 ">
+				<pre  th:text="${peerText}">
+				</pre>
+			</div>
+ 		</div>
+		 
+			 <div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action" th:value="gsmreq" th:text="GsmRequest">	</button>
+					<button type="submit" class="btn btn-default active" name="action" 	value="cancel">Cancel</button>
+				</div>
+			</div> 
+			
+		</form>
+	
+		 <hr />
+		 
+		<form class="form-horizontal" th:object="${chan}" th:action="@{/channels/chanstats/switch}" th:method="post" >
+			<div class="form-group "> 
+				<input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>
+				<input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
+				<label class="col-sm-2 col-xs-2 control-label">card</label>
+				<div class="col-sm-2"  > 
+		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{card}">    
+					<option th:each="card: ${cards}" th:value="${{card}}" th:text="${card.name}" > </option>
+				</select> 
+				</div>     
+				<div>
+					<button type="submit" class="btn btn-primary" name="action" th:value="install" th:text="install">	</button>
+					<button type="submit" class="btn btn-primary col-sm-offset-1" name="action" th:value="clear" th:text="clear">	</button>
+					<button type="submit" class="btn btn-primary col-sm-offset-1" name="action" th:value="reboot" th:text="reboot">	</button>
+					
+				</div>
+			</div>	
+		
+	
+		</form>
+		<hr />
+		</div>
+		<div class="col-sm-3"></div>
+
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#example-getting-started').multiselect();
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#channel-select').multiselect();
+	});
+</script>
+</html>
+

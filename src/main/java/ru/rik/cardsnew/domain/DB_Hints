@@ -1,0 +1,7 @@
+From the JPA 2.0 spec, the defaults are like so:
+
+OneToMany: LAZY
+ManyToOne: EAGER
+ManyToMany: LAZY
+OneToOne: EAGER
+
