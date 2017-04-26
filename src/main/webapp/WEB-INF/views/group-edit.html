@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>Title</title>
+
+<!-- Include the plugin's CSS and JS: -->
+
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+
+</head>
+<body>
+	<div class="container">
+	<div class="panel panel-default" >
+		<div class="panel-heading">group</div>
+		<form class="form-horizontal" th:object="${group}" th:action="@{/groups/edit}" th:method="post" >
+			<div class="form-group" >
+				<label class="col-md-4 col-xs-8 control-label" >name</label>
+				<div class="col-sm-2">
+					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
+					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}"></input>
+					  <div th:text="${session.fc}"></div> 
+				</div>
+				<a th:href="@{/cards(url=group,id=*{id})}">
+					<button type="button" class="btn btn-link">Edit cards</button>
+				</a>
+				<a th:href="@{/channels(url=group,id=*{id})}">
+					<button type="button" class="btn btn-link">Edit channels</button>
+				</a>
+				<a th:href="@{/channels/chanstats(url=group,id=*{id})}">
+					<button type="button" class="btn btn-link">chans stats</button>
+				</a>
+				
+			<!-- 	<label class="col-sm-4  control-label"> name1 </label>
+				<div class="col-sm-2">					 
+					 <input class="form-control" type="text" th:value="*{descr}" th:field="*{descr}" ></input>
+				</div> -->
+				
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">oper</label>
+				<div class="col-sm-2"  > 
+				<select	class="form-control" th:value="*{oper}" th:field="*{oper}" th:disabled="${action}=='delete'">
+					<option th:each="oper: ${opers}" th:value="${oper}" th:text="${oper}" ></option>
+				</select>
+				</div>
+			</div>	
+			
+			<div class="form-group" >
+				<label class="col-sm-4 col-xs-8 control-label" >descr</label>
+				<div class="col-sm-2">					 
+					 <input class="form-control" type="text" th:value="*{descr}" th:field="*{descr}" ></input>
+				</div>
+			</div>		
+	
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	th:value="save" th:text="save">	</button>
+					<button type="submit" class="btn btn-default active" name="action" 	th:value="cancel" th:text="cancel"></button>
+					
+				</div>
+			</div>
+			
+		</form>
+		</div>
+		</div>
+		<div class="col-sm-3"></div>
+
+</body>
+
+</html>
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="header"> 
+	<div class="navbar navbar-default" >
+		<div class="container-fluid">
+			<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"	data-target="#mynavbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span> 
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand"  href="#">C</a>
+			</div> 
+			
+			<div class="collapse navbar-collapse" id="mynavbar-collapse">	
+				<ul class="nav navbar-nav">
+					<li class="dropdown">
+					        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lists <b class="caret"></b></a>
+					        <ul class="dropdown-menu">
+					            <li><a th:href="@{/cards}">cards</a></li>
+					            <li><a th:href="@{/channels}">channels</a></li>
+					            <li class="divider"></li>
+					            <li><a th:href="@{/groups}">groups</a></li>
+					            <li><a th:href="@{/trunks}">trunks</a></li>
+					            <li><a th:href="@{/box}">boxes</a></li>
+					            <li><a th:href="@{/banks}">bnks</a></li>
+					            
+					        </ul>
+					    </li>
+						<li class="dropdown">
+					        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
+					        <ul class="dropdown-menu">
+					            <li><a th:href="@{/cards/stats}">cards</a></li>
+					            <li><a th:href="@{/channels/chanstats}">channels</a></li>
+					            <li><a th:href="@{/activity/background}">Bckg activity</a></li>
+					        </ul>
+					    </li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown">Maintenance <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/}">Settings</a></li>
+								<li><a th:href="@{/channels/refresh}">refresh cards</a></li>
+							</ul></li>
+						
+					<li><a th:href="@{/counters}">Counters</a></li>
+
+				</ul>
+				<ul class="nav navbar-nav pull-right">
+					<li><a th:href="@{/logout}">Logout</a></li>
+				</ul> 
+			</div>
+		</div>
+	</div>
+	</div>
+
+
+	
+		<div th:fragment="copy">
+			<p class="text-muted text-right">&copy; 2006-2016</p>
+
+		 	<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js"
+		 		data-th-src="@{/resources/js/jquery-1.12.1.min.js}"></script>	
+		
+			<script type="text/javascript" src="../../resources/js/bootstrap.min.js"
+		 		data-th-src="@{/resources/js/bootstrap.min.js}"></script>	
+		</div>
+	
+</body>
+
+</html>

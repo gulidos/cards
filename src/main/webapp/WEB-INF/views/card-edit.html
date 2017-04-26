@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<title>card</title>
+
+	
+	
+<script type="text/javascript" src="../../resources/js/jquery-1.12.1.min.js" th:src="@{/resources/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>		 		
+	
+<link type="text/css" rel="stylesheet" 	href="../../resources/css/bootstrap.min.css" th:href="@{/resources/css/bootstrap.min.css}" />
+	
+<script type="text/javascript" src="../../resources/js/bootstrap-multiselect.js" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>	
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap-multiselect.css" th:href="@{/resources/css/bootstrap-multiselect.css}"	 />
+	
+</head>
+<body>
+
+	<div class="container">
+		<ul class="nav nav-tabs">
+		<li class="active"><a th:href="@{/cards/edit(id=*{card.id})}">Properties</a></li>
+		<li><a th:href="@{/cards/stat(id=*{card.id})}">Statistic</a></li>
+		<li><a th:href="@{/cards/stat(id=*{card.id})}">Maint</a></li>
+	</ul>
+	<div class="panel panel-default" >
+		<div class="panel-heading">card</div>
+		<form class="form-horizontal" th:object="${card}" th:action="@{/cards/edit}" th:method="post" >
+			<div class="form-group" >
+				<label class="col-md-1 col-lg-1 control-label" >name</label>
+				<div class="col-md-2">
+					 <input  type="text" hidden="hidden" th:value="*{id}" th:field="*{id}" ></input>	
+					 <input  type="text" hidden="hidden" th:value="*{version}" th:field="*{version}" ></input>					 
+					 <input class="form-control" type="text" th:value="*{name}" th:field="*{name}" th:readonly="${action}=='delete'"></input>
+				</div>
+				<label class="col-md-1 col-lg-1 control-label">active</label>
+				<div class="col-md-1 col-lg-1"  > 
+					<input type="checkbox" th:field="*{active}" />
+				</div>
+				
+			</div>
+			<div class="form-group">
+				<label class="col-md-1 col-lg-1 control-label">number</label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{number}" th:field="*{number}"></input>
+				</div>
+				<label class="col-md-2 col-lg-2 control-label">sernumber</label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{sernumber}" th:field="*{sernumber}"></input>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-md-1 col-lg-1 control-label">b</label>
+				<div class="col-md-2 col-lg-2"  >  
+				<select	class="form-control" th:value="*{bank}?*{bank.id}:0" th:field="*{bank.id}" >
+					<option th:each="bank: ${banklst}" th:value="${bank.id}" th:text="${bank.name}"></option>
+				</select> 
+				</div>
+				<label class="col-md-2 col-lg-2 control-label">place</label>
+				<div class="col-md-2 col-lg-2"  > 
+				<select	class="form-control" th:value="*{place}" th:field="*{place}" >
+					<option th:each="place: ${places}" th:value="${place}" th:text="${place}"></option>
+				</select>
+				</div>
+			</div>
+			
+
+			<div class="form-group ">
+				<label class="col-md-1 control-label">group</label>
+				<div class="col-md-2 col-lg-2"  > 
+				<select	class="form-control" th:value="*{group}?*{group.id}:0" 	th:field="*{group.id}" th:disabled="${action}=='delete'" >
+					<option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}" ></option>
+				</select>
+				</div>
+				<label class="col-md-1 control-label">limits</label>
+				<div class="col-md-2"  > 
+				<select	class="form-control" th:value="*{limit}?*{limit.id}:0" 	th:field="*{limit.id}" >
+					<option th:each="limit: ${limits}" th:value="${limit.id}" th:text="${limit.name}" ></option>
+				</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-md-1 col-lg-1 control-label">day </label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{dlimit}" th:field="*{dlimit}"></input>
+				</div>
+				<label class="col-md-1 col-lg-1 control-label">month </label>
+				<div class="col-md-2 col-lg-2">
+					<input type="text" class="form-control" th:value="*{mlimit}" th:field="*{mlimit}"></input>
+				</div>
+			</div>		
+				<div class="form-group">
+				<label class="col-md-1 col-lg-1 control-label">descr</label>
+				<div class="col-md-8 col-lg-8">
+					<input type="text" class="form-control" th:value="*{descr}" th:field="*{descr}"></input>
+				</div>
+			</div>	
+			<div class="form-group ">
+				<label class="col-sm-4 col-xs-8 control-label">blocked</label>
+				<div class="col-sm-2"  > 
+				<input type="checkbox" th:field="*{blocked}" />
+				</div>
+			</div> 	
+	<!-- 		<div class="form-group "> 
+				<label class="col-sm-4 col-xs-8 control-label">channel</label>
+				<div class="col-sm-2"  > 
+		 		<select	class="form-control" id="channel-select"  size="2" th:field="*{channel}"
+		 				 th:disabled="${action}=='delete'">     th:value="*{trunk}?*{trunk.id}:0" th:field="*{trunk.id}"
+					<option th:each="channel: ${channels}" th:value="${{channel}}" th:text="${channel.name}" > </option>
+				</select> 
+				</div>     http://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html#configuring-a-conversion-service
+			</div>	 -->				
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<button type="submit" class="btn btn-primary" name="action"	th:value= "save" th:text="save" > </button>
+					<button type="submit" class="btn btn-default " name="action" th:value="cancel" th:text="cancel"></button>
+				</div>
+			</div>
+			
+			
+			<div class="form-group">
+				<div class="col-sm-offset-5 col-sm-7">
+					<p class="text-danger" th:if="${#fields.hasErrors('name')}"
+						data-th-errors="*{name}"></p>
+					<p class="text-danger" th:if="${#fields.hasErrors('number')}"
+						data-th-errors="*{number}"></p>
+					<p class="text-danger" th:if="${#fields.hasErrors('sernumber')}"
+						data-th-errors="*{sernumber}"></p>
+				</div>
+			</div>
+		</form>
+		</div>
+		</div>
+		<div class="col-sm-3"></div>
+
+
+	<script type="text/javascript"
+		src="../../resources/js/jquery-1.11.0.min.js"
+		data-th-src="@{/resources/js/jquery-1.11.0.min.js}"></script>
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap-3.3.3.min.js"
+		data-th-src="@{/resources/js/bootstrap-3.3.3.min.js}"></script>
+</body>
+
+</html>
+

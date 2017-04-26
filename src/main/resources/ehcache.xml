@@ -1,0 +1,30 @@
+<ehcache>
+ <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="1200"
+            timeToLiveSeconds="1200"
+            overflowToDisk="false"
+            maxElementsOnDisk="10000000"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU"
+    /> 
+<!--   <cache name="cardsCache"
+          maxBytesLocalHeap="5m"
+          timeToLiveSeconds="10000">
+  </cache>
+   <cache name="trunkCache"
+          maxBytesLocalHeap="5m"
+          timeToLiveSeconds="10000">
+  </cache> -->
+  
+  <cache name="org.hibernate.cache.internal.StandardQueryCache"
+       maxElementsInMemory="500"
+       eternal="false"
+       timeToIdleSeconds="600"
+       timeToLiveSeconds="3600"/>
+<cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+       maxElementsInMemory="50"
+       eternal="true"/>
+</ehcache>
