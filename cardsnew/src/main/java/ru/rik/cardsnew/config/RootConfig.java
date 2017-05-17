@@ -40,7 +40,6 @@ import ru.rik.cardsnew.service.telnet.TelnetHelperImpl;
 @EnableScheduling
 @EnableTransactionManagement
 
-// @Import(ru.rik.cardsnew.db.JpaConfig.class)
 @ComponentScan(basePackages = { "ru.rik.cardsnew.db" })
 
 public class RootConfig implements SchedulingConfigurer {
@@ -73,7 +72,6 @@ public class RootConfig implements SchedulingConfigurer {
 	@Bean public TelnetHelper telnetHelper() {return new TelnetHelperImpl();}
 
 	 @Bean 
-//	 (initMethod="init")
 	 public CheckCDRTask checkCDRTask() {return new CheckCDRTask();}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
@@ -96,12 +94,7 @@ public class RootConfig implements SchedulingConfigurer {
 		return executor;
 	}
 
-//	@Bean
-//	public ThreadPoolExecutor executor() {
-//		ThreadPoolExecutor e = new ThreadPoolExecutor(5, 15, 10, TimeUnit.SECONDS, null);
-//		return e;
-//	}
-	
+
 	@Bean(destroyMethod = "shutdown")
 	public TaskExecutor taskSheduleExecutor() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -110,10 +103,6 @@ public class RootConfig implements SchedulingConfigurer {
 		return scheduler;
 	}
 
-//	@Bean 
-//	public BlockingQueue<Future<State>> blockingQueue() {
-//		return new LinkedBlockingQueue<Future<State>>(1000);
-//	}
 	
 	@Bean
 	public CompletionService<State> completionService() {

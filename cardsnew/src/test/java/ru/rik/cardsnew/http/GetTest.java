@@ -16,7 +16,6 @@ public class GetTest {
 
 	
 	public void t1test() {
-		String hostname = "192.168.200.45";
 		String username = "voip";
 		String password = "1234";
 		String login = username + ":" + password;

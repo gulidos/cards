@@ -18,11 +18,10 @@ import org.apache.commons.configuration2.reloading.ReloadingDetector;
 
 public class Conf {
 	ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+	
 	public Conf() {
 		File file = new File("~/application.properties");
-		
 		Parameters params = new Parameters();
-
 		builder =
 		    new ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
 		    .configure(params.properties()
@@ -47,7 +46,6 @@ public class Conf {
 		if (isReloadSuccessful) {
 			try {
 				 config = builder.getConfiguration();
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 				isReloadSuccessful = false;

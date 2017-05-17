@@ -30,6 +30,7 @@ public class FetchSms {
 	public FetchSms() {	}
 
 	public static void main(String[] args) throws SocketException, IOException, InterruptedException {
+		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(RootConfig.class);
 		ChannelRepo chans= ctx.getBean(ChannelRepo.class);
 		TaskCompleter taskCompleter = ctx.getBean(TaskCompleter.class);

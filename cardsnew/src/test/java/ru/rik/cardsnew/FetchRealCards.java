@@ -23,6 +23,7 @@ import ru.rik.cardsnew.service.TaskDescr;
 public class FetchRealCards {
 
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws InterruptedException {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(RootConfig.class);
 		Thread.sleep(40000);

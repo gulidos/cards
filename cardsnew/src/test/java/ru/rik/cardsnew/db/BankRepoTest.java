@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ru.rik.cardsnew.domain.Bank;
-import ru.rik.cardsnew.domain.BankState;
 
 
 public class BankRepoTest {
@@ -21,7 +20,6 @@ public class BankRepoTest {
 		
 		List<Bank> list =  new ArrayList<>();
 		Bank b1 = new Bank(1, 1, "1", "1.1.1.1", null, null);
-		BankState bs1 = repo.addStateIfAbsent(b1);
 		doReturn(b1).when(repo).findByName("1.1.1.1");
 		list.add(b1);
 		
