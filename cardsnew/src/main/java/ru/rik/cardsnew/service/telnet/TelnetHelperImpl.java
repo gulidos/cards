@@ -26,17 +26,11 @@ import ru.rik.cardsnew.domain.Sms;
 public class TelnetHelperImpl implements TelnetHelper {
 	private static final Logger logger = LoggerFactory.getLogger(TelnetHelperImpl.class);		
 	
-	private final Pattern beginP = Pattern.compile("^\\s*(\\d{1,2}),\\d{1,2},,\\d{1,3}\\s*(07.*)\\s*0*\\s*", Pattern.MULTILINE);
-	public final Pattern free = Pattern.compile("\\s*^\\s*.*free\\.\\s*\\]", Pattern.DOTALL);
+	private static final Pattern beginP = Pattern.compile("^\\s*(\\d{1,2}),\\d{1,2},,\\d{1,3}\\s*(07.*)\\s*0*\\s*", Pattern.MULTILINE);
+	public static final Pattern free = Pattern.compile("\\s*^\\s*.*free\\.\\s*\\]", Pattern.DOTALL);
 	private final int waitTime = 500; 
 
-	public static void main(String[] args) {
-		String str = "\n module 2: free.\n]";
-		TelnetHelperImpl t = new TelnetHelperImpl();
-		if (t.free.matcher(str).matches()) {
-			System.out.println("matches");
-		}
-	}
+	
 	public TelnetHelperImpl() {	}
 	
 
