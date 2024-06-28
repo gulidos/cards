@@ -1,0 +1,23 @@
+name: First
+on: 
+  push:
+    branches: 
+      [master]
+jobs:
+  first:
+    name: First
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Hello from ${{ github.actor }}."
+          echo "Current branch is '${{ github.ref }}'."
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+      - run: tree
+      
+      
+        
+      
+
+
+  
